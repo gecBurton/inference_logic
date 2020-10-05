@@ -4,7 +4,12 @@ from copy import deepcopy
 from itertools import product
 from typing import Any, Dict, List, Optional, Sequence, Set, Union
 
-from json_inference_logic.data_structures import Assign, ImmutableDict, UnificationError, Variable
+from json_inference_logic.data_structures import (
+    Assign,
+    ImmutableDict,
+    UnificationError,
+    Variable,
+)
 
 
 class Equality:

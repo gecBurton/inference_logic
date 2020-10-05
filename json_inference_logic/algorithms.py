@@ -1,7 +1,13 @@
 from itertools import product
 from typing import Iterator, List, Optional
 
-from json_inference_logic.data_structures import Assign, ImmutableDict, Rule, UnificationError, Variable
+from json_inference_logic.data_structures import (
+    Assign,
+    ImmutableDict,
+    Rule,
+    UnificationError,
+    Variable,
+)
 from json_inference_logic.equality import Equality, Goal
 
 
