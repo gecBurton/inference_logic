@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="06a9f91a-831a-4b04-8c04-359fe5664193" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.pre-commit-config.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/json_inference_logic/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/json_inference_logic/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements_dev.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements_dev.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/setup.cfg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_algorithms/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algorithms/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_algorithms/test_new_frame.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algorithms/test_new_frame.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_algorithms/test_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algorithms/test_search.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_algorithms/test_unify.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algorithms/test_unify.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_data_structures/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/data_structures/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_data_structures/test_immutable_dict.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/data_structures/test_immutable_dict.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_data_structures/test_rule.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/data_structures/test_rule.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_data_structures/test_variable.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/data_structures/test_variable.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_ninety_nine_problems/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ninety_nine_problems/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_ninety_nine_problems/test_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ninety_nine_problems/test_list.py" afterDir="false" />
-    </list>
+    <list default="true" id="06a9f91a-831a-4b04-8c04-359fe5664193" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

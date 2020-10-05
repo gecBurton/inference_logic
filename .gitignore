@@ -103,3 +103,6 @@ ENV/
 
 # IDE settings
 .vscode/
+
+# W ever TH this is
+.idea/
