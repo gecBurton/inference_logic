@@ -1,8 +1,10 @@
-from json_inference_logic.algorithms import new_frame, unify  # noqa: F401
-from json_inference_logic.data_structures import (  # noqa: F401
+__version__ = "0.1.0"
+
+from .algorithms import new_frame, unify  # noqa: F401
+from .data_structures import (  # noqa: F401
     ImmutableDict,
     Rule,
     UnificationError,
     Variable,
 )
-from json_inference_logic.equality import Equality  # noqa: F401
+from .equality import Equality  # noqa: F401
