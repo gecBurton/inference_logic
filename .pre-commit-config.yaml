@@ -1,0 +1,64 @@
+repos:
+  - repo: local
+    hooks:
+      - id: isort
+        name: isort
+        stages: [commit]
+        language: system
+        entry: pipenv run isort
+        types: [python]
+
+      - id: black
+        name: black
+        stages: [commit]
+        language: system
+        entry: pipenv run black core tests
+        types: [python]
+
+      - id: flake8
+        name: flake8
+        stages: [commit]
+        language: system
+        entry: pipenv run flake8 core tests
+        types: [python]
+        exclude: setup.py
+
+      - id: pytest
+        name: pytest
+        stages: [commit]
+        language: system
+        entry: pipenv run pytest --cov=core --cov-fail-under=100 --cov-report=term-missing
+        types: [python]
+        pass_filenames: false
+
+#      - id: doctest
+#        name: doctest
+#        stages: [commit]
+#        language: system
+#        entry: pipenv run pytest --doctest-modules core
+#        types: [python]
+#        pass_filenames: false
+
+      - id: mypy
+        name: mypy
+        stages: [commit]
+        language: system
+        entry: pipenv run mypy core tests
+        types: [python]
+        pass_filenames: false
+
+#      - id: sphinx
+#        name: sphinx
+#        stages: [commit]
+#        language: system
+#        entry: pipenv run make html -C docs
+#        types: [python]
+#        pass_filenames: false
+
+#      - id: safety
+#        name: safety
+#        stages: [commit]
+#        language: system
+#        entry: pipenv run safety check
+#        types: [python]
+#        pass_filenames: false
