@@ -187,7 +187,8 @@ class Equality:
                 try:
                     return {self.get_fixed(_term)}
                 except KeyError:
-                    if free := self.get_free(_term) & to_solve_for:
+                    free = self.get_free(_term) & to_solve_for
+                    if free:
                         return free
             return {_term}
 
