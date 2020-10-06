@@ -179,7 +179,7 @@ class Equality:
 
             if isinstance(_term, Assign):
                 return {
-                    Assign(variable, _term.expression, _term.frame, xxx=False)
+                    Assign(variable, _term.expression, _term.frame, is_injected=True)
                     for variable in self.get_free(_term.variable) - {_term.variable}
                 }
 

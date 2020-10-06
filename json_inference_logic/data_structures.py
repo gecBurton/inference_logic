@@ -156,13 +156,13 @@ class Rule:
 
 
 class Assign:
-    def __init__(self, variable: Variable, expression, frame=None, xxx=True):
+    def __init__(self, variable: Variable, expression, frame=None, is_injected=False):
         self.variable = variable
         self.expression = expression
         self.frame = frame
         self.variables = Variable.factory(*self.expression.__code__.co_varnames)
         if self.frame is not None:
-            if xxx:
+            if not is_injected:
                 self.variable = self.variable.new_frame(self.frame)
             self.variables = [
                 variable.new_frame(self.frame) for variable in self.variables
