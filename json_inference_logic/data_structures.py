@@ -7,6 +7,13 @@ from typing import Any, Dict, List, Optional, Set, Union
 class Variable:
     @classmethod
     def factory(cls, *names: str) -> List:
+        """
+        helper method to generate many Variables
+
+        :examples:
+            >>> Variable.factory("A", "B", "C")
+            [A, B, C]
+        """
         return list(map(cls, names))
 
     def __init__(
@@ -29,11 +36,27 @@ class Variable:
         return hash(self.name) ^ hash(self.frame)
 
     def __eq__(self, other):
+        """
+        :examples:
+            >>> A, B = Variable.factory("A", "B")
+
+            >>> A == Variable("A")
+            True
+
+            >>> A == B
+            False
+        """
         if not isinstance(other, Variable):
             raise TypeError(f"{other} must be a Variable")
         return hash(self) == hash(other)
 
     def new_frame(self, frame):
+        """
+        :example:
+            >>> A = Variable("A")
+            >>> A.new_frame(1)
+            A_1
+        """
         return Variable(self.name, frame=frame, many=self.many)
 
     @staticmethod
@@ -174,3 +197,6 @@ class Assign:
             self.variables = [
                 variable.new_frame(self.frame) for variable in self.variables
             ]
+
+    def new_frame(self, frame: int) -> Assign:
+        return Assign(self.variable, self.expression, frame)

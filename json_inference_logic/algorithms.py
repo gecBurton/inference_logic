@@ -18,10 +18,8 @@ def new_frame(obj, frame: int):
         return tuple(new_frame(o, frame) for o in obj)
     if isinstance(obj, ImmutableDict):
         return ImmutableDict(**{k: new_frame(v, frame) for k, v in obj.items()})
-    if isinstance(obj, Variable):
+    if isinstance(obj, (Assign, Variable)):
         return obj.new_frame(frame)
-    if isinstance(obj, Assign):
-        return Assign(obj.variable, obj.expression, frame)
     return obj
 
 
