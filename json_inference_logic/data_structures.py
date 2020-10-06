@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import UserDict
-from typing import Any, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, Union
 
 
 class Variable:
@@ -134,13 +134,20 @@ class UnificationError(ValueError):
 
 
 class Rule:
-    def __init__(self, predicate: ImmutableDict, *body: ImmutableDict) -> None:
-        if not isinstance(predicate, (ImmutableDict, Assign)):
-            raise TypeError("predicate must be an ImmutableDict")
-        if not all(isinstance(arg, (ImmutableDict, Assign)) for arg in body):
-            raise TypeError("all args in body must be ImmutableDicts")
-        self.predicate = predicate
-        self.body = body
+    @staticmethod
+    def negotiate_arg_types(obj):
+        if isinstance(obj, dict):
+            return ImmutableDict(obj)
+        if not isinstance(obj, (ImmutableDict, Assign)):
+            raise TypeError(f"{obj} must be an ImmutableDict")
+        return obj
+
+    def __init__(
+        self, predicate: Union[ImmutableDict, Dict], *body: Union[ImmutableDict, Dict]
+    ) -> None:
+
+        self.predicate = Rule.negotiate_arg_types(predicate)
+        self.body = tuple(map(Rule.negotiate_arg_types, body))
 
     def __eq__(self, other):
         if not isinstance(other, Rule):

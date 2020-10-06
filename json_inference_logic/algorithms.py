@@ -60,6 +60,7 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
 
 def search(db: List, query: ImmutableDict) -> Iterator[Equality]:
     db = [Rule(item) if not isinstance(item, Rule) else item for item in db]
+    query = Rule.negotiate_arg_types(query)
 
     i = 0
     to_solve_for = query.get_variables()
