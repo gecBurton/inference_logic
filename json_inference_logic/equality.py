@@ -179,7 +179,7 @@ class Equality:
 
             if isinstance(_term, Assign):
                 return {
-                    Assign(variable, _term.expression, _term.frame, xxx=False)
+                    Assign(variable, _term.expression, _term.frame, is_injected=True)
                     for variable in self.get_free(_term.variable) - {_term.variable}
                 }
 
@@ -208,26 +208,3 @@ class Equality:
     def evaluate(self, assign: Assign):
         value = assign.expression(*map(self.get_fixed, assign.variables))
         return self._add_constant(assign.variable, value)
-
-
-class Goal:
-    def __init__(
-        self,
-        head: Union[ImmutableDict, Assign],
-        *tail: Union[ImmutableDict, Assign],
-        equality: Optional[Equality] = None,
-    ):
-        self.head = head
-        self.tail = tail
-        self.equality = Equality() if equality is None else equality
-
-    def __repr__(self):
-        return f"{self.head} ¬ {self.tail}, {self.equality}"
-
-    def assign_next(self) -> Goal:
-        equality = self.equality.evaluate(self.head)  # type: ignore
-        return Goal(*self.tail, equality=equality)
-
-    def solve(self, to_solve_for) -> Equality:
-        equality = self.equality.evaluate(self.head)  # type: ignore
-        return equality.solutions(to_solve_for)

@@ -1,5 +1,5 @@
 from itertools import product
-from typing import Iterator, List, Optional
+from typing import Iterator, List, Optional, Tuple
 
 from json_inference_logic.data_structures import (
     Assign,
@@ -8,12 +8,12 @@ from json_inference_logic.data_structures import (
     UnificationError,
     Variable,
 )
-from json_inference_logic.equality import Equality, Goal
+from json_inference_logic.equality import Equality
 
 
 def new_frame(obj, frame: int):
     if isinstance(obj, Rule):
-        return Rule(new_frame(obj.head, frame), *new_frame(obj.body, frame),)
+        return Rule(new_frame(obj.predicate, frame), *new_frame(obj.body, frame),)
     if isinstance(obj, tuple):
         return tuple(new_frame(o, frame) for o in obj)
     if isinstance(obj, ImmutableDict):
@@ -64,41 +64,42 @@ def search(db: List, query: ImmutableDict) -> Iterator[Equality]:
     i = 0
     to_solve_for = query.get_variables()
 
-    stack = [Goal(query)]
+    stack: List[Tuple[Rule, Equality]] = [(Rule(query), Equality())]
 
     while stack:
-        goal = stack.pop()
+        goal, equality = stack.pop()
 
-        if isinstance(goal.head, Assign):
-            if goal.tail:
-                stack.append(goal.assign_next())
+        if isinstance(goal.predicate, Assign):
+            equality = equality.evaluate(goal.predicate)
+            if goal.body:
+                stack.append((Rule(*goal.body), equality))
             else:
-                yield goal.solve(to_solve_for)
+                yield equality.solutions(to_solve_for)
         else:
             for rule in db:
                 i += 1
                 rule = new_frame(rule, i)
 
                 try:
-                    new_known = unify(goal.head, rule.head, equality=goal.equality)
+                    new_known = unify(goal.predicate, rule.predicate, equality=equality)
 
                     new_terms: Iterator[Iterator] = filter(
                         None,
                         product(
                             *tuple(
                                 new_known.inject(term, to_solve_for=to_solve_for)
-                                for term in rule.body + goal.tail
+                                for term in rule.body + goal.body
                             )
                         ),
                     )
 
                     for x in new_terms:
-                        stack.append(Goal(*x, equality=new_known))
+                        stack.append((Rule(*x), new_known))
 
                     solutions = new_known.solutions(to_solve_for)
 
                     if (
-                        not goal.tail
+                        not goal.body
                         and not rule.body
                         # and solutions.get_variables() == to_solve_for
                     ):

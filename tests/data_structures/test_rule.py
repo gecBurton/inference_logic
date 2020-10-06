@@ -22,7 +22,7 @@ def test__init__repr(head, body, representation):
 @pytest.mark.parametrize(
     "head, body, message",
     [
-        (1, (ImmutableDict(a=1),), "head must be an ImmutableDict"),
+        (1, (ImmutableDict(a=1),), "predicate must be an ImmutableDict"),
         (ImmutableDict(a=1), (2,), "all args in body must be ImmutableDicts"),
     ],
 )
