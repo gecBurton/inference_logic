@@ -33,7 +33,7 @@ def test__init__warn():
 
 
 def test__hash__():
-    assert hash((hash("a") ^ hash(1),)) == hash(ImmutableDict(a=1))
+    assert hash((("a", 1),)) == hash(ImmutableDict(a=1))
 
 
 def test__eq__():

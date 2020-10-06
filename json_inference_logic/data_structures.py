@@ -105,7 +105,7 @@ class ImmutableDict(UserDict):
         return self.data.keys()
 
     def __hash__(self) -> int:
-        return hash(tuple(hash(key) ^ hash(value) for key, value in self.items()))
+        return hash(tuple(self.items()))
 
     def __eq__(self, other):
         if not isinstance(other, ImmutableDict):
@@ -134,25 +134,25 @@ class UnificationError(ValueError):
 
 
 class Rule:
-    def __init__(self, head: ImmutableDict, *body: ImmutableDict) -> None:
-        if not isinstance(head, ImmutableDict):
-            raise TypeError("head must be an ImmutableDict")
+    def __init__(self, predicate: ImmutableDict, *body: ImmutableDict) -> None:
+        if not isinstance(predicate, (ImmutableDict, Assign)):
+            raise TypeError("predicate must be an ImmutableDict")
         if not all(isinstance(arg, (ImmutableDict, Assign)) for arg in body):
             raise TypeError("all args in body must be ImmutableDicts")
-        self.head = head
+        self.predicate = predicate
         self.body = body
 
     def __eq__(self, other):
         if not isinstance(other, Rule):
             raise TypeError(f"{other} must be a Rule")
-        return self.head == other.head and self.body == other.body
+        return self.predicate == other.predicate and self.body == other.body
 
     def __repr__(self) -> str:
         if self.body:
             body_repr = " ∧ ".join(map(repr, self.body))
-            return f"{self.head} ¬ {body_repr}."
+            return f"{self.predicate} ¬ {body_repr}."
         else:
-            return f"{self.head}."
+            return f"{self.predicate}."
 
 
 class Assign:

@@ -1,7 +1,6 @@
 import pytest
 
 from json_inference_logic import Equality, ImmutableDict, UnificationError, Variable
-from json_inference_logic.equality import Goal
 
 A, B, C, D = Variable.factory("A", "B", "C", "D")
 
@@ -151,12 +150,3 @@ def test_add_fail(left, right, initial, message):
 )
 def test_inject(equality, to_solve_for, initial, final):
     assert equality.inject(initial, to_solve_for=to_solve_for) == final
-
-
-def test_goal():
-    goal = Goal(
-        ImmutableDict(A=True),
-        ImmutableDict(B=False),
-        equality=Equality(fixed={True: {B}}),
-    )
-    assert repr(goal) == "{'A': True} ¬ ({'B': False},), Equality(, True={B})"
