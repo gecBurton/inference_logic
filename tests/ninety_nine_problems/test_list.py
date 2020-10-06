@@ -1,7 +1,7 @@
 """https://www.ic.unicamp.br/~meidanis/courses/mc336/2009s2/prolog/problemas/
 """
 
-from json_inference_logic import Equality, ImmutableDict, Rule, Variable
+from json_inference_logic import Equality, Rule, Variable
 from json_inference_logic.algorithms import search
 from json_inference_logic.data_structures import Assign
 
@@ -24,11 +24,11 @@ def test_find_the_last_element_of_a_list_01():
     """
 
     db = [
-        ImmutableDict(last=X, list=(X,)),
-        Rule(ImmutableDict(last=X, list=(_W, *L)), ImmutableDict(last=X, list=L)),
+        dict(last=X, list=(X,)),
+        Rule(dict(last=X, list=(_W, *L)), dict(last=X, list=L)),
     ]
 
-    query = ImmutableDict(last=Q, list=("a", "b", "c"))
+    query = dict(last=Q, list=("a", "b", "c"))
     assert next(search(db, query)) == Equality(fixed={"c": {Q}})
 
 
@@ -45,13 +45,13 @@ def test_find_the_last_but_one_element_of_a_list_02():
     Ys = Variable("Ys")
 
     db = [
-        ImmutableDict(last_but_one=X, list=(X, _W)),
+        dict(last_but_one=X, list=(X, _W)),
         Rule(
-            ImmutableDict(last_but_one=X, list=(_W, Y, *Ys)),
-            ImmutableDict(last_but_one=X, list=(Y, *Ys)),
+            dict(last_but_one=X, list=(_W, Y, *Ys)),
+            dict(last_but_one=X, list=(Y, *Ys)),
         ),
     ]
-    query = ImmutableDict(last_but_one=Q, list=["a", "b", "c"])
+    query = dict(last_but_one=Q, list=["a", "b", "c"])
     assert next(search(db, query)) == Equality(fixed={"b": {Q}})
 
 
@@ -69,12 +69,12 @@ def test_find_the_number_of_elements_of_a_list_04():
     """
     N, N1 = Variable.factory("N", "N1")
     db = [
-        ImmutableDict(my_length=0, list=[]),
+        dict(my_length=0, list=[]),
         Rule(
-            ImmutableDict(my_length=N, list=[_W, *L]),
-            ImmutableDict(my_length=N1, list=L),
+            dict(my_length=N, list=[_W, *L]),
+            dict(my_length=N1, list=L),
             Assign(N, lambda N1: N1 + 1),
         ),
     ]
-    query = ImmutableDict(my_length=Q, list=[1, 2, 3])
+    query = dict(my_length=Q, list=[1, 2, 3])
     assert next(search(db, query)) == Equality(fixed={3: {Q}})
