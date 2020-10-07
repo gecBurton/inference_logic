@@ -1,6 +1,5 @@
 """https://www.ic.unicamp.br/~meidanis/courses/mc336/2009s2/prolog/problemas/
 """
-import pytest
 
 from json_inference_logic import Equality, Rule, Variable
 from json_inference_logic.algorithms import search
@@ -56,7 +55,6 @@ def test_find_the_last_but_one_element_of_a_list_02():
     assert next(search(db, query)) == Equality(fixed={"b": {Q}})
 
 
-@pytest.mark.xfail()
 def test_find_the_kth_element_of_a_list_03():
     """
     % P03 (*): Find the K'th element of a list.

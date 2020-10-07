@@ -69,12 +69,15 @@ def search(db: List, query: ImmutableDict) -> Iterator[Equality]:
     while stack:
         goal, equality = stack.pop()
 
-        if isinstance(goal.predicate, Assign):
-            equality = equality.evaluate(goal.predicate)
-            if goal.body:
-                stack.append((Rule(*goal.body), equality))
-            else:
-                yield equality.solutions(to_solve_for)
+        if isinstance(goal.predicate, (Assign, Assert)):
+            try:
+                equality = equality.evaluate(goal.predicate)
+                if goal.body:
+                    stack.append((Rule(*goal.body), equality))
+                else:
+                    yield equality.solutions(to_solve_for)
+            except UnificationError:
+                pass
         else:
             for rule in db:
                 i += 1

@@ -5,6 +5,7 @@ from itertools import product
 from typing import Any, Dict, List, Optional, Sequence, Set, Union
 
 from json_inference_logic.data_structures import (
+    Assert,
     Assign,
     ImmutableDict,
     UnificationError,
@@ -209,14 +210,13 @@ class Equality:
                 pass
         return out
 
-    def evaluate(self, assign_assert: Assign):
+    def evaluate(self, assign_assert: Union[Assign, Assert]) -> Equality:
         value = assign_assert.expression(*map(self.get_fixed, assign_assert.variables))
 
-        # if isinstance(assign_assert, Assign):
-        return self._add_constant(assign_assert.variable, value)
+        if isinstance(assign_assert, Assign):
+            return self._add_constant(assign_assert.variable, value)
 
-        # if isinstance(assign_assert, Assert):
-        #     if not value:
-        #         raise UnificationError(f"bool({value}) != True")
-        #     return self
-        # raise Exception
+        #        if isinstance(assign_assert, Assert):
+        if not value:
+            raise UnificationError(f"bool({value}) != True")
+        return self
