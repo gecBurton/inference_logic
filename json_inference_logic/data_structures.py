@@ -161,7 +161,7 @@ class Rule:
     def negotiate_arg_types(obj):
         if isinstance(obj, dict):
             return ImmutableDict(obj)
-        if not isinstance(obj, (ImmutableDict, Assign)):
+        if not isinstance(obj, (ImmutableDict, Assign, Assert)):
             raise TypeError(f"{obj} must be an ImmutableDict")
         return obj
 
@@ -200,3 +200,17 @@ class Assign:
 
     def new_frame(self, frame: int) -> Assign:
         return Assign(self.variable, self.expression, frame)
+
+
+class Assert:
+    def __init__(self, expression, frame=None):
+        self.expression = expression
+        self.frame = frame
+        self.variables = [Variable(arg) for arg in self.expression.__code__.co_varnames]
+        if self.frame is not None:
+            self.variables = [
+                variable.new_frame(self.frame) for variable in self.variables
+            ]
+
+    def new_frame(self, frame: int) -> Assert:
+        return Assert(self.expression, frame)

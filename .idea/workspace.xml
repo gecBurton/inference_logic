@@ -3,6 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="06a9f91a-831a-4b04-8c04-359fe5664193" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/json_inference_logic/algorithms.py" beforeDir="false" afterPath="$PROJECT_DIR$/json_inference_logic/algorithms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/json_inference_logic/data_structures.py" beforeDir="false" afterPath="$PROJECT_DIR$/json_inference_logic/data_structures.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/json_inference_logic/equality.py" beforeDir="false" afterPath="$PROJECT_DIR$/json_inference_logic/equality.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ninety_nine_problems/test_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ninety_nine_problems/test_list.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,22 +85,22 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="779" y="324" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1601966129289" />
-    <state width="1802" height="275" key="GridCell.Tab.0.bottom" timestamp="1601979908870">
+    <state width="1802" height="275" key="GridCell.Tab.0.bottom" timestamp="1602059121930">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="275" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1601979908870" />
-    <state width="1802" height="275" key="GridCell.Tab.0.center" timestamp="1601979908868">
+    <state width="1802" height="275" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602059121930" />
+    <state width="1802" height="275" key="GridCell.Tab.0.center" timestamp="1602059121927">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="275" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1601979908868" />
-    <state width="1802" height="275" key="GridCell.Tab.0.left" timestamp="1601979908866">
+    <state width="1802" height="275" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602059121927" />
+    <state width="1802" height="275" key="GridCell.Tab.0.left" timestamp="1602059121926">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="275" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1601979908866" />
-    <state width="1802" height="275" key="GridCell.Tab.0.right" timestamp="1601979908869">
+    <state width="1802" height="275" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602059121926" />
+    <state width="1802" height="275" key="GridCell.Tab.0.right" timestamp="1602059121928">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="275" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1601979908869" />
+    <state width="1802" height="275" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602059121928" />
     <state width="1802" height="340" key="GridCell.Tab.1.bottom" timestamp="1601966130741">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -117,9 +121,9 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="485" y="188" width="1022" height="737" key="SettingsEditor/72.27.1848.1053@72.27.1848.1053" timestamp="1601924400588" />
-    <state x="686" y="292" width="620" height="522" key="find.popup" timestamp="1601925651284">
+    <state x="686" y="292" width="620" height="622" key="find.popup" timestamp="1602013072753">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="686" y="292" width="620" height="522" key="find.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1601925651284" />
+    <state x="686" y="292" width="620" height="622" key="find.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1602013072753" />
   </component>
 </project>

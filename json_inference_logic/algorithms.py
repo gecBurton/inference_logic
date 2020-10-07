@@ -2,6 +2,7 @@ from itertools import product
 from typing import Iterator, List, Optional, Tuple
 
 from json_inference_logic.data_structures import (
+    Assert,
     Assign,
     ImmutableDict,
     Rule,
@@ -18,7 +19,7 @@ def new_frame(obj, frame: int):
         return tuple(new_frame(o, frame) for o in obj)
     if isinstance(obj, ImmutableDict):
         return ImmutableDict(**{k: new_frame(v, frame) for k, v in obj.items()})
-    if isinstance(obj, (Assign, Variable)):
+    if isinstance(obj, (Assign, Variable, Assert)):
         return obj.new_frame(frame)
     return obj
 
