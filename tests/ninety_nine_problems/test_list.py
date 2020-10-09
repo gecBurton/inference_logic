@@ -1,5 +1,6 @@
 """https://www.ic.unicamp.br/~meidanis/courses/mc336/2009s2/prolog/problemas/
 """
+import pytest
 
 from json_inference_logic import Equality, Rule, Variable
 from json_inference_logic.algorithms import search
@@ -24,11 +25,11 @@ def test_find_the_last_element_of_a_list_01():
     """
 
     db = [
-        dict(last=X, list=(X,)),
-        Rule(dict(last=X, list=(_W, *L)), dict(last=X, list=L)),
+        dict(last=X, list=[X]),
+        Rule(dict(last=X, list=[_W, *L]), dict(last=X, list=L)),
     ]
 
-    query = dict(last=Q, list=("a", "b", "c"))
+    query = dict(last=Q, list=["a", "b", "c"])
     assert next(search(db, query)) == Equality(fixed={"c": {Q}})
 
 
@@ -109,3 +110,31 @@ def test_find_the_number_of_elements_of_a_list_04():
     ]
     query = dict(my_length=Q, list=[1, 2, 3])
     assert next(search(db, query)) == Equality(fixed={3: {Q}})
+
+
+@pytest.mark.xfail()
+def test_reverse_a_list_05():
+    """
+    % P05 (*): Reverse a list.
+
+    % my_reverse(L1,L2) :- L2 is the list obtained from L1 by reversing
+    %    the order of the elements.
+    %    (list,list) (?,?)
+
+    % Note: reverse(+List1, -List2) is predefined
+
+    my_reverse(L1,L2) :- my_rev(L1,L2,[]).
+
+    my_rev([],L2,L2) :- !.
+    my_rev([X|Xs],L2,Acc) :- my_rev(Xs,L2,[X|Acc]).
+    """
+    L1, L2, Xs, Acc = Variable.factory("L1", "L2", "Xs", "Acc")
+    db = [
+        dict(my_rev=[], list_in=L2, list_out=L2),
+        Rule(
+            dict(my_rev=[X, *Xs], list_in=L2, list_out=Acc),
+            dict(my_rev=Xs, list_in=L2, list_out=[X, *Acc]),
+        ),
+    ]
+    query = dict(my_rev=[1, 2], list_in=Z, list_out=[])
+    assert set(search(db, query)) == {Equality(fixed={(2, 1): {Z}})}
