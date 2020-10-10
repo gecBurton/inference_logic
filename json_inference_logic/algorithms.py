@@ -1,5 +1,5 @@
 from itertools import product
-from typing import Iterator, List, Optional, Tuple
+from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 from json_inference_logic.data_structures import (
     Assert,
@@ -57,7 +57,7 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
     return equality.add(left, right)
 
 
-def search(db: List, query: ImmutableDict) -> Iterator[Equality]:
+def search(db: List, query: ImmutableDict) -> Iterator[Dict[Variable, Any]]:
     db = [Rule(item) if not isinstance(item, Rule) else item for item in db]
     query = Rule.negotiate_arg_types(query)
 

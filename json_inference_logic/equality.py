@@ -199,13 +199,13 @@ class Equality:
 
         return _inject(term)
 
-    def solutions(self, to_solve_for: Set[Variable]) -> Equality:
-        out = Equality()
+    def solutions(self, to_solve_for: Set[Variable]) -> Dict[Variable, Any]:
+        out = {}
         for item in to_solve_for:
             try:
                 fixed = self.get_fixed(item)
                 if not isinstance(fixed, Variable):
-                    out = out._add_constant(item, fixed)
+                    out[item] = fixed
             except KeyError:
                 pass
         return out

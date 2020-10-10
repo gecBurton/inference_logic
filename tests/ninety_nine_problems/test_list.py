@@ -2,7 +2,7 @@
 """
 import pytest
 
-from json_inference_logic import Equality, Rule, Variable
+from json_inference_logic import Rule, Variable
 from json_inference_logic.algorithms import search
 from json_inference_logic.data_structures import Assert, Assign
 
@@ -30,7 +30,7 @@ def test_find_the_last_element_of_a_list_01():
     ]
 
     query = dict(last=Q, list=["a", "b", "c"])
-    assert next(search(db, query)) == Equality(fixed={"c": {Q}})
+    assert list(search(db, query)) == [{Q: "c"}]
 
 
 def test_find_the_last_but_one_element_of_a_list_02():
@@ -53,7 +53,7 @@ def test_find_the_last_but_one_element_of_a_list_02():
         ),
     ]
     query = dict(last_but_one=Q, list=["a", "b", "c"])
-    assert next(search(db, query)) == Equality(fixed={"b": {Q}})
+    assert next(search(db, query)) == {Q: "b"}
 
 
 def test_find_the_kth_element_of_a_list_03():
@@ -81,10 +81,10 @@ def test_find_the_kth_element_of_a_list_03():
         ),
     ]
     query_1 = dict(nth_element=Z, list=["a", "b", "c"], n=1)
-    assert set(search(db, query_1)) == {Equality(fixed={"a": {Z}})}
+    assert list(search(db, query_1)) == [{Z: "a"}]
 
     query_2 = dict(nth_element=Z, list=["a", "b", "c"], n=2)
-    assert set(search(db, query_2)) == {Equality(fixed={"b": {Z}})}
+    assert list(search(db, query_2)) == [{Z: "b"}]
 
 
 def test_find_the_number_of_elements_of_a_list_04():
@@ -109,7 +109,7 @@ def test_find_the_number_of_elements_of_a_list_04():
         ),
     ]
     query = dict(my_length=Q, list=[1, 2, 3])
-    assert next(search(db, query)) == Equality(fixed={3: {Q}})
+    assert list(search(db, query)) == [{Q: 3}]
 
 
 @pytest.mark.xfail()
@@ -137,4 +137,4 @@ def test_reverse_a_list_05():
         ),
     ]
     query = dict(my_rev=[1, 2], list_in=Z, list_out=[])
-    assert set(search(db, query)) == {Equality(fixed={(2, 1): {Z}})}
+    assert list(search(db, query)) == [{Z: (2, 1)}]
