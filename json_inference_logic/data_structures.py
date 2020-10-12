@@ -87,7 +87,7 @@ def construct(obj: Any):
         if not obj:
             return PrologListNull()
 
-        head, *tail = reversed(obj)
+        head, *tail = reversed(list(map(construct, obj)))
         out = (
             head
             if obj and isinstance(head, Variable) and head.many
@@ -125,8 +125,8 @@ def deconstruct(obj):
         return {key: deconstruct(value) for key, value in obj.items()}
     if isinstance(obj, PrologList):
         if isinstance(obj.tail, PrologListNull):
-            return [obj.head]
-        return [obj.head, *deconstruct(obj.tail)]
+            return [deconstruct(obj.head)]
+        return [deconstruct(obj.head), *deconstruct(obj.tail)]
     return obj
 
 

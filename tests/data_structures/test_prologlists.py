@@ -15,4 +15,4 @@ def test__eq__fail():
 
 
 def test_list__repr__():
-    assert repr(construct([1, 2, 3, 4])) == ".(1, .(2, .(3, .(4, .()))))"
+    assert repr(construct([1, [2, 3], 4])) == ".(1, .(.(2, .(3, .())), .(4, .())))"
