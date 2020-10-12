@@ -4,6 +4,7 @@ from json_inference_logic.data_structures import PrologListNull, construct
 
 
 def test_null__repr__():
+
     assert repr(PrologListNull()) == ".()"
 
 
