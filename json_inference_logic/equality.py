@@ -176,7 +176,7 @@ class Equality:
             if isinstance(_term, ImmutableDict):
                 return {
                     ImmutableDict(dict(zip(_term.keys(), value)))
-                    for value in _inject(PrologList(_term.values()))
+                    for value in _inject(construct(list(_term.values())))
                 }
             if isinstance(_term, PrologList):
                 return set(product(*map(_inject, _term)))
