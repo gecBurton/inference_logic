@@ -12,6 +12,7 @@ from json_inference_logic.data_structures import (
     UnificationError,
     Variable,
     construct,
+    deconstruct,
 )
 
 
@@ -211,7 +212,7 @@ class Equality:
             try:
                 fixed = self.get_fixed(item)
                 if not isinstance(fixed, Variable):
-                    out[item] = fixed
+                    out[item] = deconstruct(fixed)
             except KeyError:
                 pass
         return out

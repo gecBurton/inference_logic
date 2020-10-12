@@ -6,6 +6,7 @@ from json_inference_logic.data_structures import (
     Assign,
     ImmutableDict,
     PrologList,
+    PrologListNull,
     Rule,
     UnificationError,
     Variable,
@@ -45,6 +46,11 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
         equality = unify(left.head, right.head, equality)
         equality = unify(left.tail, right.tail, equality)
         return equality
+
+    if isinstance(left, PrologList) and isinstance(right, PrologListNull):
+        raise UnificationError("list lengths must be the same")
+    if isinstance(left, PrologListNull) and isinstance(right, PrologList):
+        raise UnificationError("list lengths must be the same")
 
     return equality.add(left, right)
 

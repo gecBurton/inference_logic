@@ -76,7 +76,7 @@ class PrologListNull:
 
     def __eq__(self, other):
         if not isinstance(other, PrologListNull):
-            raise UnificationError("list lengths must be the same")
+            raise TypeError(f"{other} must be a PrologListNull")
         return True
 
 
