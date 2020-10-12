@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06a9f91a-831a-4b04-8c04-359fe5664193" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Pipfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/data_structures/test_prologlists.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/json_inference_logic/algorithms.py" beforeDir="false" afterPath="$PROJECT_DIR$/json_inference_logic/algorithms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/json_inference_logic/data_structures.py" beforeDir="false" afterPath="$PROJECT_DIR$/json_inference_logic/data_structures.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/json_inference_logic/equality.py" beforeDir="false" afterPath="$PROJECT_DIR$/json_inference_logic/equality.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/ninety_nine_problems/test_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ninety_nine_problems/test_list.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/python-package.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/python-package.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
