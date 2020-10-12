@@ -8,8 +8,10 @@ from json_inference_logic.data_structures import (
     Assert,
     Assign,
     ImmutableDict,
+    PrologList,
     UnificationError,
     Variable,
+    construct,
 )
 
 
@@ -167,15 +169,16 @@ class Equality:
         raise UnificationError(f"values dont match: {left} != {right}")
 
     def inject(self, term: Any, to_solve_for: Optional[Set[Variable]] = None) -> Set:
+        term = construct(term)
         to_solve_for = to_solve_for or set()
 
         def _inject(_term):
             if isinstance(_term, ImmutableDict):
                 return {
                     ImmutableDict(dict(zip(_term.keys(), value)))
-                    for value in _inject(tuple(_term.values()))
+                    for value in _inject(PrologList(_term.values()))
                 }
-            if isinstance(_term, tuple):
+            if isinstance(_term, PrologList):
                 return set(product(*map(_inject, _term)))
 
             if isinstance(_term, Assign):

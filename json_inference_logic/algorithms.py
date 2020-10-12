@@ -5,17 +5,20 @@ from json_inference_logic.data_structures import (
     Assert,
     Assign,
     ImmutableDict,
+    PrologList,
     Rule,
     UnificationError,
     Variable,
+    construct,
 )
 from json_inference_logic.equality import Equality
 
 
 def new_frame(obj, frame: int):
+    obj = construct(obj)
     if isinstance(obj, Rule):
         return Rule(new_frame(obj.predicate, frame), *new_frame(obj.body, frame),)
-    if isinstance(obj, tuple):
+    if isinstance(obj, PrologList):
         return tuple(new_frame(o, frame) for o in obj)
     if isinstance(obj, ImmutableDict):
         return ImmutableDict(**{k: new_frame(v, frame) for k, v in obj.items()})
@@ -25,6 +28,8 @@ def new_frame(obj, frame: int):
 
 
 def unify(left, right, equality: Optional[Equality] = None) -> Equality:
+    left, right = construct(left), construct(right)
+
     equality = Equality() if equality is None else equality
 
     if isinstance(left, ImmutableDict) and isinstance(right, ImmutableDict):
@@ -34,7 +39,7 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
             equality = unify(left[key], right[key], equality)
         return equality
 
-    if isinstance(left, (tuple, list)) and isinstance(right, (tuple, list)):
+    if isinstance(left, PrologList) and isinstance(right, PrologList):
 
         if left and isinstance(left[-1], Variable) and left[-1].many:
             n = len(left) - 1
@@ -59,7 +64,7 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
 
 def search(db: List, query: ImmutableDict) -> Iterator[Dict[Variable, Any]]:
     db = [Rule(item) if not isinstance(item, Rule) else item for item in db]
-    query = Rule.negotiate_arg_types(query)
+    query = construct(query)
 
     i = 0
     to_solve_for = query.get_variables()

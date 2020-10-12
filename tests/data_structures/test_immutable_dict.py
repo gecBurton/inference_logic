@@ -1,12 +1,13 @@
 import pytest
 
 from json_inference_logic import ImmutableDict, Variable
+from json_inference_logic.data_structures import PrologList
 
 
 def test__init__():
     im = ImmutableDict(a=1, b=["2", {"c": None}])
     assert im["a"] == 1
-    assert isinstance(im["b"], tuple)
+    assert isinstance(im["b"], PrologList)
     assert im["b"][0] == "2"
     assert isinstance(im["b"][1], ImmutableDict)
     assert im["b"][1]["c"] is None
