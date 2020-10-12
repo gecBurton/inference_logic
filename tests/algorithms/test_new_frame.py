@@ -1,6 +1,7 @@
 import pytest
 
 from json_inference_logic import ImmutableDict, Rule, Variable, new_frame
+from json_inference_logic.data_structures import construct
 
 A, B = Variable.factory("A", "B")
 A_1 = Variable("A", 1)
@@ -21,4 +22,4 @@ B_1 = Variable("B", 1)
     ],
 )
 def test_new_frame(initial, final):
-    assert new_frame(initial, 1) == final
+    assert new_frame(initial, 1) == construct(final)

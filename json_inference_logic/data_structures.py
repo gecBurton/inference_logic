@@ -67,23 +67,87 @@ class Variable:
         yield Variable(self.name, frame=self.frame, many=True)
 
 
+class PrologListNull:
+    def __repr__(self):
+        return ".()"
+
+    def __hash__(self):
+        return hash("hello!")
+
+    def __eq__(self, other):
+        if not isinstance(other, PrologListNull):
+            raise UnificationError("list lengths must be the same")
+        return True
+
+
+def construct(obj: Any):
+    if isinstance(obj, dict):
+        return ImmutableDict({key: construct(value) for key, value in obj.items()})
+    if isinstance(obj, (list, tuple)):
+        if not obj:
+            return PrologListNull()
+
+        head, *tail = reversed(obj)
+        out = (
+            head
+            if obj and isinstance(head, Variable) and head.many
+            else PrologList(head, PrologListNull())
+        )
+
+        for item in tail:
+            out = PrologList(item, out)
+        return out
+
+    if isinstance(
+        obj,
+        (
+            bool,
+            int,
+            float,
+            str,
+            Variable,
+            ImmutableDict,
+            PrologList,
+            Rule,
+            Assert,
+            Assign,
+            PrologListNull,
+        ),
+    ):
+        return obj
+    if obj is None:
+        return obj
+    raise TypeError(f"{obj} is not json serializable")
+
+
+def deconstruct(obj):
+    if isinstance(obj, ImmutableDict):
+        return {key: deconstruct(value) for key, value in obj.items()}
+    if isinstance(obj, PrologList):
+        if isinstance(obj.tail, PrologListNull):
+            return [obj.head]
+        return [obj.head, *deconstruct(obj.tail)]
+    return obj
+
+
+class PrologList:
+    def __init__(self, head, tail):
+        self.head = head
+        self.tail = tail
+
+    def __hash__(self):
+        return hash(self.head) ^ hash(self.tail)
+
+    def __eq__(self, other):
+        return hash(self) == hash(other)
+
+    def __repr__(self):
+        return f".({self.head}, {self.tail})"
+
+
 class ImmutableDict(UserDict):
     """https://www.python.org/dev/peps/pep-0351/
     """
-
-    @staticmethod
-    def construct(obj: Any):
-        if isinstance(obj, dict):
-            return ImmutableDict(
-                {key: ImmutableDict.construct(value) for key, value in obj.items()}
-            )
-        if isinstance(obj, (list, tuple)):
-            return tuple(map(ImmutableDict.construct, obj))
-        if isinstance(obj, (bool, int, float, str, Variable, ImmutableDict)):
-            return obj
-        if obj is None:
-            return obj
-        raise TypeError(f"{obj} is not json serializable")
 
     def _immutable(self, *args, **kws):
         raise TypeError("object is immutable")
@@ -120,9 +184,7 @@ class ImmutableDict(UserDict):
             if not isinstance(key, str):
                 raise TypeError(f"{key} must be a string")
 
-        self.data = {
-            key: ImmutableDict.construct(value) for key, value in self.data.items()
-        }
+        self.data = {key: construct(value) for key, value in self.data.items()}
 
     def keys(self):
         return self.data.keys()
@@ -142,9 +204,9 @@ class ImmutableDict(UserDict):
             if isinstance(obj, ImmutableDict):
                 for value in obj.values():
                     _get_variables(value)
-            if isinstance(obj, tuple):
-                for value in obj:
-                    _get_variables(value)
+            if isinstance(obj, PrologList):
+                _get_variables(obj.head)
+                _get_variables(obj.tail)
             if isinstance(obj, Variable):
                 _variables.add(obj)
 
@@ -157,20 +219,12 @@ class UnificationError(ValueError):
 
 
 class Rule:
-    @staticmethod
-    def negotiate_arg_types(obj):
-        if isinstance(obj, dict):
-            return ImmutableDict(obj)
-        if not isinstance(obj, (ImmutableDict, Assign, Assert)):
-            raise TypeError(f"{obj} must be an ImmutableDict")
-        return obj
-
     def __init__(
         self, predicate: Union[ImmutableDict, Dict], *body: Union[ImmutableDict, Dict]
     ) -> None:
 
-        self.predicate = Rule.negotiate_arg_types(predicate)
-        self.body = tuple(map(Rule.negotiate_arg_types, body))
+        self.predicate = construct(predicate)
+        self.body = tuple(map(construct, body))
 
     def __eq__(self, other):
         if not isinstance(other, Rule):

@@ -8,8 +8,10 @@ from json_inference_logic.data_structures import (
     Assert,
     Assign,
     ImmutableDict,
+    PrologList,
     UnificationError,
     Variable,
+    construct,
 )
 
 
@@ -167,16 +169,20 @@ class Equality:
         raise UnificationError(f"values dont match: {left} != {right}")
 
     def inject(self, term: Any, to_solve_for: Optional[Set[Variable]] = None) -> Set:
+        term = construct(term)
         to_solve_for = to_solve_for or set()
 
         def _inject(_term):
             if isinstance(_term, ImmutableDict):
                 return {
-                    ImmutableDict(dict(zip(_term.keys(), value)))
-                    for value in _inject(tuple(_term.values()))
+                    ImmutableDict(dict(zip(_term.keys(), v)))
+                    for v in product(*map(_inject, _term.values()))
                 }
-            if isinstance(_term, tuple):
-                return set(product(*map(_inject, _term)))
+            if isinstance(_term, PrologList):
+                return {
+                    PrologList(x, y)
+                    for x, y in product(_inject(_term.head), _inject(_term.tail))
+                }
 
             if isinstance(_term, Assign):
                 if free := self.get_free(_term.variable) - {_term.variable}:
@@ -199,13 +205,13 @@ class Equality:
 
         return _inject(term)
 
-    def solutions(self, to_solve_for: Set[Variable]) -> Equality:
-        out = Equality()
+    def solutions(self, to_solve_for: Set[Variable]) -> Dict[Variable, Any]:
+        out = {}
         for item in to_solve_for:
             try:
                 fixed = self.get_fixed(item)
                 if not isinstance(fixed, Variable):
-                    out = out._add_constant(item, fixed)
+                    out[item] = fixed
             except KeyError:
                 pass
         return out

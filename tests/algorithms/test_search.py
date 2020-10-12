@@ -1,6 +1,5 @@
 from json_inference_logic import ImmutableDict, Rule, Variable
 from json_inference_logic.algorithms import search
-from json_inference_logic.equality import Equality
 
 X, Y, Z, C, P = Variable.factory("X", "Y", "Z", "C", "P")
 
@@ -19,8 +18,8 @@ query = ImmutableDict(ancestor=P, descendant=C)
 
 
 def test_search():
-    assert set(search(db, query)) == {
-        Equality(fixed={"G": {P}, "A": {C}}),
-        Equality(fixed={"G": {P}, "O": {C}}),
-        Equality(fixed={"A": {P}, "O": {C}}),
-    }
+    assert list(search(db, query)) == [
+        {P: "G", C: "O"},
+        {P: "G", C: "A"},
+        {P: "A", C: "O"},
+    ]
