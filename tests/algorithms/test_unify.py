@@ -7,6 +7,7 @@ from json_inference_logic import (
     Variable,
     unify,
 )
+from json_inference_logic.data_structures import construct
 
 A, B, C = Variable.factory("A", "B", "C")
 
@@ -27,8 +28,14 @@ A, B, C = Variable.factory("A", "B", "C")
         ),
         (A, C, Equality(free=[{A, B}]), Equality(free=[{A, B, C}])),
         (A, 1, Equality(free=[{A, B}]), Equality(fixed={1: {A, B}})),
-        ((A, *B), (True, False), None, Equality(fixed={True: {A}, (False,): {B}})),
-        ((A, *B), (1, 2, 3), None, Equality(fixed={1: {A}, (2, 3): {B}})),
+        (
+            (A, *B),
+            (True, False),
+            None,
+            Equality(fixed={True: {A}, construct([False]): {B}}),
+        ),
+        ((A, *B), (1, 2, 3), None, Equality(fixed={1: {A}, construct([2, 3]): {B}})),
+        (*B, (2, 3), None, Equality(fixed={construct([2, 3]): {B}})),
     ],
 )
 def test_unify_pass(left, right, initial, final):
@@ -39,7 +46,7 @@ def test_unify_pass(left, right, initial, final):
     "left, right, initial, message",
     [
         (True, False, None, "values dont match: True != False"),
-        ((A, B), (1, 2, 3), None, "tuples must have same length: 2 != 3"),
+        ((A, B), (1, 2, 3), None, "list lengths must be the same"),
         (
             ImmutableDict(a=1, b=2),
             ImmutableDict(a=1, c=3),

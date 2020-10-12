@@ -5,10 +5,13 @@ from itertools import product
 from typing import Any, Dict, List, Optional, Sequence, Set, Union
 
 from json_inference_logic.data_structures import (
+    Assert,
     Assign,
     ImmutableDict,
+    PrologList,
     UnificationError,
     Variable,
+    construct,
 )
 
 
@@ -166,22 +169,30 @@ class Equality:
         raise UnificationError(f"values dont match: {left} != {right}")
 
     def inject(self, term: Any, to_solve_for: Optional[Set[Variable]] = None) -> Set:
+        term = construct(term)
         to_solve_for = to_solve_for or set()
 
         def _inject(_term):
             if isinstance(_term, ImmutableDict):
                 return {
-                    ImmutableDict(dict(zip(_term.keys(), value)))
-                    for value in _inject(tuple(_term.values()))
+                    ImmutableDict(dict(zip(_term.keys(), v)))
+                    for v in product(*map(_inject, _term.values()))
                 }
-            if isinstance(_term, tuple):
-                return set(product(*map(_inject, _term)))
+            if isinstance(_term, PrologList):
+                return {
+                    PrologList(x, y)
+                    for x, y in product(_inject(_term.head), _inject(_term.tail))
+                }
 
             if isinstance(_term, Assign):
-                return {
-                    Assign(variable, _term.expression, _term.frame, is_injected=True)
-                    for variable in self.get_free(_term.variable) - {_term.variable}
-                }
+                if free := self.get_free(_term.variable) - {_term.variable}:
+                    args_set = list(free)
+                else:
+                    args_set = [_term.variable]
+                return [
+                    Assign(a, _term.expression, _term.frame, is_injected=True)
+                    for a in args_set
+                ]
 
             if isinstance(_term, Variable):
                 try:
@@ -194,17 +205,24 @@ class Equality:
 
         return _inject(term)
 
-    def solutions(self, to_solve_for: Set[Variable]) -> Equality:
-        out = Equality()
+    def solutions(self, to_solve_for: Set[Variable]) -> Dict[Variable, Any]:
+        out = {}
         for item in to_solve_for:
             try:
                 fixed = self.get_fixed(item)
                 if not isinstance(fixed, Variable):
-                    out = out._add_constant(item, fixed)
+                    out[item] = fixed
             except KeyError:
                 pass
         return out
 
-    def evaluate(self, assign: Assign):
-        value = assign.expression(*map(self.get_fixed, assign.variables))
-        return self._add_constant(assign.variable, value)
+    def evaluate(self, assign_assert: Union[Assign, Assert]) -> Equality:
+        value = assign_assert.expression(*map(self.get_fixed, assign_assert.variables))
+
+        if isinstance(assign_assert, Assign):
+            return self._add_constant(assign_assert.variable, value)
+
+        #        if isinstance(assign_assert, Assert):
+        if not value:
+            raise UnificationError(f"bool({value}) != True")
+        return self

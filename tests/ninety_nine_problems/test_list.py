@@ -1,9 +1,10 @@
 """https://www.ic.unicamp.br/~meidanis/courses/mc336/2009s2/prolog/problemas/
 """
+import pytest
 
-from json_inference_logic import Equality, Rule, Variable
+from json_inference_logic import Rule, Variable
 from json_inference_logic.algorithms import search
-from json_inference_logic.data_structures import Assign
+from json_inference_logic.data_structures import Assert, Assign, construct
 
 X, Y, Z = Variable.factory("X", "Y", "Z")
 L, _W = Variable.factory("L", "W")
@@ -24,12 +25,12 @@ def test_find_the_last_element_of_a_list_01():
     """
 
     db = [
-        dict(last=X, list=(X,)),
-        Rule(dict(last=X, list=(_W, *L)), dict(last=X, list=L)),
+        dict(last=X, list=[X]),
+        Rule(dict(last=X, list=[_W, *L]), dict(last=X, list=L)),
     ]
 
-    query = dict(last=Q, list=("a", "b", "c"))
-    assert next(search(db, query)) == Equality(fixed={"c": {Q}})
+    query = dict(last=Q, list=["a", "b", "c"])
+    assert list(search(db, query)) == [{Q: "c"}]
 
 
 def test_find_the_last_but_one_element_of_a_list_02():
@@ -52,9 +53,41 @@ def test_find_the_last_but_one_element_of_a_list_02():
         ),
     ]
     query = dict(last_but_one=Q, list=["a", "b", "c"])
-    assert next(search(db, query)) == Equality(fixed={"b": {Q}})
+    assert next(search(db, query)) == {Q: "b"}
 
 
+def test_find_the_kth_element_of_a_list_03():
+    """
+    % P03 (*): Find the K'th element of a list.
+    % The first element in the list is number 1.
+
+    % element_at(X,L,K) :- X is the K'th element of the list L
+    %    (element,list,integer) (?,?,+)
+
+    % Note: nth1(?Index, ?List, ?Elem) is predefined
+
+    element_at(X,[X|_],1).
+    element_at(X,[_|L],K) :- K > 1, K1 is K - 1, element_at(X,L,K1).
+    """
+    K, K1 = Variable.factory("K", "K1")
+
+    db = [
+        dict(nth_element=X, list=(X, *_W), n=1),
+        Rule(
+            dict(nth_element=X, list=(_W, *L), n=K),
+            Assert(lambda K: K > 1),
+            Assign(K1, lambda K: K - 1),
+            dict(nth_element=X, list=L, n=K1),
+        ),
+    ]
+    query_1 = dict(nth_element=Z, list=["a", "b", "c"], n=1)
+    assert list(search(db, query_1)) == [{Z: "a"}]
+
+    query_2 = dict(nth_element=Z, list=["a", "b", "c"], n=2)
+    assert list(search(db, query_2)) == [{Z: "b"}]
+
+
+@pytest.mark.xfail()
 def test_find_the_number_of_elements_of_a_list_04():
     """
     % P04 (*): Find the number of elements of a list.
@@ -77,4 +110,31 @@ def test_find_the_number_of_elements_of_a_list_04():
         ),
     ]
     query = dict(my_length=Q, list=[1, 2, 3])
-    assert next(search(db, query)) == Equality(fixed={3: {Q}})
+    assert list(search(db, query)) == [{Q: 3}]
+
+
+def test_reverse_a_list_05():
+    """
+    % P05 (*): Reverse a list.
+
+    % my_reverse(L1,L2) :- L2 is the list obtained from L1 by reversing
+    %    the order of the elements.
+    %    (list,list) (?,?)
+
+    % Note: reverse(+List1, -List2) is predefined
+
+    my_reverse(L1,L2) :- my_rev(L1,L2,[]).
+
+    my_rev([],L2,L2) :- !.
+    my_rev([X|Xs],L2,Acc) :- my_rev(Xs,L2,[X|Acc]).
+    """
+    L1, L2, Xs, Acc = Variable.factory("L1", "L2", "Xs", "Acc")
+    db = [
+        dict(my_rev=[], list_in=L2, list_out=L2),
+        Rule(
+            dict(my_rev=[X, *Xs], list_in=L2, list_out=Acc),
+            dict(my_rev=Xs, list_in=L2, list_out=[X, *Acc]),
+        ),
+    ]
+    query = dict(my_rev=[1, 2], list_in=Z, list_out=[])
+    assert list(search(db, query)) == [{Z: construct([2, 1])}]

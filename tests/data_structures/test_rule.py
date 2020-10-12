@@ -19,19 +19,6 @@ def test__init__repr(head, body, representation):
     assert repr(Rule(head, *body)) == representation
 
 
-@pytest.mark.parametrize(
-    "head, body, message",
-    [
-        (1, (ImmutableDict(a=1),), "1 must be an ImmutableDict"),
-        (ImmutableDict(a=1), (2,), "2 must be an ImmutableDict"),
-    ],
-)
-def test__init__fail(head, body, message):
-    with pytest.raises(TypeError) as error:
-        repr(Rule(head, *body))
-    assert str(error.value) == message
-
-
 def test__eq__():
     im1 = ImmutableDict(a=1)
     im2 = ImmutableDict(b=2)

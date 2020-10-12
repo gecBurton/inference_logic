@@ -1,31 +1,37 @@
 from itertools import product
-from typing import Iterator, List, Optional, Tuple
+from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 from json_inference_logic.data_structures import (
+    Assert,
     Assign,
     ImmutableDict,
+    PrologList,
     Rule,
     UnificationError,
     Variable,
+    construct,
 )
 from json_inference_logic.equality import Equality
 
 
 def new_frame(obj, frame: int):
+    obj = construct(obj)
     if isinstance(obj, Rule):
-        return Rule(new_frame(obj.predicate, frame), *new_frame(obj.body, frame),)
-    if isinstance(obj, tuple):
-        return tuple(new_frame(o, frame) for o in obj)
+        return Rule(
+            new_frame(obj.predicate, frame), *(new_frame(o, frame) for o in obj.body),
+        )
+    if isinstance(obj, PrologList):
+        return PrologList(new_frame(obj.head, frame), new_frame(obj.tail, frame))
     if isinstance(obj, ImmutableDict):
         return ImmutableDict(**{k: new_frame(v, frame) for k, v in obj.items()})
-    if isinstance(obj, Variable):
+    if isinstance(obj, (Assign, Variable, Assert)):
         return obj.new_frame(frame)
-    if isinstance(obj, Assign):
-        return Assign(obj.variable, obj.expression, frame)
     return obj
 
 
 def unify(left, right, equality: Optional[Equality] = None) -> Equality:
+    left, right = construct(left), construct(right)
+
     equality = Equality() if equality is None else equality
 
     if isinstance(left, ImmutableDict) and isinstance(right, ImmutableDict):
@@ -35,32 +41,17 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
             equality = unify(left[key], right[key], equality)
         return equality
 
-    if isinstance(left, (tuple, list)) and isinstance(right, (tuple, list)):
-
-        if left and isinstance(left[-1], Variable) and left[-1].many:
-            n = len(left) - 1
-            _equality = unify(left[:n], right[:n], equality=equality)
-            return unify(left[-1], right[n:], equality=_equality)
-
-        if right and isinstance(right[-1], Variable) and right[-1].many:
-            n = len(right) - 1
-            _equality = unify(left[:n], right[:n], equality=equality)
-            return unify(left[n:], right[-1], equality=_equality)
-
-        if len(left) != len(right):
-            raise UnificationError(
-                f"tuples must have same length: {len(left)} != {len(right)}"
-            )
-        for left_item, right_item in zip(left, right):
-            equality = unify(left_item, right_item, equality)
+    if isinstance(left, PrologList) and isinstance(right, PrologList):
+        equality = unify(left.head, right.head, equality)
+        equality = unify(left.tail, right.tail, equality)
         return equality
 
     return equality.add(left, right)
 
 
-def search(db: List, query: ImmutableDict) -> Iterator[Equality]:
+def search(db: List, query: ImmutableDict) -> Iterator[Dict[Variable, Any]]:
     db = [Rule(item) if not isinstance(item, Rule) else item for item in db]
-    query = Rule.negotiate_arg_types(query)
+    query = construct(query)
 
     i = 0
     to_solve_for = query.get_variables()
@@ -70,12 +61,15 @@ def search(db: List, query: ImmutableDict) -> Iterator[Equality]:
     while stack:
         goal, equality = stack.pop()
 
-        if isinstance(goal.predicate, Assign):
-            equality = equality.evaluate(goal.predicate)
-            if goal.body:
-                stack.append((Rule(*goal.body), equality))
-            else:
-                yield equality.solutions(to_solve_for)
+        if isinstance(goal.predicate, (Assign, Assert)):
+            try:
+                equality = equality.evaluate(goal.predicate)
+                if goal.body:
+                    stack.append((Rule(*goal.body), equality))
+                else:
+                    yield equality.solutions(to_solve_for)
+            except UnificationError:
+                pass
         else:
             for rule in db:
                 i += 1

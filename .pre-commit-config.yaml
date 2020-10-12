@@ -31,13 +31,13 @@ repos:
         types: [python]
         pass_filenames: false
 
-#      - id: doctest
-#        name: doctest
-#        stages: [commit]
-#        language: system
-#        entry: pipenv run pytest --doctest-modules json_inference_logic/
-#        types: [python]
-#        pass_filenames: false
+      - id: doctest
+        name: doctest
+        stages: [commit]
+        language: system
+        entry: pipenv run pytest --doctest-modules json_inference_logic/
+        types: [python]
+        pass_filenames: false
 
       - id: mypy
         name: mypy
@@ -57,7 +57,7 @@ repos:
 
       - id: safety
         name: safety
-        stages: [commit]
+        stages: [push]
         language: system
         entry: pipenv run safety check
         types: [python]
