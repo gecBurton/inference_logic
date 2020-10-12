@@ -1,16 +1,16 @@
 import pytest
 
 from json_inference_logic import ImmutableDict, Variable
-from json_inference_logic.data_structures import PrologList
+from json_inference_logic.data_structures import PrologList, construct, deconstruct
 
 
 def test__init__():
     im = ImmutableDict(a=1, b=["2", {"c": None}])
     assert im["a"] == 1
     assert isinstance(im["b"], PrologList)
-    assert im["b"][0] == "2"
-    assert isinstance(im["b"][1], ImmutableDict)
-    assert im["b"][1]["c"] is None
+    assert im["b"].head == "2"
+    assert isinstance(im["b"].tail, PrologList)
+    assert im["b"].tail.head["c"] is None
 
 
 @pytest.mark.parametrize(
@@ -57,3 +57,8 @@ def test_get_variables():
     A, B, C = Variable.factory("A", "B", "C")
     im = ImmutableDict(a=A, b=(1, B), c=ImmutableDict(d=(C, False)))
     assert im.get_variables() == {A, B, C}
+
+
+@pytest.mark.parametrize("term", [None, 1, [2, 3, 4], {"a": False}, [{"hello": None}]])
+def test_construct(term):
+    assert deconstruct(construct(term)) == term

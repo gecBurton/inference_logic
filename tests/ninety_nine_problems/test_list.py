@@ -4,7 +4,7 @@ import pytest
 
 from json_inference_logic import Rule, Variable
 from json_inference_logic.algorithms import search
-from json_inference_logic.data_structures import Assert, Assign
+from json_inference_logic.data_structures import Assert, Assign, construct
 
 X, Y, Z = Variable.factory("X", "Y", "Z")
 L, _W = Variable.factory("L", "W")
@@ -87,6 +87,7 @@ def test_find_the_kth_element_of_a_list_03():
     assert list(search(db, query_2)) == [{Z: "b"}]
 
 
+@pytest.mark.xfail()
 def test_find_the_number_of_elements_of_a_list_04():
     """
     % P04 (*): Find the number of elements of a list.
@@ -112,7 +113,6 @@ def test_find_the_number_of_elements_of_a_list_04():
     assert list(search(db, query)) == [{Q: 3}]
 
 
-@pytest.mark.xfail()
 def test_reverse_a_list_05():
     """
     % P05 (*): Reverse a list.
@@ -137,4 +137,4 @@ def test_reverse_a_list_05():
         ),
     ]
     query = dict(my_rev=[1, 2], list_in=Z, list_out=[])
-    assert list(search(db, query)) == [{Z: (2, 1)}]
+    assert list(search(db, query)) == [{Z: construct([2, 1])}]

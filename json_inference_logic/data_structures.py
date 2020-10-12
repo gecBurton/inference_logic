@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections import UserDict, UserList
+from collections import UserDict
 from typing import Any, Dict, List, Optional, Set, Union
 
 
@@ -67,11 +67,37 @@ class Variable:
         yield Variable(self.name, frame=self.frame, many=True)
 
 
+class PrologListNull:
+    def __repr__(self):
+        return ".()"
+
+    def __hash__(self):
+        return hash("hello!")
+
+    def __eq__(self, other):
+        if not isinstance(other, PrologListNull):
+            raise UnificationError("list lengths must be the same")
+        return True
+
+
 def construct(obj: Any):
     if isinstance(obj, dict):
         return ImmutableDict({key: construct(value) for key, value in obj.items()})
     if isinstance(obj, (list, tuple)):
-        return PrologList(map(construct, obj))
+        if not obj:
+            return PrologListNull()
+
+        head, *tail = reversed(obj)
+        out = (
+            head
+            if obj and isinstance(head, Variable) and head.many
+            else PrologList(head, PrologListNull())
+        )
+
+        for item in tail:
+            out = PrologList(item, out)
+        return out
+
     if isinstance(
         obj,
         (
@@ -85,6 +111,7 @@ def construct(obj: Any):
             Rule,
             Assert,
             Assign,
+            PrologListNull,
         ),
     ):
         return obj
@@ -93,14 +120,29 @@ def construct(obj: Any):
     raise TypeError(f"{obj} is not json serializable")
 
 
-class PrologList(UserList):
+def deconstruct(obj):
+    if isinstance(obj, ImmutableDict):
+        return {key: deconstruct(value) for key, value in obj.items()}
+    if isinstance(obj, PrologList):
+        if isinstance(obj.tail, PrologListNull):
+            return [obj.head]
+        return [obj.head, *deconstruct(obj.tail)]
+    return obj
+
+
+class PrologList:
+    def __init__(self, head, tail):
+        self.head = head
+        self.tail = tail
+
     def __hash__(self):
-        return hash(tuple(map(hash, self.data)))
+        return hash(self.head) ^ hash(self.tail)
 
     def __eq__(self, other):
-        if not isinstance(other, PrologList):
-            raise TypeError
         return hash(self) == hash(other)
+
+    def __repr__(self):
+        return f".({self.head}, {self.tail})"
 
 
 class ImmutableDict(UserDict):
@@ -163,8 +205,8 @@ class ImmutableDict(UserDict):
                 for value in obj.values():
                     _get_variables(value)
             if isinstance(obj, PrologList):
-                for value in obj:
-                    _get_variables(value)
+                _get_variables(obj.head)
+                _get_variables(obj.tail)
             if isinstance(obj, Variable):
                 _variables.add(obj)
 

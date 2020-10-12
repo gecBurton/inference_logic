@@ -175,11 +175,14 @@ class Equality:
         def _inject(_term):
             if isinstance(_term, ImmutableDict):
                 return {
-                    ImmutableDict(dict(zip(_term.keys(), value)))
-                    for value in _inject(construct(list(_term.values())))
+                    ImmutableDict(dict(zip(_term.keys(), v)))
+                    for v in product(*map(_inject, _term.values()))
                 }
             if isinstance(_term, PrologList):
-                return set(product(*map(_inject, _term)))
+                return {
+                    PrologList(x, y)
+                    for x, y in product(_inject(_term.head), _inject(_term.tail))
+                }
 
             if isinstance(_term, Assign):
                 if free := self.get_free(_term.variable) - {_term.variable}:

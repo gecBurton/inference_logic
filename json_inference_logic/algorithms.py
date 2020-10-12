@@ -17,9 +17,11 @@ from json_inference_logic.equality import Equality
 def new_frame(obj, frame: int):
     obj = construct(obj)
     if isinstance(obj, Rule):
-        return Rule(new_frame(obj.predicate, frame), *new_frame(obj.body, frame),)
+        return Rule(
+            new_frame(obj.predicate, frame), *(new_frame(o, frame) for o in obj.body),
+        )
     if isinstance(obj, PrologList):
-        return tuple(new_frame(o, frame) for o in obj)
+        return PrologList(new_frame(obj.head, frame), new_frame(obj.tail, frame))
     if isinstance(obj, ImmutableDict):
         return ImmutableDict(**{k: new_frame(v, frame) for k, v in obj.items()})
     if isinstance(obj, (Assign, Variable, Assert)):
@@ -40,23 +42,8 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
         return equality
 
     if isinstance(left, PrologList) and isinstance(right, PrologList):
-
-        if left and isinstance(left[-1], Variable) and left[-1].many:
-            n = len(left) - 1
-            _equality = unify(left[:n], right[:n], equality=equality)
-            return unify(left[-1], right[n:], equality=_equality)
-
-        if right and isinstance(right[-1], Variable) and right[-1].many:
-            n = len(right) - 1
-            _equality = unify(left[:n], right[:n], equality=equality)
-            return unify(left[n:], right[-1], equality=_equality)
-
-        if len(left) != len(right):
-            raise UnificationError(
-                f"tuples must have same length: {len(left)} != {len(right)}"
-            )
-        for left_item, right_item in zip(left, right):
-            equality = unify(left_item, right_item, equality)
+        equality = unify(left.head, right.head, equality)
+        equality = unify(left.tail, right.tail, equality)
         return equality
 
     return equality.add(left, right)
