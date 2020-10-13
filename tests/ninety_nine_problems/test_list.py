@@ -295,3 +295,38 @@ def test_create_a_list_containing_all_integers_within_a_given_range_22():
     ]
     query = dict(arrange=2, a=5, b=Z)
     assert list(search(db, query)) == [{Z: [2, 3, 4, 5]}]
+
+
+def test_Generate_combinations_k_distinct_objects_from_n_elements_26():
+    """
+    % P26 (**):  Generate the combinations of k distinct objects
+    %            chosen from the n elements of a list.
+
+    % combination(K,L,C) :- C is a list of K distinct elements
+    %    chosen from the list L
+
+    combination(0,_,[]).
+    combination(K,L,[X|Xs]) :- K > 0,
+    el(X,L,R), K1 is K-1, combination(K1,R,Xs).
+
+    % Find out what the following predicate el/3 exactly does.
+
+    el(X,[X|L],L).
+    el(X,[_|L],R) :- el(X,L,R).
+    """
+    R, K, K1, Xs = Variable.factory("R", "K", "K1", "Xs")
+    db = [
+        dict(el=X, a=[X, *L], b=L),
+        Rule(dict(el=X, a=[_W, *L], b=R), dict(el=X, a=L, b=R)),
+        dict(combination=0, a=_W, b=[]),
+        Rule(
+            dict(combination=K, a=L, b=[X, *Xs]),
+            Assert(lambda K: K > 0),
+            dict(el=X, a=L, b=R),
+            Assign(K1, lambda K: K - 1),
+            dict(combination=K1, a=R, b=Xs),
+        ),
+    ]
+
+    query = dict(combination=2, a=[1, 2, 3], b=Q)
+    assert list(search(db, query)) == [{Q: [2, 3]}, {Q: [1, 3]}, {Q: [1, 2]}]
