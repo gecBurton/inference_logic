@@ -139,6 +139,26 @@ def test_reverse_a_list_05():
     assert list(search(db, query)) == [{Z: [2, 1]}]
 
 
+def test_find_out_whether_a_list_is_a_palindrome_06():
+    """
+    % P06 (*): Find out whether a list is a palindrome
+    % A palindrome can be read forward or backward; e.g. [x,a,m,a,x]
+
+    % is_palindrome(L) :- L is a palindrome list
+    %    (list) (?)
+
+    is_palindrome(L) :- reverse(L,L).
+    """
+    L1, L2, Xs, Acc = Variable.factory("L1", "L2", "Xs", "Acc")
+    db = [
+        dict(my_rev=[], a=L2, b=L2),
+        Rule(dict(my_rev=[X, *Xs], a=L2, b=Acc), dict(my_rev=Xs, a=L2, b=[X, *Acc])),
+        Rule(dict(is_palindrome=X), dict(my_rev=X, a=X, b=[])),
+    ]
+    query = dict(is_palindrome=[1, 2, 1])
+    assert list(search(db, query)) == [{}]
+
+
 def test_eliminate_consecutive_duplicates_of_list_elements_08():
     """
     % P08 (**): Eliminate consecutive duplicates of list elements.
