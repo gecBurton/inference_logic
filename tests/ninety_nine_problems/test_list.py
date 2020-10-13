@@ -1,5 +1,6 @@
 """https://www.ic.unicamp.br/~meidanis/courses/mc336/2009s2/prolog/problemas/
 """
+import pytest
 
 from json_inference_logic import Rule, Variable
 from json_inference_logic.algorithms import search
@@ -138,6 +139,45 @@ def test_reverse_a_list_05():
     assert list(search(db, query)) == [{Z: [2, 1]}]
 
 
+def test_find_out_whether_a_list_is_a_palindrome_06():
+    """
+    % P06 (*): Find out whether a list is a palindrome
+    % A palindrome can be read forward or backward; e.g. [x,a,m,a,x]
+
+    % is_palindrome(L) :- L is a palindrome list
+    %    (list) (?)
+
+    is_palindrome(L) :- reverse(L,L).
+    """
+    L1, L2, Xs, Acc = Variable.factory("L1", "L2", "Xs", "Acc")
+    db = [
+        dict(my_rev=[], a=L2, b=L2),
+        Rule(dict(my_rev=[X, *Xs], a=L2, b=Acc), dict(my_rev=Xs, a=L2, b=[X, *Acc])),
+        Rule(dict(is_palindrome=X), dict(my_rev=X, a=X, b=[])),
+    ]
+    query = dict(is_palindrome=[1, 2, 1])
+    assert list(search(db, query)) == [{}]
+
+
+@pytest.mark.xfail()
+def test_flatten_a_nested_list_structure_07():
+    """
+    % P07 (**): Flatten a nested list structure.
+
+    % my_flatten(L1,L2) :- the list L2 is obtained from the list L1 by
+    %    flattening; i.e. if an element of L1 is a list then it is replaced
+    %    by its elements, recursively.
+    %    (list,list) (+,?)
+
+    % Note: flatten(+List1, -List2) is a predefined predicate
+
+    my_flatten(X,[X]) :- \\+ is_list(X).
+    my_flatten([],[]).
+    my_flatten([X|Xs],Zs) :- my_flatten(X,Y), my_flatten(Xs,Ys), append(Y,Ys,Zs).
+    """
+    assert False
+
+
 def test_eliminate_consecutive_duplicates_of_list_elements_08():
     """
     % P08 (**): Eliminate consecutive duplicates of list elements.
@@ -166,3 +206,92 @@ def test_eliminate_consecutive_duplicates_of_list_elements_08():
     query = dict(compress=[1, 2, 1], list=Q)
     out = list(search(db, query))
     assert out == [{Q: [1, 2, 1]}]
+
+
+@pytest.mark.xfail
+def test_pack_consecutive_duplicates_of_list_elements_into_sublists_09():
+    """
+    % P09 (**):  Pack consecutive duplicates of list elements into sublists.
+
+    % pack(L1,L2) :- the list L2 is obtained from the list L1 by packing
+    %    repeated occurrences of elements into separate sublists.
+    %    (list,list) (+,?)
+
+    pack([],[]).
+    pack([X|Xs],[Z|Zs]) :- transfer(X,Xs,Ys,Z), pack(Ys,Zs).
+
+    % transfer(X,Xs,Ys,Z) Ys is the list that remains from the list Xs
+    %    when all leading copies of X are removed and transfered to Z
+
+    transfer(X,[],[],[X]).
+    transfer(X,[Y|Ys],[Y|Ys],[X]) :- X \\= Y.
+    transfer(X,[X|Xs],Ys,[X|Zs]) :- transfer(X,Xs,Ys,Zs).
+    """
+
+    Xs, Ys, Zs = Variable.factory("Xs", "Ys", "Zs")
+    db = [
+        dict(pack=[], list=[]),
+        Rule(
+            dict(pack=[X, *Xs], list=[Z, *Zs]),
+            dict(transfer=X, a=Xs, b=Ys, c=Z),
+            dict(pack=Ys, list=Zs),
+        ),
+        dict(transfer=X, a=[], b=[], c=[X]),
+        Rule(
+            dict(transfer=[X], a=[Y, *Ys], b=[Y, *Ys], c=[X]),
+            Assert(lambda X, Y: X != Y),
+        ),
+        Rule(
+            dict(transfer=X, a=[X, *Xs], b=Ys, c=[X, *Zs]),
+            dict(transfer=X, a=Xs, b=Ys, c=Zs),
+        ),
+    ]
+    query = dict(transfer=1, a=[1, 1, 1, 1, 1, 2], b=[2], c=Variable("QQ"))
+    assert list(search(db, query)) == [{Q: [[1], [2]]}]
+
+
+def test_duplicate_the_elements_of_a_list_14():
+    """
+    % P14 (*): Duplicate the elements of a list
+
+    % dupli(L1,L2) :- L2 is obtained from L1 by duplicating all elements.
+    %    (list,list) (?,?)
+
+    dupli([],[]).
+    dupli([X|Xs],[X,X|Ys]) :- dupli(Xs,Ys).
+    """
+    Xs, Ys = Variable.factory("Xs", "Ys")
+
+    db = [
+        dict(dupli=[], list=[]),
+        Rule(dict(dupli=[X, *Xs], list=[X, X, *Ys]), dict(dupli=Xs, list=Ys)),
+    ]
+
+    query = dict(dupli=["a", "b"], list=Z)
+
+    assert list(search(db, query)) == [{Z: ["a", "a", "b", "b"]}]
+
+
+def test_create_a_list_containing_all_integers_within_a_given_range_22():
+    """
+    % P22 (*):  Create a list containing all integers within a given range.
+
+    % range(I,K,L) :- I <= K, and L is the list containing all
+    %    consecutive integers from I to K.
+    %    (integer,integer,list) (+,+,?)
+
+    range(I,I,[I]).
+    range(I,K,[I|L]) :- I < K, I1 is I + 1, range(I1,K,L).
+    """
+    I, I1, K, L = Variable.factory("I", "I1", "K", "L")
+    db = [
+        dict(arrange=I, a=I, b=[I]),
+        Rule(
+            dict(arrange=I, a=K, b=[I, *L]),
+            Assert(lambda I, K: I < K),
+            Assign(I1, lambda I: I + 1),
+            dict(arrange=I1, a=K, b=L),
+        ),
+    ]
+    query = dict(arrange=2, a=5, b=Z)
+    assert list(search(db, query)) == [{Z: [2, 3, 4, 5]}]

@@ -38,7 +38,7 @@ class Equality:
         free = hash(tuple(map(Variable.hash_set, self.free)))
         fixed = hash(
             tuple(
-                hash(constant) ^ Variable.hash_set(self.fixed[constant])
+                hash((constant, Variable.hash_set(self.fixed[constant])))
                 for constant in sorted(self.fixed, key=hash)
             )
         )

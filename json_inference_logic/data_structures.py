@@ -33,7 +33,7 @@ class Variable:
         return f"{many}{self.name}{frame}"
 
     def __hash__(self):
-        return hash(self.name) ^ hash(self.frame)
+        return hash((self.name, self.frame))
 
     def __eq__(self, other):
         """
