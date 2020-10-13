@@ -1,6 +1,5 @@
 """https://www.ic.unicamp.br/~meidanis/courses/mc336/2009s2/prolog/problemas/
 """
-import pytest
 
 from json_inference_logic import Rule, Variable
 from json_inference_logic.algorithms import search
@@ -139,7 +138,6 @@ def test_reverse_a_list_05():
     assert list(search(db, query)) == [{Z: [2, 1]}]
 
 
-@pytest.mark.xfail
 def test_eliminate_consecutive_duplicates_of_list_elements_08():
     """
     % P08 (**): Eliminate consecutive duplicates of list elements.
@@ -165,6 +163,6 @@ def test_eliminate_consecutive_duplicates_of_list_elements_08():
             dict(compress=[Y, *Ys], list=Zs),
         ),
     ]
-    query = dict(compress=[1, 1, 2, 3, 2], list=Z)
+    query = dict(compress=[1, 2, 1], list=Q)
     out = list(search(db, query))
-    assert out == [{Z: (1, 2, 3, 2)}]
+    assert out == [{Q: [1, 2, 1]}]

@@ -136,7 +136,7 @@ class PrologList:
         self.tail = tail
 
     def __hash__(self):
-        return hash(self.head) ^ hash(self.tail)
+        return hash((self.head, self.tail))
 
     def __eq__(self, other):
         return hash(self) == hash(other)

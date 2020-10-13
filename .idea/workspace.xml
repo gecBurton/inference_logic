@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06a9f91a-831a-4b04-8c04-359fe5664193" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/python-package.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/python-package.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ninety_nine_problems/test_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ninety_nine_problems/test_list.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,32 +56,6 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest for tests.algorithms.test_unify.test_unify_pass" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <module name="json_inference_logic" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" />
-        </ENTRIES>
-      </EXTENSION>
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;left8-right8-None-final8&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;tests.algorithms.test_unify.test_unify_pass&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
     <configuration name="pytest for tests.data_structures.test_immutable_dict.test__init__" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="json_inference_logic" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -105,6 +79,58 @@
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;tests.data_structures.test_immutable_dict.test__init__&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for tests.ninety_nine_problems.test_list.test_eliminate_consecutive_duplicates_of_list_elements_08" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="json_inference_logic" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        </ENTRIES>
+      </EXTENSION>
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;tests.ninety_nine_problems.test_list.test_eliminate_consecutive_duplicates_of_list_elements_08&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for tests.ninety_nine_problems.test_list.test_find_the_last_element_of_a_list_01" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="json_inference_logic" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        </ENTRIES>
+      </EXTENSION>
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;tests.ninety_nine_problems.test_list.test_find_the_last_element_of_a_list_01&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -162,10 +188,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.pytest for tests.ninety_nine_problems.test_list.test_eliminate_consecutive_duplicates_of_list_elements_08" />
+        <item itemvalue="Python tests.pytest for tests.ninety_nine_problems.test_list.test_find_the_last_element_of_a_list_01" />
         <item itemvalue="Python tests.pytest for tests.algorithms.test_unify.test_unify_pass (1)" />
         <item itemvalue="Python tests.pytest for tests.data_structures.test_immutable_dict.test__init__" />
         <item itemvalue="Python tests.pytest for tests.test_equality.test_inject" />
-        <item itemvalue="Python tests.pytest for tests.algorithms.test_unify.test_unify_pass" />
       </list>
     </recent_temporary>
   </component>
@@ -189,46 +216,46 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="728" y="358" width="525" height="423" key="#com.intellij.ide.util.TreeClassChooserDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1601924854203" />
-    <state x="1218" y="282" key="#xdebugger.evaluate" timestamp="1602534213947">
+    <state x="655" y="241" width="1079" height="681" key="#xdebugger.evaluate" timestamp="1602574195776">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="1218" y="282" key="#xdebugger.evaluate/72.27.1848.1053@72.27.1848.1053" timestamp="1602534213947" />
+    <state x="655" y="241" width="1079" height="681" key="#xdebugger.evaluate/72.27.1848.1053@72.27.1848.1053" timestamp="1602574195776" />
     <state x="779" y="324" width="424" height="491" key="FileChooserDialogImpl" timestamp="1601966129289">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="779" y="324" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1601966129289" />
-    <state width="1802" height="327" key="GridCell.Tab.0.bottom" timestamp="1602537103402">
+    <state width="1802" height="340" key="GridCell.Tab.0.bottom" timestamp="1602584756893">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="327" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602537103402" />
-    <state width="1802" height="327" key="GridCell.Tab.0.center" timestamp="1602537103399">
+    <state width="1802" height="340" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602584756893" />
+    <state width="1802" height="340" key="GridCell.Tab.0.center" timestamp="1602584756890">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="327" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602537103399" />
-    <state width="1802" height="327" key="GridCell.Tab.0.left" timestamp="1602537103398">
+    <state width="1802" height="340" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602584756890" />
+    <state width="1802" height="340" key="GridCell.Tab.0.left" timestamp="1602584756889">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="327" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602537103398" />
-    <state width="1802" height="327" key="GridCell.Tab.0.right" timestamp="1602537103400">
+    <state width="1802" height="340" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602584756889" />
+    <state width="1802" height="340" key="GridCell.Tab.0.right" timestamp="1602584756892">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="327" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602537103400" />
-    <state width="1802" height="340" key="GridCell.Tab.1.bottom" timestamp="1602533998720">
+    <state width="1802" height="340" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602584756892" />
+    <state width="1802" height="340" key="GridCell.Tab.1.bottom" timestamp="1602584756895">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="340" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602533998720" />
-    <state width="1802" height="340" key="GridCell.Tab.1.center" timestamp="1602533998720">
+    <state width="1802" height="340" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602584756895" />
+    <state width="1802" height="340" key="GridCell.Tab.1.center" timestamp="1602584756894">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="340" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602533998720" />
-    <state width="1802" height="340" key="GridCell.Tab.1.left" timestamp="1602533998720">
+    <state width="1802" height="340" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602584756894" />
+    <state width="1802" height="340" key="GridCell.Tab.1.left" timestamp="1602584756893">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="340" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602533998720" />
-    <state width="1802" height="340" key="GridCell.Tab.1.right" timestamp="1602533998720">
+    <state width="1802" height="340" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602584756893" />
+    <state width="1802" height="340" key="GridCell.Tab.1.right" timestamp="1602584756895">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="340" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602533998720" />
+    <state width="1802" height="340" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602584756895" />
     <state x="485" y="188" width="1022" height="737" key="SettingsEditor" timestamp="1601924400588">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -247,9 +274,24 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/tests/ninety_nine_problems/test_list.py</url>
+          <line>139</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/json_inference_logic/equality.py</url>
-          <line>177</line>
-          <option name="timeStamp" value="2" />
+          <line>228</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/json_inference_logic/equality.py</url>
+          <line>80</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/json_inference_logic/equality.py</url>
+          <line>78</line>
+          <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
