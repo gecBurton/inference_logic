@@ -1,5 +1,6 @@
 """https://www.ic.unicamp.br/~meidanis/courses/mc336/2009s2/prolog/problemas/
 """
+import pytest
 
 from json_inference_logic import Rule, Variable
 from json_inference_logic.algorithms import search
@@ -136,3 +137,34 @@ def test_reverse_a_list_05():
     ]
     query = dict(my_rev=[1, 2], list_in=Z, list_out=[])
     assert list(search(db, query)) == [{Z: [2, 1]}]
+
+
+@pytest.mark.xfail
+def test_eliminate_consecutive_duplicates_of_list_elements_08():
+    """
+    % P08 (**): Eliminate consecutive duplicates of list elements.
+
+    % compress(L1,L2) :- the list L2 is obtained from the list L1 by
+    %    compressing repeated occurrences of elements into a single copy
+    %    of the element.
+    %    (list,list) (+,?)
+
+    compress([],[]).
+    compress([X],[X]).
+    compress([X,X|Xs],Zs) :- compress([X|Xs],Zs).
+    compress([X,Y|Ys],[X|Zs]) :- X \\= Y, compress([Y|Ys],Zs).
+    """
+    Xs, Ys, Zs = Variable.factory("Xs", "Ys", "Zs")
+    db = [
+        dict(compress=[], list=[]),
+        dict(compress=[X], list=[X]),
+        Rule(dict(compress=[X, X, *Xs], list=Zs), dict(compress=[X, *Xs], list=Zs)),
+        Rule(
+            dict(compress=[X, Y, *Ys], list=[X, *Zs]),
+            Assert(lambda X, Y: X != Y),
+            dict(compress=[Y, *Ys], list=Zs),
+        ),
+    ]
+    query = dict(compress=[1, 1, 2, 3, 2], list=Z)
+    out = list(search(db, query))
+    assert out == [{Z: (1, 2, 3, 2)}]

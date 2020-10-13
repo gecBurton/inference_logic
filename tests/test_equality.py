@@ -1,6 +1,7 @@
 import pytest
 
 from json_inference_logic import Equality, ImmutableDict, UnificationError, Variable
+from json_inference_logic.data_structures import construct
 
 A, B, C, D = Variable.factory("A", "B", "C", "D")
 
@@ -150,3 +151,16 @@ def test_add_fail(left, right, initial, message):
 )
 def test_inject(equality, to_solve_for, initial, final):
     assert equality.inject(initial, to_solve_for=to_solve_for) == final
+
+
+@pytest.mark.parametrize(
+    "variable, expected",
+    [
+        (A, 1),
+        ([A, True], (1, True)),
+        ({"a": [A, {"b": False}]}, {"a": [1, {"b": False}]}),
+    ],
+)
+def test_get_deep(variable, expected):
+    equality = Equality(fixed={1: {A}}, free=[{B, C}])
+    assert equality.get_deep(construct(variable)) == construct(expected)
