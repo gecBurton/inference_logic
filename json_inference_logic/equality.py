@@ -67,6 +67,20 @@ class Equality:
 
         raise KeyError
 
+    def get_deep(self, item):
+        if isinstance(item, Variable):
+            return self.get_deep(self.get_fixed(item))
+        elif isinstance(item, ImmutableDict):
+            return ImmutableDict(
+                {key: self.get_deep(value) for key, value in item.items()}
+            )
+        elif isinstance(item, PrologList):
+            try:
+                return PrologList(self.get_deep(item.head), self.get_deep(item.tail))
+            except RecursionError:
+                raise
+        return item
+
     def _add_constant(self, variable: Variable, constant: Any) -> Equality:
         if not isinstance(variable, Variable):
             raise TypeError(f"{variable} must be a Variable")
@@ -211,8 +225,8 @@ class Equality:
         for item in to_solve_for:
             try:
                 fixed = self.get_fixed(item)
-                if not isinstance(fixed, Variable):
-                    out[item] = deconstruct(fixed)
+                deep = self.get_deep(fixed)
+                out[item] = deconstruct(deep)
             except KeyError:
                 pass
         return out
