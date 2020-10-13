@@ -164,3 +164,11 @@ def test_inject(equality, to_solve_for, initial, final):
 def test_get_deep(variable, expected):
     equality = Equality(fixed={1: {A}}, free=[{B, C}])
     assert equality.get_deep(construct(variable)) == construct(expected)
+
+
+def test_recursions_error():
+    a = construct([A, B])
+    equality = Equality(fixed={a: {B}, 1: {A}})
+    with pytest.raises(RecursionError) as error:
+        equality.get_deep(a)
+    assert str(error.value) == "maximum recursion depth exceeded in comparison"

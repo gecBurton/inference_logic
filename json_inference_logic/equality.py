@@ -75,7 +75,10 @@ class Equality:
                 {key: self.get_deep(value) for key, value in item.items()}
             )
         elif isinstance(item, PrologList):
-            return PrologList(self.get_deep(item.head), self.get_deep(item.tail))
+            try:
+                return PrologList(self.get_deep(item.head), self.get_deep(item.tail))
+            except RecursionError:
+                raise
         return item
 
     def _add_constant(self, variable: Variable, constant: Any) -> Equality:
