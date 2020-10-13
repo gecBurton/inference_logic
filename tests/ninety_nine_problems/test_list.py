@@ -1,5 +1,6 @@
 """https://www.ic.unicamp.br/~meidanis/courses/mc336/2009s2/prolog/problemas/
 """
+import pytest
 
 from json_inference_logic import Rule, Variable
 from json_inference_logic.algorithms import search
@@ -168,6 +169,7 @@ def test_eliminate_consecutive_duplicates_of_list_elements_08():
     assert out == [{Q: [1, 2, 1]}]
 
 
+@pytest.mark.xfail
 def test_pack_consecutive_duplicates_of_list_elements_into_sublists_09():
     """
     % P09 (**):  Pack consecutive duplicates of list elements into sublists.
@@ -205,5 +207,27 @@ def test_pack_consecutive_duplicates_of_list_elements_into_sublists_09():
             dict(transfer=X, a=Xs, b=Ys, c=Zs),
         ),
     ]
-    query = dict(pack=[1, 1], list=Q)
-    assert list(search(db, query)) == [{Q: [[1, 1]]}]
+    query = dict(transfer=1, a=[1, 1, 1, 1, 1, 2], b=[2], c=Variable("QQ"))
+    assert list(search(db, query)) == [{Q: [[1], [2]]}]
+
+
+def test_duplicate_the_elements_of_a_list_14():
+    """
+    % P14 (*): Duplicate the elements of a list
+
+    % dupli(L1,L2) :- L2 is obtained from L1 by duplicating all elements.
+    %    (list,list) (?,?)
+
+    dupli([],[]).
+    dupli([X|Xs],[X,X|Ys]) :- dupli(Xs,Ys).
+    """
+    Xs, Ys = Variable.factory("Xs", "Ys")
+
+    db = [
+        dict(dupli=[], list=[]),
+        Rule(dict(dupli=[X, *Xs], list=[X, X, *Ys]), dict(dupli=Xs, list=Ys)),
+    ]
+
+    query = dict(dupli=["a", "b"], list=Z)
+
+    assert list(search(db, query)) == [{Z: ["a", "a", "b", "b"]}]
