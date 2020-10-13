@@ -159,6 +159,25 @@ def test_find_out_whether_a_list_is_a_palindrome_06():
     assert list(search(db, query)) == [{}]
 
 
+@pytest.mark.xfail()
+def test_flatten_a_nested_list_structure_07():
+    """
+    % P07 (**): Flatten a nested list structure.
+
+    % my_flatten(L1,L2) :- the list L2 is obtained from the list L1 by
+    %    flattening; i.e. if an element of L1 is a list then it is replaced
+    %    by its elements, recursively.
+    %    (list,list) (+,?)
+
+    % Note: flatten(+List1, -List2) is a predefined predicate
+
+    my_flatten(X,[X]) :- \\+ is_list(X).
+    my_flatten([],[]).
+    my_flatten([X|Xs],Zs) :- my_flatten(X,Y), my_flatten(Xs,Ys), append(Y,Ys,Zs).
+    """
+    assert False
+
+
 def test_eliminate_consecutive_duplicates_of_list_elements_08():
     """
     % P08 (**): Eliminate consecutive duplicates of list elements.
@@ -251,3 +270,28 @@ def test_duplicate_the_elements_of_a_list_14():
     query = dict(dupli=["a", "b"], list=Z)
 
     assert list(search(db, query)) == [{Z: ["a", "a", "b", "b"]}]
+
+
+def test_create_a_list_containing_all_integers_within_a_given_range_22():
+    """
+    % P22 (*):  Create a list containing all integers within a given range.
+
+    % range(I,K,L) :- I <= K, and L is the list containing all
+    %    consecutive integers from I to K.
+    %    (integer,integer,list) (+,+,?)
+
+    range(I,I,[I]).
+    range(I,K,[I|L]) :- I < K, I1 is I + 1, range(I1,K,L).
+    """
+    I, I1, K, L = Variable.factory("I", "I1", "K", "L")
+    db = [
+        dict(arrange=I, a=I, b=[I]),
+        Rule(
+            dict(arrange=I, a=K, b=[I, *L]),
+            Assert(lambda I, K: I < K),
+            Assign(I1, lambda I: I + 1),
+            dict(arrange=I1, a=K, b=L),
+        ),
+    ]
+    query = dict(arrange=2, a=5, b=Z)
+    assert list(search(db, query)) == [{Z: [2, 3, 4, 5]}]
