@@ -58,13 +58,13 @@ def test_02():
 
 def test_03():
     """
-    % P03 (*): Find the K'th element of a list.
-    % The first element in the list is number 1.
+    P03 (*): Find the K'th element of a list.
+    The first element in the list is number 1.
 
-    % element_at(X,L,K) :- X is the K'th element of the list L
-    %    (element,list,integer) (?,?,+)
+    element_at(X,L,K) :- X is the K'th element of the list L
+       (element,list,integer) (?,?,+)
 
-    % Note: nth1(?Index, ?List, ?Elem) is predefined
+    Note: nth1(?Index, ?List, ?Elem) is predefined
 
     element_at(X,[X|_],1).
     element_at(X,[_|L],K) :- K > 1, K1 is K - 1, element_at(X,L,K1).
@@ -89,12 +89,12 @@ def test_03():
 
 def test_04():
     """
-    % P04 (*): Find the number of elements of a list.
+    P04 (*): Find the number of elements of a list.
 
-    % my_length(L,N) :- the list L contains N elements
-    %    (list,integer) (+,?)
+    my_length(L,N) :- the list L contains N elements
+       (list,integer) (+,?)
 
-    % Note: length(?List, ?Int) is predefined
+    Note: length(?List, ?Int) is predefined
 
     my_length([],0).
     my_length([_|L],N) :- my_length(L,N1), N is N1 + 1.
@@ -114,13 +114,13 @@ def test_04():
 
 def test_05():
     """
-    % P05 (*): Reverse a list.
+    P05 (*): Reverse a list.
 
-    % my_reverse(L1,L2) :- L2 is the list obtained from L1 by reversing
-    %    the order of the elements.
-    %    (list,list) (?,?)
+    my_reverse(L1,L2) :- L2 is the list obtained from L1 by reversing
+       the order of the elements.
+       (list,list) (?,?)
 
-    % Note: reverse(+List1, -List2) is predefined
+    Note: reverse(+List1, -List2) is predefined
 
     my_reverse(L1,L2) :- my_rev(L1,L2,[]).
 
@@ -141,11 +141,11 @@ def test_05():
 
 def test_06():
     """
-    % P06 (*): Find out whether a list is a palindrome
-    % A palindrome can be read forward or backward; e.g. [x,a,m,a,x]
+    P06 (*): Find out whether a list is a palindrome
+    A palindrome can be read forward or backward; e.g. [x,a,m,a,x]
 
-    % is_palindrome(L) :- L is a palindrome list
-    %    (list) (?)
+    is_palindrome(L) :- L is a palindrome list
+       (list) (?)
 
     is_palindrome(L) :- reverse(L,L).
     """
@@ -162,14 +162,14 @@ def test_06():
 @pytest.mark.xfail()
 def test_07():
     """
-    % P07 (**): Flatten a nested list structure.
+    P07 (**): Flatten a nested list structure.
 
-    % my_flatten(L1,L2) :- the list L2 is obtained from the list L1 by
-    %    flattening; i.e. if an element of L1 is a list then it is replaced
-    %    by its elements, recursively.
-    %    (list,list) (+,?)
+    my_flatten(L1,L2) :- the list L2 is obtained from the list L1 by
+       flattening; i.e. if an element of L1 is a list then it is replaced
+       by its elements, recursively.
+       (list,list) (+,?)
 
-    % Note: flatten(+List1, -List2) is a predefined predicate
+    Note: flatten(+List1, -List2) is a predefined predicate
 
     my_flatten(X,[X]) :- \\+ is_list(X).
     my_flatten([],[]).
@@ -180,12 +180,12 @@ def test_07():
 
 def test_08():
     """
-    % P08 (**): Eliminate consecutive duplicates of list elements.
+    P08 (**): Eliminate consecutive duplicates of list elements.
 
-    % compress(L1,L2) :- the list L2 is obtained from the list L1 by
-    %    compressing repeated occurrences of elements into a single copy
-    %    of the element.
-    %    (list,list) (+,?)
+    compress(L1,L2) :- the list L2 is obtained from the list L1 by
+       compressing repeated occurrences of elements into a single copy
+       of the element.
+       (list,list) (+,?)
 
     compress([],[]).
     compress([X],[X]).
@@ -211,17 +211,17 @@ def test_08():
 @pytest.mark.xfail
 def test_09():
     """
-    % P09 (**):  Pack consecutive duplicates of list elements into sublists.
+    P09 (**):  Pack consecutive duplicates of list elements into sublists.
 
-    % pack(L1,L2) :- the list L2 is obtained from the list L1 by packing
-    %    repeated occurrences of elements into separate sublists.
-    %    (list,list) (+,?)
+    pack(L1,L2) :- the list L2 is obtained from the list L1 by packing
+       repeated occurrences of elements into separate sublists.
+       (list,list) (+,?)
 
     pack([],[]).
     pack([X|Xs],[Z|Zs]) :- transfer(X,Xs,Ys,Z), pack(Ys,Zs).
 
-    % transfer(X,Xs,Ys,Z) Ys is the list that remains from the list Xs
-    %    when all leading copies of X are removed and transfered to Z
+    transfer(X,Xs,Ys,Z) Ys is the list that remains from the list Xs
+       when all leading copies of X are removed and transfered to Z
 
     transfer(X,[],[],[X]).
     transfer(X,[Y|Ys],[Y|Ys],[X]) :- X \\= Y.
@@ -252,10 +252,10 @@ def test_09():
 
 def test_14():
     """
-    % P14 (*): Duplicate the elements of a list
+    P14 (*): Duplicate the elements of a list
 
-    % dupli(L1,L2) :- L2 is obtained from L1 by duplicating all elements.
-    %    (list,list) (?,?)
+    dupli(L1,L2) :- L2 is obtained from L1 by duplicating all elements.
+       (list,list) (?,?)
 
     dupli([],[]).
     dupli([X|Xs],[X,X|Ys]) :- dupli(Xs,Ys).
@@ -324,11 +324,11 @@ def test_17():
 
 def test_22():
     """
-    % P22 (*):  Create a list containing all integers within a given range.
+    P22 (*):  Create a list containing all integers within a given range.
 
-    % range(I,K,L) :- I <= K, and L is the list containing all
-    %    consecutive integers from I to K.
-    %    (integer,integer,list) (+,+,?)
+    range(I,K,L) :- I <= K, and L is the list containing all
+       consecutive integers from I to K.
+       (integer,integer,list) (+,+,?)
 
     range(I,I,[I]).
     range(I,K,[I|L]) :- I < K, I1 is I + 1, range(I1,K,L).
@@ -349,17 +349,17 @@ def test_22():
 
 def test_26():
     """
-    % P26 (**):  Generate the combinations of k distinct objects
-    %            chosen from the n elements of a list.
+    P26 (**):  Generate the combinations of k distinct objects
+               chosen from the n elements of a list.
 
-    % combination(K,L,C) :- C is a list of K distinct elements
-    %    chosen from the list L
+    combination(K,L,C) :- C is a list of K distinct elements
+       chosen from the list L
 
     combination(0,_,[]).
     combination(K,L,[X|Xs]) :- K > 0,
     el(X,L,R), K1 is K-1, combination(K1,R,Xs).
 
-    % Find out what the following predicate el/3 exactly does.
+    Find out what the following predicate el/3 exactly does.
 
     el(X,[X|L],L).
     el(X,[_|L],R) :- el(X,L,R).
