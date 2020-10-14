@@ -306,6 +306,42 @@ def test_15():
     assert list(search(db, dict(dupli=[1, 2], a=2, b=Q))) == [{Q: [1, 1, 2, 2]}]
 
 
+def test_16():
+    """
+    P16 (**):  Drop every N'th element from a list
+
+    drop(L1,N,L2) :- L2 is obtained from L1 by dropping every N'th element.
+       (list,integer,list) (?,+,?)
+
+    drop(L1,N,L2) :- drop(L1,N,L2,N).
+
+    drop(L1,N,L2,K) :- L2 is obtained from L1 by first copying K-1 elements
+       and then dropping an element and, from then on, dropping every
+       N'th element.
+       (list,integer,list,integer) (?,+,?,+)
+
+    drop([],_,[],_).
+    drop([_|Xs],N,Ys,1) :- drop(Xs,N,Ys,N).
+    drop([X|Xs],N,[X|Ys],K) :- K > 1, K1 is K - 1, drop(Xs,N,Ys,K1).
+    """
+    Xs, Ys, N, K, K1, Q = Variable.factory("Xs", "Ys", "N", "K", "K1", "Q")
+    L1, L2 = Variable.factory("L1", "L2")
+    db = [
+        dict(drop=[], a=_W, b=[], c=_W),
+        Rule(dict(drop=[_W, *Xs], a=N, b=Ys, c=1), dict(drop=Xs, a=N, b=Ys, c=N)),
+        Rule(
+            dict(drop=[X, *Xs], a=N, b=[X, *Ys], c=K),
+            Assert(lambda K: K > 1),
+            Assign(K1, lambda K: K - 1),
+            dict(drop=Xs, a=N, b=Ys, c=K1),
+        ),
+        Rule(dict(drop=L1, a=N, b=L2), dict(drop=L1, a=N, b=L2, c=N)),
+    ]
+    assert list(search(db, dict(drop=[1, 2, 3, 4, 5, 6, 7, 8, 9], a=3, b=Q))) == [
+        {Q: [1, 2, 4, 5, 7, 8]}
+    ]
+
+
 def test_17():
     """
     P17 (*): Split a list into two parts
