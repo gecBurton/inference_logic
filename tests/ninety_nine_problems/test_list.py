@@ -272,6 +272,56 @@ def test_14():
     assert list(search(db, query)) == [{Z: ["a", "a", "b", "b"]}]
 
 
+@pytest.mark.xfail
+def test_15():
+    """
+    P15 (**): Duplicate the elements of a list agiven number of times
+
+    dupli(L1,N,L2) :- L2 is obtained from L1 by duplicating all elements
+       N times.
+       (list,integer,list) (?,+,?)
+
+    dupli(L1,N,L2) :- dupli(L1,N,L2,N).
+
+    dupli(L1,N,L2,K) :- L2 is obtained from L1 by duplicating its leading
+       element K times, all other elements N times.
+       (list,integer,list,integer) (?,+,?,+)
+
+    dupli([],_,[],_).
+    dupli([_|Xs],N,Ys,0) :- dupli(Xs,N,Ys,N).
+    dupli([X|Xs],N,[X|Ys],K) :- K > 0, K1 is K - 1, dupli([X|Xs],N,Ys,K1).
+    """
+    assert False
+
+
+def test_17():
+    """
+    P17 (*): Split a list into two parts
+
+    split(L,N,L1,L2) :- the list L1 contains the first N elements
+       of the list L, the list L2 contains the remaining elements.
+       (list,integer,list,list) (?,+,?,?)
+
+    split(L,0,[],L).
+    split([X|Xs],N,[X|Ys],Zs) :- N > 0, N1 is N - 1, split(Xs,N1,Ys,Zs).
+    """
+    X, Xs, Ys, Zs, N, N1, P, Q = Variable.factory(
+        "X", "Xs", "Ys", "Zs", "N", "N1", "P", "Q"
+    )
+    db = [
+        dict(split=L, a=0, b=[], c=L),
+        Rule(
+            dict(split=[X, *Xs], a=N, b=[X, *Ys], c=Zs),
+            Assert(lambda N: N > 0),
+            Assign(N1, lambda N: N - 1),
+            dict(split=Xs, a=N1, b=Ys, c=Zs),
+        ),
+    ]
+    assert list(search(db, dict(split=[1, 2, 3, 4, 5, 6, 7, 8], a=3, b=Q, c=P))) == [
+        {Q: [1, 2, 3], P: [4, 5, 6, 7, 8]}
+    ]
+
+
 def test_22():
     """
     % P22 (*):  Create a list containing all integers within a given range.
