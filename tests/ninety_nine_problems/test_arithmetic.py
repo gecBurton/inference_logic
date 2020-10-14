@@ -2,6 +2,53 @@ from json_inference_logic.algorithms import search
 from json_inference_logic.data_structures import Assert, Assign, Rule, Variable
 
 
+def test_determine_whether_a_given_integer_number_is_prime_31():
+    """
+    % P31 (**) Determine whether a given integer number is prime.
+
+    % is_prime(P) :- P is a prime number
+    %    (integer) (+)
+
+    is_prime(2).
+    is_prime(3).
+    is_prime(P) :- integer(P), P > 3, P mod 2 =\\= 0, \\+ has_factor(P,3).
+
+    % has_factor(N,L) :- N has an odd factor F >= L.
+    %    (integer, integer) (+,+)
+
+    has_factor(N,L) :- N mod L =:= 0.
+    has_factor(N,L) :- L * L < N, L2 is L + 2, has_factor(N,L2).
+    """
+
+    N, L, L2, Q, P = Variable.factory("N", "L", "L2", "Q", "P")
+
+    db = [
+        dict(is_prime=2),
+        dict(is_prime=3),
+        Rule(
+            dict(is_prime=P),
+            Assert(lambda P: isinstance(P, int)),
+            Assert(lambda P: P > 3),
+            Assert(lambda P: P % 2 != 0),
+            dict(has_factor=P, x=3),
+        ),
+        Rule(dict(has_factor=N, x=L), Assert(lambda N, L: N % L != 0)),
+        Rule(
+            dict(has_factor=N, x=L),
+            Assert(lambda L, N: L * L < N),
+            Assign(L2, lambda L: L + 2),
+            dict(has_factor=N, x=L2),
+        ),
+    ]
+
+    assert list(search(db, dict(is_prime=3))) == [{}]
+    assert list(search(db, dict(is_prime=3.5))) == []
+    assert list(search(db, dict(is_prime=4))) == []
+    assert list(search(db, dict(is_prime=5))) == [{}]
+    assert list(search(db, dict(is_prime=6))) == []
+    assert list(search(db, dict(is_prime=7))) == [{}]
+
+
 def test_determine_the_greatest_common_divisor_of_two_positive_integer_numbers_32():
     """
     % P32 (**) Determine the greatest common divisor of two positive integers.
