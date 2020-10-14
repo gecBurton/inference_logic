@@ -250,6 +250,26 @@ def test_09():
     assert list(search(db, query)) == [{Q: [[1], [2]]}]
 
 
+@pytest.mark.xfail
+def test_10():
+    assert False
+
+
+@pytest.mark.xfail
+def test_11():
+    assert False
+
+
+@pytest.mark.xfail
+def test_12():
+    assert False
+
+
+@pytest.mark.xfail
+def test_13():
+    assert False
+
+
 def test_14():
     """
     P14 (*): Duplicate the elements of a list
@@ -370,6 +390,26 @@ def test_17():
     ]
 
 
+@pytest.mark.xfail
+def test_18():
+    assert False
+
+
+@pytest.mark.xfail
+def test_19():
+    assert False
+
+
+@pytest.mark.xfail
+def test_20():
+    assert False
+
+
+@pytest.mark.xfail
+def test_21():
+    assert False
+
+
 def test_22():
     """
     P22 (*):  Create a list containing all integers within a given range.
@@ -428,3 +468,13 @@ def test_26():
 
     query = dict(combination=2, a=[1, 2, 3], b=Q)
     assert list(search(db, query)) == [{Q: [2, 3]}, {Q: [1, 3]}, {Q: [1, 2]}]
+
+
+@pytest.mark.xfail
+def test_27():
+    assert False
+
+
+@pytest.mark.xfail
+def test_28():
+    assert False
