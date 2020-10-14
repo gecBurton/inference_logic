@@ -272,7 +272,6 @@ def test_14():
     assert list(search(db, query)) == [{Z: ["a", "a", "b", "b"]}]
 
 
-@pytest.mark.xfail
 def test_15():
     """
     P15 (**): Duplicate the elements of a list agiven number of times
@@ -291,7 +290,20 @@ def test_15():
     dupli([_|Xs],N,Ys,0) :- dupli(Xs,N,Ys,N).
     dupli([X|Xs],N,[X|Ys],K) :- K > 0, K1 is K - 1, dupli([X|Xs],N,Ys,K1).
     """
-    assert False
+    Xs, N, Ys, K, K1 = Variable.factory("Xs", "N", "Ys", "K", "K1")
+    L1, L2 = Variable.factory("L1", "L2")
+    db = [
+        dict(dupli=[], a=_W, b=[], c=_W),
+        Rule(dict(dupli=[_W, *Xs], a=N, b=Ys, c=0), dict(dupli=Xs, a=N, b=Ys, c=N)),
+        Rule(
+            dict(dupli=[X, *Xs], a=N, b=[X, *Ys], c=K),
+            Assert(lambda K: K > 0),
+            Assign(K1, lambda K: K - 1),
+            dict(dupli=[X, *Xs], a=N, b=Ys, c=K1),
+        ),
+        Rule(dict(dupli=L1, a=N, b=L2), dict(dupli=L1, a=N, b=L2, c=N)),
+    ]
+    assert list(search(db, dict(dupli=[1, 2], a=2, b=Q))) == [{Q: [1, 1, 2, 2]}]
 
 
 def test_17():
