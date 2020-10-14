@@ -30,12 +30,35 @@ declarative programming on json-like objects in Python
 Features
 --------
 
-* TODO
+.. code-block:: python
+
+    X, Y, Z, C, P = Variable.factory("X", "Y", "Z", "C", "P")
+
+    db = [
+        dict(parent="G", child="A"),
+        dict(parent="A", child="O"),
+        Rule(dict(ancestor=X, descendant=Z), dict(parent=X, child=Z)),
+        Rule(
+            dict(ancestor=X, descendant=Z),
+            dict(parent=X, child=Y),
+            dict(ancestor=Y, descendant=Z),
+        ),
+    ]
+
+    query = dict(ancestor=P, descendant=C)
+
+
+    assert next(search(db, query)) == {P: "G", C: "O"}
+    assert next(search(db, query)) == {P: "G", C: "A"}
+    assert next(search(db, query)) == {P: "A", C: "O"}
+
 
 
 
 99 problems
-------------
+-----------
+
+`99 problems`_
 
 .. automodule:: tests.ninety_nine_problems.test_list
    :members:
@@ -52,3 +75,4 @@ This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypack
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+.. _`99 problems`: https://www.ic.unicamp.br/~meidanis/courses/mc336/2009s2/prolog/problemas/

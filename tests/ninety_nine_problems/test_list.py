@@ -1,5 +1,3 @@
-"""https://www.ic.unicamp.br/~meidanis/courses/mc336/2009s2/prolog/problemas/
-"""
 import pytest
 
 from json_inference_logic import Rule, Variable
@@ -246,7 +244,7 @@ def test_09():
             dict(transfer=X, a=Xs, b=Ys, c=Zs),
         ),
     ]
-    query = dict(transfer=1, a=[1, 1, 1, 1, 1, 2], b=[2], c=Variable("QQ"))
+    query = dict(pack=[1, 2], list=Q)
     assert list(search(db, query)) == [{Q: [[1], [2]]}]
 
 
@@ -423,15 +421,15 @@ def test_22():
     """
     I, I1, K, L = Variable.factory("I", "I1", "K", "L")
     db = [
-        dict(arrange=I, a=I, b=[I]),
+        dict(start=I, end=I, list=[I]),
         Rule(
-            dict(arrange=I, a=K, b=[I, *L]),
+            dict(start=I, end=K, list=[I, *L]),
             Assert(lambda I, K: I < K),
             Assign(I1, lambda I: I + 1),
-            dict(arrange=I1, a=K, b=L),
+            dict(start=I1, end=K, list=L),
         ),
     ]
-    query = dict(arrange=2, a=5, b=Z)
+    query = dict(start=2, end=5, list=Z)
     assert list(search(db, query)) == [{Z: [2, 3, 4, 5]}]
 
 
@@ -456,17 +454,17 @@ def test_26():
     db = [
         dict(el=X, a=[X, *L], b=L),
         Rule(dict(el=X, a=[_W, *L], b=R), dict(el=X, a=L, b=R)),
-        dict(combination=0, a=_W, b=[]),
+        dict(choose=0, initial=_W, result=[]),
         Rule(
-            dict(combination=K, a=L, b=[X, *Xs]),
+            dict(choose=K, initial=L, result=[X, *Xs]),
             Assert(lambda K: K > 0),
             dict(el=X, a=L, b=R),
             Assign(K1, lambda K: K - 1),
-            dict(combination=K1, a=R, b=Xs),
+            dict(choose=K1, initial=R, result=Xs),
         ),
     ]
 
-    query = dict(combination=2, a=[1, 2, 3], b=Q)
+    query = dict(choose=2, initial=[1, 2, 3], result=Q)
     assert list(search(db, query)) == [{Q: [2, 3]}, {Q: [1, 3]}, {Q: [1, 2]}]
 
 

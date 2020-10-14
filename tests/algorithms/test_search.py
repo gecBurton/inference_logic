@@ -1,20 +1,20 @@
-from json_inference_logic import ImmutableDict, Rule, Variable
+from json_inference_logic import Rule, Variable
 from json_inference_logic.algorithms import search
 
 X, Y, Z, C, P = Variable.factory("X", "Y", "Z", "C", "P")
 
 db = [
-    ImmutableDict(parent="G", child="A"),
-    ImmutableDict(parent="A", child="O"),
-    Rule(ImmutableDict(ancestor=X, descendant=Z), ImmutableDict(parent=X, child=Z)),
+    dict(parent="G", child="A"),
+    dict(parent="A", child="O"),
+    Rule(dict(ancestor=X, descendant=Z), dict(parent=X, child=Z)),
     Rule(
-        ImmutableDict(ancestor=X, descendant=Z),
-        ImmutableDict(parent=X, child=Y),
-        ImmutableDict(ancestor=Y, descendant=Z),
+        dict(ancestor=X, descendant=Z),
+        dict(parent=X, child=Y),
+        dict(ancestor=Y, descendant=Z),
     ),
 ]
 
-query = ImmutableDict(ancestor=P, descendant=C)
+query = dict(ancestor=P, descendant=C)
 
 
 def test_search():
