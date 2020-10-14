@@ -11,7 +11,7 @@ L, _W = Variable.factory("L", "W")
 Q = Variable("Q")
 
 
-def test_find_the_last_element_of_a_list_01():
+def test_01():
     """
     P01 (*): Find the last element of a list
 
@@ -33,7 +33,7 @@ def test_find_the_last_element_of_a_list_01():
     assert list(search(db, query)) == [{Q: "c"}]
 
 
-def test_find_the_last_but_one_element_of_a_list_02():
+def test_02():
     """
     P02 (*): Find the last but one element of a list
 
@@ -56,7 +56,7 @@ def test_find_the_last_but_one_element_of_a_list_02():
     assert next(search(db, query)) == {Q: "b"}
 
 
-def test_find_the_kth_element_of_a_list_03():
+def test_03():
     """
     % P03 (*): Find the K'th element of a list.
     % The first element in the list is number 1.
@@ -87,7 +87,7 @@ def test_find_the_kth_element_of_a_list_03():
     assert list(search(db, query_2)) == [{Z: "b"}]
 
 
-def test_find_the_number_of_elements_of_a_list_04():
+def test_04():
     """
     % P04 (*): Find the number of elements of a list.
 
@@ -112,7 +112,7 @@ def test_find_the_number_of_elements_of_a_list_04():
     assert list(search(db, query)) == [{Q: 3}]
 
 
-def test_reverse_a_list_05():
+def test_05():
     """
     % P05 (*): Reverse a list.
 
@@ -139,7 +139,7 @@ def test_reverse_a_list_05():
     assert list(search(db, query)) == [{Z: [2, 1]}]
 
 
-def test_find_out_whether_a_list_is_a_palindrome_06():
+def test_06():
     """
     % P06 (*): Find out whether a list is a palindrome
     % A palindrome can be read forward or backward; e.g. [x,a,m,a,x]
@@ -160,7 +160,7 @@ def test_find_out_whether_a_list_is_a_palindrome_06():
 
 
 @pytest.mark.xfail()
-def test_flatten_a_nested_list_structure_07():
+def test_07():
     """
     % P07 (**): Flatten a nested list structure.
 
@@ -178,7 +178,7 @@ def test_flatten_a_nested_list_structure_07():
     assert False
 
 
-def test_eliminate_consecutive_duplicates_of_list_elements_08():
+def test_08():
     """
     % P08 (**): Eliminate consecutive duplicates of list elements.
 
@@ -209,7 +209,7 @@ def test_eliminate_consecutive_duplicates_of_list_elements_08():
 
 
 @pytest.mark.xfail
-def test_pack_consecutive_duplicates_of_list_elements_into_sublists_09():
+def test_09():
     """
     % P09 (**):  Pack consecutive duplicates of list elements into sublists.
 
@@ -250,7 +250,7 @@ def test_pack_consecutive_duplicates_of_list_elements_into_sublists_09():
     assert list(search(db, query)) == [{Q: [[1], [2]]}]
 
 
-def test_duplicate_the_elements_of_a_list_14():
+def test_14():
     """
     % P14 (*): Duplicate the elements of a list
 
@@ -272,7 +272,7 @@ def test_duplicate_the_elements_of_a_list_14():
     assert list(search(db, query)) == [{Z: ["a", "a", "b", "b"]}]
 
 
-def test_create_a_list_containing_all_integers_within_a_given_range_22():
+def test_22():
     """
     % P22 (*):  Create a list containing all integers within a given range.
 
@@ -297,7 +297,7 @@ def test_create_a_list_containing_all_integers_within_a_given_range_22():
     assert list(search(db, query)) == [{Z: [2, 3, 4, 5]}]
 
 
-def test_Generate_combinations_k_distinct_objects_from_n_elements_26():
+def test_26():
     """
     % P26 (**):  Generate the combinations of k distinct objects
     %            chosen from the n elements of a list.

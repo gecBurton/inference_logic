@@ -2,19 +2,19 @@ from json_inference_logic.algorithms import search
 from json_inference_logic.data_structures import Assert, Assign, Rule, Variable
 
 
-def test_determine_whether_a_given_integer_number_is_prime_31():
+def test_31():
     """
-    % P31 (**) Determine whether a given integer number is prime.
+    P31 (**) Determine whether a given integer number is prime.
 
-    % is_prime(P) :- P is a prime number
-    %    (integer) (+)
+    is_prime(P) :- P is a prime number
+       (integer) (+)
 
     is_prime(2).
     is_prime(3).
     is_prime(P) :- integer(P), P > 3, P mod 2 =\\= 0, \\+ has_factor(P,3).
 
-    % has_factor(N,L) :- N has an odd factor F >= L.
-    %    (integer, integer) (+,+)
+    has_factor(N,L) :- N has an odd factor F >= L.
+       (integer, integer) (+,+)
 
     has_factor(N,L) :- N mod L =:= 0.
     has_factor(N,L) :- L * L < N, L2 is L + 2, has_factor(N,L2).
@@ -49,20 +49,20 @@ def test_determine_whether_a_given_integer_number_is_prime_31():
     assert list(search(db, dict(is_prime=7))) == [{}]
 
 
-def test_determine_the_greatest_common_divisor_of_two_positive_integer_numbers_32():
+def test_32():
     """
-    % P32 (**) Determine the greatest common divisor of two positive integers.
+    P32 (**) Determine the greatest common divisor of two positive integers.
 
-    % gcd(X,Y,G) :- G is the greatest common divisor of X and Y
-    %    (integer, integer, integer) (+,+,?)
+    gcd(X,Y,G) :- G is the greatest common divisor of X and Y
+       (integer, integer, integer) (+,+,?)
 
 
     gcd(X,0,X) :- X > 0.
     gcd(X,Y,G) :- Y > 0, Z is X mod Y, gcd(Y,Z,G).
 
 
-    % Declare gcd as an arithmetic function; so you can use it
-    % like this:  ?- G is gcd(36,63).
+    Declare gcd as an arithmetic function; so you can use it
+    like this:  ?- G is gcd(36,63).
 
     :- arithmetic_function(gcd/2).
     """
@@ -79,13 +79,13 @@ def test_determine_the_greatest_common_divisor_of_two_positive_integer_numbers_3
     assert list(search(db, dict(a=36, b=63, gcd=Q))) == [{Q: 9}]
 
 
-def test_determine_whether_two_positive_integer_numbers_are_coprime_33():
+def test_33():
     """
-    % P33 (*) Determine whether two positive integer numbers are coprime.
-    %     Two numbers are coprime if their greatest common divisor equals 1.
+    P33 (*) Determine whether two positive integer numbers are coprime.
+        Two numbers are coprime if their greatest common divisor equals 1.
 
-    % coprime(X,Y) :- X and Y are coprime.
-    %    (integer, integer) (+,+)
+    coprime(X,Y) :- X and Y are coprime.
+       (integer, integer) (+,+)
 
     :- ensure_loaded(p32).
 
