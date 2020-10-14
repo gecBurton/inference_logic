@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06a9f91a-831a-4b04-8c04-359fe5664193" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/tests.rst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.rst" beforeDir="false" afterPath="$PROJECT_DIR$/README.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/json_inference_logic/algorithms.py" beforeDir="false" afterPath="$PROJECT_DIR$/json_inference_logic/algorithms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ninety_nine_problems/test_arithmetic.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ninety_nine_problems/test_arithmetic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ninety_nine_problems/test_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ninety_nine_problems/test_list.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -283,7 +282,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/json_inference_logic/algorithms.py</url>
-          <line>35</line>
+          <line>31</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
