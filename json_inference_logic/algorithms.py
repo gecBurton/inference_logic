@@ -15,21 +15,6 @@ from json_inference_logic.data_structures import (
 from json_inference_logic.equality import Equality
 
 
-def new_frame(obj, frame: int):
-    obj = construct(obj)
-    if isinstance(obj, Rule):
-        return Rule(
-            new_frame(obj.predicate, frame), *(new_frame(o, frame) for o in obj.body),
-        )
-    if isinstance(obj, PrologList):
-        return PrologList(new_frame(obj.head, frame), new_frame(obj.tail, frame))
-    if isinstance(obj, ImmutableDict):
-        return ImmutableDict(**{k: new_frame(v, frame) for k, v in obj.items()})
-    if isinstance(obj, (Assign, Variable, Assert)):
-        return obj.new_frame(frame)
-    return obj
-
-
 def unify(left, right, equality: Optional[Equality] = None) -> Equality:
     left, right = construct(left), construct(right)
 
@@ -79,7 +64,7 @@ def search(db: List, query: ImmutableDict) -> Iterator[Dict[Variable, Any]]:
         else:
             for rule in db:
                 i += 1
-                rule = new_frame(rule, i)
+                rule = rule.new_frame(i)
 
                 try:
                     new_known = unify(goal.predicate, rule.predicate, equality=equality)
