@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="06a9f91a-831a-4b04-8c04-359fe5664193" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/ninety_nine_problems/test_arithmetic.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ninety_nine_problems/test_arithmetic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/ninety_nine_problems/test_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ninety_nine_problems/test_list.py" afterDir="false" />
-    </list>
+    <list default="true" id="06a9f91a-831a-4b04-8c04-359fe5664193" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,32 +34,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Python tests.pytest in tests">
-    <configuration name="pytest for tests.algorithms.test_unify.test_unify_pass" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <module name="json_inference_logic" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" />
-        </ENTRIES>
-      </EXTENSION>
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;left9-right9-None-final9&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;tests.algorithms.test_unify.test_unify_pass&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
     <configuration name="pytest for tests.data_structures.test_immutable_dict.test__init__" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="json_inference_logic" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -87,6 +57,32 @@
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;tests.data_structures.test_immutable_dict.test__init__&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for tests.ninety_nine_problems.test_list.test_09" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="json_inference_logic" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        </ENTRIES>
+      </EXTENSION>
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;tests.ninety_nine_problems.test_list.test_09&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -196,9 +192,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.pytest for tests.ninety_nine_problems.test_list.test_09" />
         <item itemvalue="Python tests.pytest for tests.ninety_nine_problems.test_list.test_eliminate_consecutive_duplicates_of_list_elements_08" />
         <item itemvalue="Python tests.pytest for tests.ninety_nine_problems.test_list.test_find_the_last_element_of_a_list_01" />
-        <item itemvalue="Python tests.pytest for tests.algorithms.test_unify.test_unify_pass (1)" />
         <item itemvalue="Python tests.pytest for tests.data_structures.test_immutable_dict.test__init__" />
         <item itemvalue="Python tests.pytest for tests.test_equality.test_inject" />
       </list>
@@ -236,22 +232,22 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="779" y="324" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1601966129289" />
-    <state width="901" height="327" key="GridCell.Tab.0.bottom" timestamp="1602656134867">
+    <state width="1802" height="326" key="GridCell.Tab.0.bottom" timestamp="1602684643513">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="901" height="327" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602656134867" />
-    <state width="901" height="327" key="GridCell.Tab.0.center" timestamp="1602656134864">
+    <state width="1802" height="326" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602684643513" />
+    <state width="1802" height="326" key="GridCell.Tab.0.center" timestamp="1602684643512">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="901" height="327" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602656134864" />
-    <state width="901" height="327" key="GridCell.Tab.0.left" timestamp="1602656134862">
+    <state width="1802" height="326" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602684643512" />
+    <state width="1802" height="326" key="GridCell.Tab.0.left" timestamp="1602684643511">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="901" height="327" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602656134862" />
-    <state width="901" height="327" key="GridCell.Tab.0.right" timestamp="1602656134866">
+    <state width="1802" height="326" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602684643511" />
+    <state width="1802" height="326" key="GridCell.Tab.0.right" timestamp="1602684643513">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="901" height="327" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602656134866" />
+    <state width="1802" height="326" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602684643513" />
     <state width="1802" height="340" key="GridCell.Tab.1.bottom" timestamp="1602584756895">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -287,7 +283,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/ninety_nine_problems/test_list.py</url>
-          <line>139</line>
+          <line>137</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">

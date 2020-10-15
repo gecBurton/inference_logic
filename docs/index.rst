@@ -6,11 +6,13 @@ Welcome to JSON Inference Logic's documentation!
    :caption: Contents:
 
    readme
+   ninety_nine
    installation
    usage
    contributing
    authors
    history
+
 
 Indices and tables
 ==================
