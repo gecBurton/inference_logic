@@ -55,13 +55,6 @@ Features
 
 
 
-99 problems
------------
-
-`99 problems`_
-
-
-
 Credits
 -------
 
