@@ -4,6 +4,12 @@ from collections import UserDict
 from typing import Any, Dict, List, Optional, Set, Union
 
 
+def new_frame(obj, frame: int):
+    if isinstance(obj, (Variable, ImmutableDict, PrologList)):
+        return obj.new_frame(frame)
+    return obj
+
+
 class Variable:
     @classmethod
     def factory(cls, *names: str) -> List:
@@ -144,6 +150,9 @@ class PrologList:
     def __repr__(self):
         return f".({self.head}, {self.tail})"
 
+    def new_frame(self, frame: int) -> PrologList:
+        return PrologList(new_frame(self.head, frame), new_frame(self.tail, frame))
+
 
 class ImmutableDict(UserDict):
     """https://www.python.org/dev/peps/pep-0351/
@@ -213,6 +222,9 @@ class ImmutableDict(UserDict):
         _get_variables(self)
         return _variables
 
+    def new_frame(self, frame: int) -> ImmutableDict:
+        return ImmutableDict({k: new_frame(v, frame) for k, v in self.items()})
+
 
 class UnificationError(ValueError):
     pass
@@ -237,6 +249,11 @@ class Rule:
             return f"{self.predicate} ¬ {body_repr}."
         else:
             return f"{self.predicate}."
+
+    def new_frame(self, frame: int) -> Rule:
+        return Rule(
+            self.predicate.new_frame(frame), *(o.new_frame(frame) for o in self.body),
+        )
 
 
 class Assign:
