@@ -232,6 +232,7 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="779" y="324" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1601966129289" />
+<<<<<<< Updated upstream
     <state width="1802" height="326" key="GridCell.Tab.0.bottom" timestamp="1602684643513">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -248,6 +249,24 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1802" height="326" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602684643513" />
+=======
+    <state width="1802" height="326" key="GridCell.Tab.0.bottom" timestamp="1602828609181">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state width="1802" height="326" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602828609181" />
+    <state width="1802" height="326" key="GridCell.Tab.0.center" timestamp="1602828609175">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state width="1802" height="326" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602828609175" />
+    <state width="1802" height="326" key="GridCell.Tab.0.left" timestamp="1602828609173">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state width="1802" height="326" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602828609173" />
+    <state width="1802" height="326" key="GridCell.Tab.0.right" timestamp="1602828609176">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state width="1802" height="326" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602828609176" />
+>>>>>>> Stashed changes
     <state width="1802" height="340" key="GridCell.Tab.1.bottom" timestamp="1602584756895">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -278,7 +297,11 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/json_inference_logic/algorithms.py</url>
+<<<<<<< Updated upstream
           <line>31</line>
+=======
+          <line>43</line>
+>>>>>>> Stashed changes
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">

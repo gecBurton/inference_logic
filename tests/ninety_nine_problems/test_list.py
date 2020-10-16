@@ -206,7 +206,6 @@ def test_08():
     assert out == [{Q: [1, 2, 1]}]
 
 
-@pytest.mark.xfail
 def test_09():
     """
     P09 (**):  Pack consecutive duplicates of list elements into sublists.
@@ -236,7 +235,7 @@ def test_09():
         ),
         dict(transfer=X, a=[], b=[], c=[X]),
         Rule(
-            dict(transfer=[X], a=[Y, *Ys], b=[Y, *Ys], c=[X]),
+            dict(transfer=X, a=[Y, *Ys], b=[Y, *Ys], c=[X]),
             Assert(lambda X, Y: X != Y),
         ),
         Rule(
