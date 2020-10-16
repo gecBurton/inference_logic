@@ -243,13 +243,68 @@ def test_09():
             dict(transfer=X, a=Xs, b=Ys, c=Zs),
         ),
     ]
-    query = dict(pack=[1, 2], list=Q)
-    assert list(search(db, query)) == [{Q: [[1], [2]]}]
+    query = dict(pack=[1, 2, 2, 3, 3, 3], list=Q)
+    assert list(search(db, query)) == [{Q: [[1], [2, 2], [3, 3, 3]]}]
 
 
-@pytest.mark.xfail
 def test_10():
-    assert False
+    """
+    P10 (*):  Run-length encoding of a list
+
+    encode(L1,L2) :- the list L2 is obtained from the list L1 by run-length
+       encoding. Consecutive duplicates of elements are encoded as terms [N,E],
+       where N is the number of duplicates of the element E.
+       (list,list) (+,?)
+
+    :- ensure_loaded(p09).
+
+    encode(L1,L2) :- pack(L1,L), transform(L,L2).
+
+    transform([],[]).
+    transform([[X|Xs]|Ys],[[N,X]|Zs]) :- length([X|Xs],N), transform(Ys,Zs).
+    """
+    Xs, Ys, Zs = Variable.factory("Xs", "Ys", "Zs")
+    L, L1, L2, N, N1 = Variable.factory("L", "L1", "L2", "N", "N1")
+
+    db_04 = [
+        dict(my_length=0, list=[]),
+        Rule(
+            dict(my_length=N, list=[_W, *L]),
+            dict(my_length=N1, list=L),
+            Assign(N, lambda N1: N1 + 1),
+        ),
+    ]
+
+    db_09 = [
+        dict(pack=[], list=[]),
+        Rule(
+            dict(pack=[X, *Xs], list=[Z, *Zs]),
+            dict(transfer=X, a=Xs, b=Ys, c=Z),
+            dict(pack=Ys, list=Zs),
+        ),
+        dict(transfer=X, a=[], b=[], c=[X]),
+        Rule(
+            dict(transfer=X, a=[Y, *Ys], b=[Y, *Ys], c=[X]),
+            Assert(lambda X, Y: X != Y),
+        ),
+        Rule(
+            dict(transfer=X, a=[X, *Xs], b=Ys, c=[X, *Zs]),
+            dict(transfer=X, a=Xs, b=Ys, c=Zs),
+        ),
+    ]
+
+    db_10 = [
+        Rule(dict(encode=L1, a=L2), dict(pack=L1, list=L), dict(transform=L, list=L2)),
+        dict(transform=[], list=[]),
+        Rule(
+            dict(transform=[[X, *Xs], *Ys], list=[[N, X], *Zs]),
+            dict(my_length=N, list=[X, *Xs]),
+            dict(transform=Ys, list=Zs),
+        ),
+    ]
+    db = db_04 + db_09 + db_10
+    query = dict(encode=[1, 2, 2, 3, 3, 3], a=Q)
+    assert list(search(db, query)) == [{Q: [[1, 1], [2, 2], [3, 3]]}]
 
 
 @pytest.mark.xfail
