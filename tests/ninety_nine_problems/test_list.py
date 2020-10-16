@@ -2,7 +2,7 @@ import pytest
 
 from json_inference_logic import Rule, Variable
 from json_inference_logic.algorithms import search
-from json_inference_logic.data_structures import Assert, Assign
+from json_inference_logic.data_structures import Assert, Assign, PrologList
 
 X, Y, Z = Variable.factory("X", "Y", "Z")
 L, _W = Variable.factory("L", "W")
@@ -387,7 +387,37 @@ def test_11():
 
 @pytest.mark.xfail
 def test_12():
-    assert False
+    r"""
+    P12 (**): Decode a run-length compressed list.
+
+    decode(L1,L2) :- L2 is the uncompressed version of the run-length
+       encoded list L1.
+       (list,list) (+,?)
+
+    decode([],[]).
+    decode([X|Ys],[X|Zs]) :- \+ is_list(X), decode(Ys,Zs).
+    decode([[1,X]|Ys],[X|Zs]) :- decode(Ys,Zs).
+    decode([[N,X]|Ys],[X|Zs]) :- N > 1, N1 is N - 1, decode([[N1,X]|Ys],Zs).
+    """
+    Xs, Ys, Zs = Variable.factory("Xs", "Ys", "Zs")
+    N, N1 = Variable.factory("N", "N1")
+    db = [
+        dict(decode=[], list=[]),
+        Rule(
+            dict(decode=[X, *Ys], list=[X, *Zs]),
+            Assert(lambda X: isinstance(X, PrologList)),
+            dict(decode=Ys, list=Zs),
+        ),
+        Rule(dict(decode=[[1, X], *Ys], list=[X, *Zs]), dict(decode=Ys, list=Zs)),
+        Rule(
+            dict(decode=[[N, X], *Ys], list=[X, *Zs]),
+            Assert(lambda N: N > 1),
+            Assign(N1, lambda N: N - 1),
+            dict(decode=[[N1, X], *Ys], list=Zs),
+        ),
+    ]
+    query = dict(decode=[1, [2, 2], [3, 3]], list=Q)
+    assert list(search(db, query)) == [{Q: [1, [2, 2], [3, 3]]}]
 
 
 @pytest.mark.xfail
