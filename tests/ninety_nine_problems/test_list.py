@@ -307,9 +307,82 @@ def test_10():
     assert list(search(db, query)) == [{Q: [[1, 1], [2, 2], [3, 3]]}]
 
 
-@pytest.mark.xfail
 def test_11():
-    assert False
+    """
+    P11 (*):  Modified run-length encoding
+
+    encode_modified(L1,L2) :- the list L2 is obtained from the list L1 by
+       run-length encoding. Consecutive duplicates of elements are encoded
+       as terms [N,E], where N is the number of duplicates of the element E.
+       However, if N equals 1 then the element is simply copied into the
+       output list.
+       (list,list) (+,?)
+
+    :- ensure_loaded(p10).
+
+    encode_modified(L1,L2) :- encode(L1,L), strip(L,L2).
+
+    strip([],[]).
+    strip([[1,X]|Ys],[X|Zs]) :- strip(Ys,Zs).
+    strip([[N,X]|Ys],[[N,X]|Zs]) :- N > 1, strip(Ys,Zs).
+    """
+    Xs, Ys, Zs = Variable.factory("Xs", "Ys", "Zs")
+    L, L1, L2, N, N1 = Variable.factory("L", "L1", "L2", "N", "N1")
+
+    db_04 = [
+        dict(my_length=0, list=[]),
+        Rule(
+            dict(my_length=N, list=[_W, *L]),
+            dict(my_length=N1, list=L),
+            Assign(N, lambda N1: N1 + 1),
+        ),
+    ]
+
+    db_09 = [
+        dict(pack=[], list=[]),
+        Rule(
+            dict(pack=[X, *Xs], list=[Z, *Zs]),
+            dict(transfer=X, a=Xs, b=Ys, c=Z),
+            dict(pack=Ys, list=Zs),
+        ),
+        dict(transfer=X, a=[], b=[], c=[X]),
+        Rule(
+            dict(transfer=X, a=[Y, *Ys], b=[Y, *Ys], c=[X]),
+            Assert(lambda X, Y: X != Y),
+        ),
+        Rule(
+            dict(transfer=X, a=[X, *Xs], b=Ys, c=[X, *Zs]),
+            dict(transfer=X, a=Xs, b=Ys, c=Zs),
+        ),
+    ]
+
+    db_10 = [
+        Rule(dict(encode=L1, a=L2), dict(pack=L1, list=L), dict(transform=L, list=L2)),
+        dict(transform=[], list=[]),
+        Rule(
+            dict(transform=[[X, *Xs], *Ys], list=[[N, X], *Zs]),
+            dict(my_length=N, list=[X, *Xs]),
+            dict(transform=Ys, list=Zs),
+        ),
+    ]
+
+    db_11 = [
+        Rule(
+            dict(encode_modified=L1, list=L2),
+            dict(encode=L1, a=L),
+            dict(strip=L, list=L2),
+        ),
+        dict(strip=[], list=[]),
+        Rule(dict(strip=[[1, X], *Ys], list=[X, *Zs]), dict(strip=Ys, list=Zs)),
+        Rule(
+            dict(strip=[[N, X], *Ys], list=[[N, X], *Zs]),
+            Assert(lambda N: N > 1),
+            dict(strip=Ys, list=Zs),
+        ),
+    ]
+    db = db_04 + db_09 + db_10 + db_11
+    query = dict(encode_modified=[1, 2, 2, 3, 3, 3], list=Q)
+    assert list(search(db, query)) == [{Q: [1, [2, 2], [3, 3]]}]
 
 
 @pytest.mark.xfail
