@@ -1,5 +1,5 @@
 ====================
-JSON Inference Logic
+Inference Logic
 ====================
 
 
