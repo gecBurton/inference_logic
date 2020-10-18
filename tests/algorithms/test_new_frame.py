@@ -1,7 +1,7 @@
 import pytest
 
-from json_inference_logic import Rule, Variable
-from json_inference_logic.data_structures import construct, new_frame
+from inference_logic import Rule, Variable
+from inference_logic.data_structures import construct, new_frame
 
 A, B = Variable.factory("A", "B")
 A_1 = Variable("A", 1)

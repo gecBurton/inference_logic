@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
-SPHINXPROJ    = json_inference_logic
+SPHINXPROJ    = inference_logic
 SOURCEDIR     = .
 BUILDDIR      = _build
 

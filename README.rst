@@ -3,19 +3,19 @@ JSON Inference Logic
 ====================
 
 
-.. image:: https://img.shields.io/pypi/v/json_inference_logic.svg
-        :target: https://pypi.python.org/pypi/json_inference_logic
+.. image:: https://img.shields.io/pypi/v/inference_logic.svg
+        :target: https://pypi.python.org/pypi/inference_logic
 
-.. image:: https://img.shields.io/travis/gecBurton/json_inference_logic.svg
-        :target: https://travis-ci.com/gecBurton/json_inference_logic
+.. image:: https://img.shields.io/travis/gecBurton/inference_logic.svg
+        :target: https://travis-ci.com/gecBurton/inference_logic
 
 .. image:: https://readthedocs.org/projects/json-inference-logic/badge/?version=latest
         :target: https://json-inference-logic.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
 
-.. image:: https://pyup.io/repos/github/gecBurton/json_inference_logic/shield.svg
-     :target: https://pyup.io/repos/github/gecBurton/json_inference_logic/
+.. image:: https://pyup.io/repos/github/gecBurton/inference_logic/shield.svg
+     :target: https://pyup.io/repos/github/gecBurton/inference_logic/
      :alt: Updates
 
 
@@ -27,7 +27,6 @@ in native Python.
 The code is loosely based on Prolog, and success is measured in
 number of the `99 problems`_ solved to keep the code focussed
 on delivering features not bike-shedding
-
 
 This code is experimental and incomplete. Do not use it in your
 work or school! If you wish to use a serious, well tested
@@ -41,11 +40,15 @@ tldr
 
 .. code-block:: python
 
+    from inference_logic import Variable, Rule, search
+
     X, Y, Z, C, P = Variable.factory("X", "Y", "Z", "C", "P")
 
     db = [
-        dict(parent="G", child="A"),
-        dict(parent="A", child="O"),
+        dict(parent="Abe", child="Homer"),
+        dict(parent="Homer", child="Lisa"),
+        dict(parent="Homer", child="Bart"),
+        dict(parent="Homer", child="Maggie"),
         Rule(dict(ancestor=X, descendant=Z), dict(parent=X, child=Z)),
         Rule(
             dict(ancestor=X, descendant=Z),
@@ -55,14 +58,16 @@ tldr
     ]
 
     query = dict(ancestor=P, descendant=C)
+    results = search(db, query)
 
 
-    assert next(search(db, query)) == {P: "G", C: "O"}
-    assert next(search(db, query)) == {P: "G", C: "A"}
-    assert next(search(db, query)) == {P: "A", C: "O"}
-
-
-
+    assert next(results) == {C: "Lisa", P: 'Abe"}
+    assert next(results) == {C: "Bart", P: 'Abe"}
+    assert next(results) == {C: "Maggie", P: 'Abe"}
+    assert next(results) == {C: "Homer", P: 'Abe"}
+    assert next(results) == {C: "Lisa", P: 'Homer"}
+    assert next(results) == {C: "Bart", P: 'Homer"}
+    assert next(results) == {C: "Maggie", P: 'Homer"}
 
 
 

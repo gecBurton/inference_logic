@@ -33,13 +33,13 @@ jobs:
         isort **/*.py
     - name: Format code with black
       run: |
-        black json_inference_logic tests
+        black inference_logic tests
     - name: Lint with flake8
       run: |
-        flake8 json_inference_logic tests
+        flake8 inference_logic tests
     - name: Test with pytest
       run: |
-        pytest --cov=json_inference_logic --cov-fail-under=100 --cov-report=term-missing
+        pytest --cov=inference_logic --cov-fail-under=100 --cov-report=term-missing
     - name: Static typechecking with mypy
       run: |
-        mypy json_inference_logic tests
+        mypy inference_logic tests

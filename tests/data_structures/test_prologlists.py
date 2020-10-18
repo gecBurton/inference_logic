@@ -1,6 +1,6 @@
 import pytest
 
-from json_inference_logic.data_structures import PrologListNull, construct
+from inference_logic.data_structures import PrologListNull, construct
 
 
 def test_null__repr__():

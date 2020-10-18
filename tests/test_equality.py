@@ -1,7 +1,8 @@
 import pytest
 
-from json_inference_logic import Equality, ImmutableDict, UnificationError, Variable
-from json_inference_logic.data_structures import construct
+from inference_logic import Variable
+from inference_logic.data_structures import ImmutableDict, UnificationError, construct
+from inference_logic.equality import Equality
 
 A, B, C, D = Variable.factory("A", "B", "C", "D")
 

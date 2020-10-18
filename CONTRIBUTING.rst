@@ -15,7 +15,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/gecBurton/json_inference_logic/issues.
+Report bugs at https://github.com/gecBurton/inference_logic/issues.
 
 If you are reporting a bug, please include:
 
@@ -45,7 +45,7 @@ articles, and such.
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/gecBurton/json_inference_logic/issues.
+The best way to send feedback is to file an issue at https://github.com/gecBurton/inference_logic/issues.
 
 If you are proposing a feature:
 
@@ -57,17 +57,17 @@ If you are proposing a feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `json_inference_logic` for local development.
+Ready to contribute? Here's how to set up `inference_logic` for local development.
 
-1. Fork the `json_inference_logic` repo on GitHub.
+1. Fork the `inference_logic` repo on GitHub.
 2. Clone your fork locally::
 
-    $ git clone git@github.com:your_name_here/json_inference_logic.git
+    $ git clone git@github.com:your_name_here/inference_logic.git
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
 
-    $ mkvirtualenv json_inference_logic
-    $ cd json_inference_logic/
+    $ mkvirtualenv inference_logic
+    $ cd inference_logic/
     $ python setup.py develop
 
 4. Create a branch for local development::
@@ -79,7 +79,7 @@ Ready to contribute? Here's how to set up `json_inference_logic` for local devel
 5. When you're done making changes, check that your changes pass flake8 and the
    tests, including testing other Python versions with tox::
 
-    $ flake8 json_inference_logic tests
+    $ flake8 inference_logic tests
     $ python setup.py test or pytest
     $ tox
 
@@ -103,7 +103,7 @@ Before you submit a pull request, check that it meets these guidelines:
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
 3. The pull request should work for Python 3.5, 3.6, 3.7 and 3.8, and for PyPy. Check
-   https://travis-ci.com/gecBurton/json_inference_logic/pull_requests
+   https://travis-ci.com/gecBurton/inference_logic/pull_requests
    and make sure that the tests pass for all supported Python versions.
 
 Tips
@@ -111,7 +111,7 @@ Tips
 
 To run a subset of tests::
 
-$ pytest tests.test_json_inference_logic
+$ pytest tests.test_inference_logic
 
 
 Deploying

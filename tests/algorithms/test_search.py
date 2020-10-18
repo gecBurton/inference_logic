@@ -1,5 +1,5 @@
-from json_inference_logic import Rule, Variable
-from json_inference_logic.algorithms import search
+from inference_logic import Rule, Variable
+from inference_logic.algorithms import search
 
 X, Y, Z, C, P = Variable.factory("X", "Y", "Z", "C", "P")
 

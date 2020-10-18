@@ -1,6 +1,6 @@
 import pytest
 
-from json_inference_logic import Variable
+from inference_logic import Variable
 
 
 @pytest.mark.parametrize(

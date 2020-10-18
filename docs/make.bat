@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=json_inference_logic
+set SPHINXPROJ=inference_logic
 
 if "%1" == "" goto help
 
