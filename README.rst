@@ -24,9 +24,12 @@ The goal of this project is to explore how to write a minimal
 set of features that allows a programmer to code declaratively
 in native Python.
 
-The code is loosely based on Prolog, and success is measured in
-number of the `99 problems`_ solved to keep the code focussed
-on delivering features not bike-shedding
+The code is loosely based on Prolog, but rather than use the Prolog
+Term/functor structure it uses JSON-like dicts and tuples.
+
+The success of this project is measured by the number of the
+`99 problems`_ solved to keep the code focussed on delivering
+features and not bike-shedding
 
 This code is experimental and incomplete. Do not use it in your
 work or school! If you wish to use a serious, well tested
@@ -61,13 +64,13 @@ tldr
     results = search(db, query)
 
 
-    assert next(results) == {C: "Lisa", P: 'Abe"}
-    assert next(results) == {C: "Bart", P: 'Abe"}
-    assert next(results) == {C: "Maggie", P: 'Abe"}
-    assert next(results) == {C: "Homer", P: 'Abe"}
-    assert next(results) == {C: "Lisa", P: 'Homer"}
-    assert next(results) == {C: "Bart", P: 'Homer"}
-    assert next(results) == {C: "Maggie", P: 'Homer"}
+    assert next(results) == {C: "Lisa", P: "Abe"}
+    assert next(results) == {C: "Bart", P: "Abe"}
+    assert next(results) == {C: "Maggie", P: "Abe"}
+    assert next(results) == {C: "Homer", P: "Abe"}
+    assert next(results) == {C: "Lisa", P: "Homer"}
+    assert next(results) == {C: "Bart", P: "Homer"}
+    assert next(results) == {C: "Maggie", P: "Homer"}
 
 
 
