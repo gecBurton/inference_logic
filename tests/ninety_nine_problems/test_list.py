@@ -473,7 +473,8 @@ def test_13():
             dict(coun=X, a=Xs, b=Ys, c=K1, d=T),
         ),
     ]
-    query = dict(encode_direct=[1, 2, 2, 3, 3, 3], list=Q)
+    query = dict(count=6, a=[6, 6, 6, 6, 7], b=Ys, c=2, d=6)
+    # query = dict(encode_direct=[1, 2, 2, 3, 3, 3], list=Q)
     assert list(search(db, query)) == [{Q: [1, [2, 2], [3, 3]]}]
 
 
