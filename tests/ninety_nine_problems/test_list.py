@@ -1,8 +1,8 @@
 import pytest
 
-from json_inference_logic import Rule, Variable
-from json_inference_logic.algorithms import search
-from json_inference_logic.data_structures import Assert, Assign, PrologList
+from inference_logic import Rule, Variable
+from inference_logic.algorithms import search
+from inference_logic.data_structures import Assert, Assign, PrologList
 
 X, Y, Z = Variable.factory("X", "Y", "Z")
 L, _W = Variable.factory("L", "W")

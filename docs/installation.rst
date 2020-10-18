@@ -12,7 +12,7 @@ To install JSON Inference Logic, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install json_inference_logic
+    $ pip install inference_logic
 
 This is the preferred method to install JSON Inference Logic, as it will always install the most recent stable release.
 
@@ -32,13 +32,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/gecBurton/json_inference_logic
+    $ git clone git://github.com/gecBurton/inference_logic
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/gecBurton/json_inference_logic/tarball/master
+    $ curl -OJL https://github.com/gecBurton/inference_logic/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/gecBurton/json_inference_logic
-.. _tarball: https://github.com/gecBurton/json_inference_logic/tarball/master
+.. _Github repo: https://github.com/gecBurton/inference_logic
+.. _tarball: https://github.com/gecBurton/inference_logic/tarball/master

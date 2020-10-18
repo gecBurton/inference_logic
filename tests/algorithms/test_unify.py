@@ -1,13 +1,9 @@
 import pytest
 
-from json_inference_logic import (
-    Equality,
-    ImmutableDict,
-    UnificationError,
-    Variable,
-    unify,
-)
-from json_inference_logic.data_structures import construct
+from inference_logic import Variable
+from inference_logic.algorithms import unify
+from inference_logic.data_structures import UnificationError, construct
+from inference_logic.equality import Equality
 
 A, B, C = Variable.factory("A", "B", "C")
 
@@ -20,12 +16,7 @@ A, B, C = Variable.factory("A", "B", "C")
         (1, 1, None, Equality()),
         (A, B, None, Equality(free=[{A, B}])),
         ((A, B), (1, 2), None, Equality(fixed={1: {A}, 2: {B}})),
-        (
-            ImmutableDict(a=A, b=2),
-            ImmutableDict(a=1, b=B),
-            None,
-            Equality(fixed={1: {A}, 2: {B}}),
-        ),
+        (dict(a=A, b=2), dict(a=1, b=B), None, Equality(fixed={1: {A}, 2: {B}}),),
         (A, C, Equality(free=[{A, B}]), Equality(free=[{A, B, C}])),
         (A, 1, Equality(free=[{A, B}]), Equality(fixed={1: {A, B}})),
         (
@@ -48,8 +39,8 @@ def test_unify_pass(left, right, initial, final):
         (True, False, None, "values dont match: True != False"),
         ((A, B), (1, 2, 3), None, "list lengths must be the same"),
         (
-            ImmutableDict(a=1, b=2),
-            ImmutableDict(a=1, c=3),
+            dict(a=1, b=2),
+            dict(a=1, c=3),
             None,
             "keys must match: ('a', 'b') != ('a', 'c')",
         ),

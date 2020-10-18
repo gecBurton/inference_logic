@@ -1,7 +1,7 @@
 from itertools import product
 from typing import Any, Dict, Iterator, List, Optional, Tuple
 
-from json_inference_logic.data_structures import (
+from inference_logic.data_structures import (
     Assert,
     Assign,
     ImmutableDict,
@@ -12,7 +12,7 @@ from json_inference_logic.data_structures import (
     Variable,
     construct,
 )
-from json_inference_logic.equality import Equality
+from inference_logic.equality import Equality
 
 
 def unify(left, right, equality: Optional[Equality] = None) -> Equality:

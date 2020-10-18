@@ -1,7 +1,12 @@
 import pytest
 
-from json_inference_logic import ImmutableDict, Variable
-from json_inference_logic.data_structures import PrologList, construct, deconstruct
+from inference_logic import Variable
+from inference_logic.data_structures import (
+    ImmutableDict,
+    PrologList,
+    construct,
+    deconstruct,
+)
 
 
 def test__init__():

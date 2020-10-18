@@ -4,7 +4,7 @@ from copy import deepcopy
 from itertools import product
 from typing import Any, Dict, List, Optional, Sequence, Set, Union
 
-from json_inference_logic.data_structures import (
+from inference_logic.data_structures import (
     Assert,
     Assign,
     ImmutableDict,

@@ -12,14 +12,14 @@ repos:
         name: black
         stages: [commit]
         language: system
-        entry: pipenv run black json_inference_logic tests
+        entry: pipenv run black inference_logic tests
         types: [python]
 
       - id: flake8
         name: flake8
         stages: [commit]
         language: system
-        entry: pipenv run flake8 json_inference_logic tests
+        entry: pipenv run flake8 inference_logic tests
         types: [python]
         exclude: setup.py
 
@@ -27,7 +27,7 @@ repos:
         name: pytest
         stages: [commit]
         language: system
-        entry: pipenv run pytest --cov=json_inference_logic --cov-fail-under=100 --cov-report=term-missing
+        entry: pipenv run pytest --cov=inference_logic --cov-fail-under=100 --cov-report=term-missing
         types: [python]
         pass_filenames: false
 
@@ -35,7 +35,7 @@ repos:
         name: doctest
         stages: [commit]
         language: system
-        entry: pipenv run pytest --doctest-modules json_inference_logic/
+        entry: pipenv run pytest --doctest-modules inference_logic/
         types: [python]
         pass_filenames: false
 
@@ -43,7 +43,7 @@ repos:
         name: mypy
         stages: [commit]
         language: system
-        entry: pipenv run mypy json_inference_logic tests
+        entry: pipenv run mypy inference_logic tests
         types: [python]
         pass_filenames: false
 

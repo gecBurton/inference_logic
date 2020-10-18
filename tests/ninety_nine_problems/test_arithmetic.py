@@ -1,5 +1,5 @@
-from json_inference_logic.algorithms import search
-from json_inference_logic.data_structures import Assert, Assign, Rule, Variable
+from inference_logic.algorithms import search
+from inference_logic.data_structures import Assert, Assign, Rule, Variable
 
 
 def test_31():

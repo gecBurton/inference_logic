@@ -3,25 +3,30 @@ JSON Inference Logic
 ====================
 
 
-.. image:: https://img.shields.io/pypi/v/json_inference_logic.svg
-        :target: https://pypi.python.org/pypi/json_inference_logic
+.. image:: https://img.shields.io/pypi/v/inference_logic.svg
+        :target: https://pypi.python.org/pypi/inference_logic
 
-.. image:: https://img.shields.io/travis/gecBurton/json_inference_logic.svg
-        :target: https://travis-ci.com/gecBurton/json_inference_logic
+.. image:: https://img.shields.io/travis/gecBurton/inference_logic.svg
+        :target: https://travis-ci.com/gecBurton/inference_logic
 
 .. image:: https://readthedocs.org/projects/json-inference-logic/badge/?version=latest
         :target: https://json-inference-logic.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
 
-.. image:: https://pyup.io/repos/github/gecBurton/json_inference_logic/shield.svg
-     :target: https://pyup.io/repos/github/gecBurton/json_inference_logic/
+.. image:: https://pyup.io/repos/github/gecBurton/inference_logic/shield.svg
+     :target: https://pyup.io/repos/github/gecBurton/inference_logic/
      :alt: Updates
 
 
 
-This is an library to explore how it is possible to write
-declarative code in Python.
+The goal of this project is to explore how to write a minimal
+set of features that allows a programmer to code declaratively
+in native Python.
+
+The code is loosely based on Prolog, and success is measured in
+number of the `99 problems`_ solved to keep the code focussed
+on delivering features not bike-shedding
 
 This code is experimental and incomplete. Do not use it in your
 work or school! If you wish to use a serious, well tested
@@ -33,15 +38,17 @@ declarative tool in Python use the excellent pyDatalog_.
 tldr
 ----
 
-Write declarative code in pure Python
-
 .. code-block:: python
+
+    from inference_logic import Variable, Rule, search
 
     X, Y, Z, C, P = Variable.factory("X", "Y", "Z", "C", "P")
 
     db = [
-        dict(parent="G", child="A"),
-        dict(parent="A", child="O"),
+        dict(parent="Abe", child="Homer"),
+        dict(parent="Homer", child="Lisa"),
+        dict(parent="Homer", child="Bart"),
+        dict(parent="Homer", child="Maggie"),
         Rule(dict(ancestor=X, descendant=Z), dict(parent=X, child=Z)),
         Rule(
             dict(ancestor=X, descendant=Z),
@@ -51,53 +58,16 @@ Write declarative code in pure Python
     ]
 
     query = dict(ancestor=P, descendant=C)
+    results = search(db, query)
 
 
-    assert next(search(db, query)) == {P: "G", C: "O"}
-    assert next(search(db, query)) == {P: "G", C: "A"}
-    assert next(search(db, query)) == {P: "A", C: "O"}
-
-
-
-Motivation
-----------
-
-Today popular programming languages will typically support a
-range of programming styles such as:
-
-* imperative
-* object orientated
-* functional
-
-They may also include something more mysterious called declarative
-or logical programming. However declarative programing remains
-poorly understood and badly supported compared to other styles.
-
-This situation is odd because almost all programmers are perfectly
-competent in a purely declarative language: SQL.
-
-Other commonly used declarative resources include:
-
-* Regex
-* HTML
-* math(s) stuff: BLAS; Matlab etc
-
-A common theme is clear: declarative code is written in domain
-specific code, normal code is written in normal languages, and the
-bridge between them is usually some thin wrapper around the DSL that
-does little more than type conversion.
-
-It is unclear that it has to be this way, after all LINQ_ gives C#
-programmers access to declarative tools both for interacting with
-SQL but also for working with .net objects.
-
-So the goal of this project is to explore how to write a minimal
-set of features that allows a programmer to code declaratively
-in native Python.
-
-The code is loosely based on Prolog, and success is measured in
-number of the `99 problems`_ solved to keep the code focussed
-on delivering features not bike-shedding
+    assert next(results) == {C: "Lisa", P: 'Abe"}
+    assert next(results) == {C: "Bart", P: 'Abe"}
+    assert next(results) == {C: "Maggie", P: 'Abe"}
+    assert next(results) == {C: "Homer", P: 'Abe"}
+    assert next(results) == {C: "Lisa", P: 'Homer"}
+    assert next(results) == {C: "Bart", P: 'Homer"}
+    assert next(results) == {C: "Maggie", P: 'Homer"}
 
 
 

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/json_inference_logic.iml" filepath="$PROJECT_DIR$/.idea/json_inference_logic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../inference_logic/.idea/inference_logic.iml" filepath="$PROJECT_DIR$/../inference_logic/.idea/inference_logic.iml" />
     </modules>
   </component>
 </project>
