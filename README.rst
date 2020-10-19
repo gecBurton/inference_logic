@@ -81,9 +81,7 @@ This is similar to SQL where we have:
 
 * you can query the database with something that looks like a view which you assert to be true. The engine will then respond with a list all variable-values for which your query is satisfied.
 
-This is similar in so much that:
-
-* You can build a "database", i.e. a list of...
+Here the "database" is a list of...
 
   * Facts which are Python dicts, tuples and primitives (think JSON)
   * Rules whose first argument is true if subsequent arguments are all true
