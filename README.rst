@@ -38,24 +38,6 @@ This code is experimental and incomplete. Do not use it in your work or school! 
 tldr
 ----
 
-In SQL there is:
-
-* A database which is a list of:
-
-  * Things that are true by construction: Tables
-  * Truths that are inferred: Views
-
-* you can query the database with something that looks like a view which you assert to be true. The engine will then respond with a list all variable-values for which your query is satisfied.
-
-This is similar in so much that:
-
-* You can build a "database", i.e. a list of...
-
-  * Facts which are Python dicts, tuples and primitives (think JSON)
-  * Rules whose first argument is true if subsequent arguments are all true
-
-* The database can then be queried to determine what values any Variables in your query must take for it to be true.
-
 The Hello-World of declarative programming is an ancestry query which illustrates the key ideas:
 
 .. code-block:: python
@@ -89,6 +71,24 @@ The Hello-World of declarative programming is an ancestry query which illustrate
     assert next(results) == {C: "Bart", P: "Homer"}
     assert next(results) == {C: "Maggie", P: "Homer"}
 
+
+This is similar to SQL where we have:
+
+* A database which is a list of:
+
+  * Things that are true by construction: Tables
+  * Truths that are inferred: Views
+
+* you can query the database with something that looks like a view which you assert to be true. The engine will then respond with a list all variable-values for which your query is satisfied.
+
+This is similar in so much that:
+
+* You can build a "database", i.e. a list of...
+
+  * Facts which are Python dicts, tuples and primitives (think JSON)
+  * Rules whose first argument is true if subsequent arguments are all true
+
+* The database can then be queried to determine what values any Variables in your query must take for it to be true.
 
 
 Credits
