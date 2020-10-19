@@ -38,6 +38,26 @@ This code is experimental and incomplete. Do not use it in your work or school! 
 tldr
 ----
 
+In SQL there is:
+
+* A database which is a list of:
+
+  * Things that are true by construction: Tables
+  * Truths that are inferred: Views
+
+* you can query the database with something that looks like a view which you assert to be true. The engine will then respond with a list all variable-values for which your query is satisfied.
+
+This is similar in so much that:
+
+* You can build a "database", i.e. a list of...
+
+  * Facts which are Python dicts, tuples and primitives (think JSON)
+  * Rules whose first argument is true if subsequent arguments are all true
+
+* The database can then be queried to determine what values any Variables in your query must take for it to be true.
+
+The Hello-World of declarative programming is an ancestry query which illustrates the key ideas:
+
 .. code-block:: python
 
     from inference_logic import Variable, Rule, search
@@ -88,3 +108,4 @@ Thank you to kclaurelie_ for helping to solve the fundamental problem that had b
 .. _kclaurelie: https://github.com/kclaurelie
 .. _LINQ: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/
 .. _solved: https://github.com/gecBurton/inference_logic/tree/main/tests/ninety_nine_problems
+.. _unification: https://github.com/gecBurton/inference_logic/blob/main/inference_logic/algorithms.py
