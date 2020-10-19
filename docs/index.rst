@@ -1,4 +1,4 @@
-Welcome to JSON Inference Logic's documentation!
+Welcome to Inference Logic's documentation!
 ================================================
 
 .. toctree::
