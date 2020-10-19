@@ -10,7 +10,7 @@ Inference Logic
         :target: https://travis-ci.com/gecBurton/inference_logic
 
 .. image:: https://readthedocs.org/projects/json-inference-logic/badge/?version=latest
-        :target: https://json-inference-logic.readthedocs.io/en/latest/?badge=latest
+        :target: https://inference-logic.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
 
@@ -33,7 +33,7 @@ The success of this project is measured by the number of the `99 problems`_ solv
 This code is experimental and incomplete. Do not use it in your work or school! If you wish to use a serious, well tested declarative tool in Python use the excellent pyDatalog_.
 
 * Free software: MIT license
-* Documentation: https://json-inference-logic.readthedocs.io.
+* Documentation: https://inference-logic.readthedocs.io.
 
 tldr
 ----
