@@ -200,7 +200,8 @@ class Equality:
                 }
 
             if isinstance(_term, Assign):
-                if free := self.get_free(_term.variable) - {_term.variable}:
+                free = self.get_free(_term.variable) - {_term.variable}
+                if free:
                     args_set = list(free)
                 else:
                     args_set = [_term.variable]
