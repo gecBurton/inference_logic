@@ -83,8 +83,9 @@ This is similar to SQL where we have:
 
 Here the "database" is a list of...
 
-  * Facts which are Python dicts, tuples and primitives (think JSON)
-  * Rules whose first argument is true if subsequent arguments are all true
+* Facts which are Python dicts, tuples and primitives (think JSON)
+
+* Rules whose first argument is true if subsequent arguments are all true
 
 * The database can then be queried to determine what values any Variables in your query must take for it to be true.
 
