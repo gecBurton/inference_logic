@@ -47,7 +47,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "JSON Inference Logic"
+project = "Inference Logic"
 copyright = "2020, George EC Burton"
 author = "George EC Burton"
 
@@ -128,7 +128,7 @@ latex_documents = [
     (
         master_doc,
         "inference_logic.tex",
-        "JSON Inference Logic Documentation",
+        "Inference Logic Documentation",
         "George EC Burton",
         "manual",
     ),
@@ -153,7 +153,7 @@ texinfo_documents = [
     (
         master_doc,
         "inference_logic",
-        "JSON Inference Logic Documentation",
+        "Inference Logic Documentation",
         author,
         "inference_logic",
         "One line description of project.",
