@@ -28,7 +28,7 @@ The code is loosely based on Prolog, but rather than use the Prolog
 Term/functor structure it uses JSON-like dicts and tuples.
 
 The success of this project is measured by the number of the
-`99 problems`_ solved to keep the code focussed on delivering
+`99 problems`_ solved_ to keep the code focussed on delivering
 features and not bike-shedding
 
 This code is experimental and incomplete. Do not use it in your
@@ -92,3 +92,4 @@ problem that had been bugging me for months!
 .. _py4fun: https://www.openbookproject.net/py4fun/prolog/prolog1.html
 .. _kclaurelie: https://github.com/kclaurelie
 .. _LINQ: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/
+.. _solved: ./tests/ninety_nine_problems
