@@ -28,7 +28,7 @@ The code is loosely based on Prolog, however:
 
 * We use Python's native iter-unpacking star notation to indicate that a Variable points to all elements in a list's tail.
 
-The success of this project is measured by the number of the `99 problems`_ solved_ to keep the code focussed on delivering features and not bike-shedding
+The success of this project is measured by the number of the `99 problems`_ actually solved_ to keep the code focussed on delivering features and not bike-shedding
 
 This code is experimental and incomplete. Do not use it in your work or school! If you wish to use a serious, well tested declarative tool in Python use the excellent pyDatalog_.
 
