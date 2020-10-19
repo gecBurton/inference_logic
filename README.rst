@@ -87,4 +87,4 @@ Thank you to kclaurelie_ for helping to solve the fundamental problem that had b
 .. _py4fun: https://www.openbookproject.net/py4fun/prolog/prolog1.html
 .. _kclaurelie: https://github.com/kclaurelie
 .. _LINQ: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/
-.. _solved: ./tests/ninety_nine_problems
+.. _solved: https://github.com/gecBurton/inference_logic/tree/main/tests/ninety_nine_problems
