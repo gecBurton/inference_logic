@@ -17,25 +17,61 @@ from inference_logic.equality import Equality
 
 def unify(left, right, equality: Optional[Equality] = None) -> Equality:
     """
-        (*B, (2, 3), None, Equality(fixed={construct([2, 3]): {B}})),
+    Unification is a key idea in declarative programming.
+    https://en.wikipedia.org/wiki/Unification_(computer_science)
 
+    This function has 3 tasks:
 
-    :examples:
+    1. Unification of values
         >>> A, B, C = Variable.factory("A", "B", "C")
-        >>> unify(A, False)
-        Equality(False={A})
 
-        >>> unify(True, B)
-        Equality(True={B})
+        When two primitive values are unified it will check that they are
+        equal to each other, and return an empty Equality object.
 
         >>> unify(1, 1)
         Equality()
 
+        >>> unify(True, False)
+        Traceback (most recent call last):
+            ...
+        inference_logic.data_structures.UnificationError: values dont match: True != False
+
+        or fail if they are not.
+
+        If a Variable is passed as an argument then this variable will be set
+        equal to the other vale which could either be, a primitive:
+
+        >>> unify(True, B)
+        Equality(True={B})
+
+        Or another varible
+
         >>> unify(A, B)
         Equality([{A, B}], )
 
+    2. Unification of Structure
+        >>> unify(dict(a=1, b=2), dict(a=1, c=2))
+        Traceback (most recent call last):
+            ...
+        inference_logic.data_structures.UnificationError: keys must match: ('a', 'b') != ('a', 'c')
+
         >>> unify((A, B), (1, 2))
         Equality(1={A}, 2={B})
+
+        >>> unify((A, *B), (1, 2, 3))
+        Equality(1={A}, .(2, .(3, .()))={*B})
+
+        >>> unify((A, B), (1, 2, 3))
+        Traceback (most recent call last):
+            ...
+        inference_logic.data_structures.UnificationError: list lengths must be the same
+
+
+    :examples:
+
+
+
+
 
         >>> unify(A, C, Equality(free=[{A, B}]))
         Equality([{A, B, C}], )
@@ -46,26 +82,11 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
         >>> unify((A, *B), (True, False))
         Equality(True={A}, .(False, .())={*B})
 
-        >>> unify((A, *B), (1, 2, 3))
-        Equality(1={A}, .(2, .(3, .()))={*B})
 
         >>> unify(*B, (2, 3))
         Equality(.(2, .(3, .()))={*B})
 
-        >>> unify(True, False)
-        Traceback (most recent call last):
-            ...
-        inference_logic.data_structures.UnificationError: values dont match: True != False
 
-        >>> unify((A, B), (1, 2, 3))
-        Traceback (most recent call last):
-            ...
-        inference_logic.data_structures.UnificationError: list lengths must be the same
-
-        >>> unify(dict(a=1, b=2), dict(a=1, c=2))
-        Traceback (most recent call last):
-            ...
-        inference_logic.data_structures.UnificationError: keys must match: ('a', 'b') != ('a', 'c')
 
         >>> unify(B, False, Equality(fixed={True: {A, B}}))
         Traceback (most recent call last):
