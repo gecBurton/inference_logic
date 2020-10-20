@@ -6,6 +6,7 @@ Welcome to Inference Logic's documentation!
    :caption: Contents:
 
    readme
+   code
    ninety_nine
    installation
    usage
