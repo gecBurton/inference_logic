@@ -40,6 +40,9 @@ jobs:
     - name: Test with pytest
       run: |
         pytest --cov=inference_logic --cov-fail-under=100 --cov-report=term-missing
+    - name: Doctest with pytest
+      run: |
+          pytest --doctest-modules inference_logic/
     - name: Static typechecking with mypy
       run: |
         mypy inference_logic tests

@@ -12,7 +12,7 @@ def new_frame(obj, frame: int):
 
 class Variable:
     @classmethod
-    def factory(cls, *names: str) -> List:
+    def factory(cls, *names: str) -> List[Variable]:
         """
         helper method to generate many Variables
 
@@ -41,7 +41,7 @@ class Variable:
     def __hash__(self):
         return hash((self.name, self.frame))
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """
         :examples:
             >>> A, B = Variable.factory("A", "B")
@@ -56,7 +56,7 @@ class Variable:
             raise TypeError(f"{other} must be a Variable")
         return hash(self) == hash(other)
 
-    def new_frame(self, frame):
+    def new_frame(self, frame: int) -> Variable:
         """
         :example:
             >>> A = Variable("A")
@@ -77,10 +77,10 @@ class PrologListNull:
     def __repr__(self):
         return ".()"
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash("hello!")
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         if not isinstance(other, PrologListNull):
             raise TypeError(f"{other} must be a PrologListNull")
         return True
@@ -141,13 +141,13 @@ class PrologList:
         self.head = head
         self.tail = tail
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.head, self.tail))
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return hash(self) == hash(other)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f".({self.head}, {self.tail})"
 
     def new_frame(self, frame: int) -> PrologList:
@@ -201,7 +201,7 @@ class ImmutableDict(UserDict):
     def __hash__(self) -> int:
         return hash(tuple(self.items()))
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         if not isinstance(other, ImmutableDict):
             raise TypeError(f"{other} must be an ImmutableDict")
         return hash(self) == hash(other)
@@ -238,7 +238,7 @@ class Rule:
         self.predicate = construct(predicate)
         self.body = tuple(map(construct, body))
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         if not isinstance(other, Rule):
             raise TypeError(f"{other} must be a Rule")
         return self.predicate == other.predicate and self.body == other.body

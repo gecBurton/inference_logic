@@ -9,7 +9,7 @@ A, B, C, D = Variable.factory("A", "B", "C", "D")
 
 def test__repr__():
     equity = Equality(free=[{A}], fixed={True: {C}})
-    assert repr(equity) == "Equality({A}, True={C})"
+    assert repr(equity) == "Equality([{A}], True={C})"
 
 
 @pytest.mark.parametrize(
