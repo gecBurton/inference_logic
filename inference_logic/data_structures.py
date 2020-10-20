@@ -27,18 +27,16 @@ class Variable:
     ) -> None:
         if not isinstance(name, str):
             raise ValueError("name must be a string")
-        if name[0].islower():
-            raise ValueError("name must begin with a uppercase letter")
         self.name = name
         self.frame = frame
         self.many = many
 
     def __repr__(self) -> str:
         many = "*" if self.many else ""
-        frame = f"_{self.frame}" if self.frame is not None else ""
+        frame = f":{self.frame}" if self.frame is not None else ""
         return f"{many}{self.name}{frame}"
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.name, self.frame))
 
     def __eq__(self, other) -> bool:
@@ -51,6 +49,11 @@ class Variable:
 
             >>> A == B
             False
+
+            >>> A == 1
+            Traceback (most recent call last):
+                ...
+            TypeError: 1 must be a Variable
         """
         if not isinstance(other, Variable):
             raise TypeError(f"{other} must be a Variable")
@@ -61,7 +64,7 @@ class Variable:
         :example:
             >>> A = Variable("A")
             >>> A.new_frame(1)
-            A_1
+            A:1
         """
         return Variable(self.name, frame=frame, many=self.many)
 
@@ -74,8 +77,8 @@ class Variable:
 
 
 class PrologListNull:
-    def __repr__(self):
-        return ".()"
+    """This is an Object that signifies the end of a PrologList
+    """
 
     def __hash__(self) -> int:
         return hash("hello!")
@@ -137,6 +140,10 @@ def deconstruct(obj):
 
 
 class PrologList:
+    """A list in Prolog is build recursively out of the first, head, element
+    and everything else, the tail.
+    """
+
     def __init__(self, head, tail):
         self.head = head
         self.tail = tail
@@ -145,10 +152,14 @@ class PrologList:
         return hash((self.head, self.tail))
 
     def __eq__(self, other) -> bool:
+        if not isinstance(other, PrologList):
+            raise TypeError
         return hash(self) == hash(other)
 
     def __repr__(self) -> str:
-        return f".({self.head}, {self.tail})"
+        if isinstance(self.tail, PrologListNull):
+            return f"[{self.head}]"
+        return f"[{self.head}, {repr(self.tail)[1:-1]}]"
 
     def new_frame(self, frame: int) -> PrologList:
         return PrologList(new_frame(self.head, frame), new_frame(self.tail, frame))

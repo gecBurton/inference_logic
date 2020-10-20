@@ -3,21 +3,17 @@ import pytest
 from inference_logic import Variable
 
 
-@pytest.mark.parametrize(
-    "name, message",
-    [("a", "name must begin with a uppercase letter"), (1, "name must be a string")],
-)
-def test__init__error(name, message):
+def test__init__error():
     with pytest.raises(ValueError) as error:
-        Variable(name)
-    assert str(error.value) == message
+        Variable(1)
+    assert str(error.value) == "name must be a string"
 
 
 def test_factory():
     assert Variable.factory("A", "B") == [Variable("A"), Variable("B")]
 
 
-@pytest.mark.parametrize("name, frame, message", [("A", None, "A"), ("A", 2, "A_2")])
+@pytest.mark.parametrize("name, frame, message", [("A", None, "A"), ("A", 2, "A:2")])
 def test__repr__(name, frame, message):
     assert repr(Variable(name, frame)) == message
 
