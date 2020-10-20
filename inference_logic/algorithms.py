@@ -16,6 +16,31 @@ from inference_logic.equality import Equality
 
 
 def unify(left, right, equality: Optional[Equality] = None) -> Equality:
+    """
+
+    :examples:
+        >>> unify(True, False)
+        Traceback (most recent call last):
+            ...
+        inference_logic.data_structures.UnificationError: values dont match: True != False
+
+        >>> A, B = Variable.factory("A", "B")
+        >>> unify((A, B), (1, 2, 3))
+        Traceback (most recent call last):
+            ...
+        inference_logic.data_structures.UnificationError: list lengths must be the same
+
+        >>> unify(dict(a=1, b=2), dict(a=1, c=2))
+        Traceback (most recent call last):
+            ...
+        inference_logic.data_structures.UnificationError: keys must match: ('a', 'b') != ('a', 'c')
+
+        >>> unify(B, False, Equality(fixed={True: {A, B}}))
+        Traceback (most recent call last):
+            ...
+        inference_logic.data_structures.UnificationError: B cannot equal False because False != True
+
+    """
     left, right = construct(left), construct(right)
 
     equality = Equality() if equality is None else equality
