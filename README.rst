@@ -79,6 +79,7 @@ This is similar to SQL where we have:
   * Things that are true by construction: Tables
   * Truths that are inferred: Views
 
+
 * you can query the database with a statement. The engine will then respond with a list all values for which your query is true.
 
 Here the "database" is a list of...
