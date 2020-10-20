@@ -27,8 +27,6 @@ class Variable:
     ) -> None:
         if not isinstance(name, str):
             raise ValueError("name must be a string")
-        if name[0].islower():
-            raise ValueError("name must begin with a uppercase letter")
         self.name = name
         self.frame = frame
         self.many = many
