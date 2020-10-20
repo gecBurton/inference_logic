@@ -17,7 +17,7 @@ def test_factory():
     assert Variable.factory("A", "B") == [Variable("A"), Variable("B")]
 
 
-@pytest.mark.parametrize("name, frame, message", [("A", None, "A"), ("A", 2, "A_2")])
+@pytest.mark.parametrize("name, frame, message", [("A", None, "A"), ("A", 2, "A:2")])
 def test__repr__(name, frame, message):
     assert repr(Variable(name, frame)) == message
 

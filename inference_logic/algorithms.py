@@ -103,7 +103,7 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
         using the * syntax
 
         >>> unify((A, B, *C), (1, 2, 3, 4))
-        Equality(1={A}, 2={B}, .(3, .(4, .()))={*C})
+        Equality(1={A}, 2={B}, [3, 4]={*C})
 
     """
     left, right = construct(left), construct(right)

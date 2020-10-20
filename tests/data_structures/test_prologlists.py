@@ -3,9 +3,9 @@ import pytest
 from inference_logic.data_structures import PrologListNull, construct
 
 
-def test_null__repr__():
+def test__repr__():
 
-    assert repr(PrologListNull()) == ".()"
+    assert repr(construct([1, [2, 3], 4])) == "[1, [2, 3], 4]"
 
 
 def test__eq__fail():
@@ -15,4 +15,4 @@ def test__eq__fail():
 
 
 def test_list__repr__():
-    assert repr(construct([1, [2, 3], 4])) == ".(1, .(.(2, .(3, .())), .(4, .())))"
+    assert repr(construct([1, [2, 3], 4])) == "[1, [2, 3], 4]"
