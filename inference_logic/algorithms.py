@@ -52,12 +52,21 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
 
     2. Unification against know Equalities
 
+        Unification operations can be chained together by passing in
+        an optional equality argument.
+
+        This way unified Variables can be assigned to existing
+        Variable Sets
+
         >>> unify(A, C, Equality(free=[{A, B}]))
         Equality([{A, B, C}], )
+
+        or constants.
 
         >>> unify(A, 1, Equality(free=[{A, B}]))
         Equality(1={A, B})
 
+        And we can check for consistencey between uunifications.
 
         >>> unify(B, False, Equality(fixed={True: {A, B}}))
         Traceback (most recent call last):
