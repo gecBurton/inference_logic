@@ -30,9 +30,14 @@ class Equality:
         ]
 
     def __repr__(self) -> str:
-        fixed = ", ".join(f"{k}={v}" for k, v in self.fixed.items())
-        free = ", ".join(map(str, self.free))
-        return f"Equality({free}, {fixed})"
+        def variable_set_repr(variable_set):
+            return f'{{{", ".join(sorted(map(str, variable_set)))}}}'
+
+        fixed = ", ".join(f"{k}={variable_set_repr(v)}" for k, v in self.fixed.items())
+        free = ", ".join(variable_set_repr(var_set) for var_set in self.free)
+        if free:
+            free = f"[{free}], "
+        return f"Equality({free}{fixed})"
 
     def __hash__(self) -> int:
         free = hash(tuple(map(Variable.hash_set, self.free)))

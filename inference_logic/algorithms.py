@@ -17,14 +17,46 @@ from inference_logic.equality import Equality
 
 def unify(left, right, equality: Optional[Equality] = None) -> Equality:
     """
+        (*B, (2, 3), None, Equality(fixed={construct([2, 3]): {B}})),
+
 
     :examples:
+        >>> A, B, C = Variable.factory("A", "B", "C")
+        >>> unify(A, False)
+        Equality(False={A})
+
+        >>> unify(True, B)
+        Equality(True={B})
+
+        >>> unify(1, 1)
+        Equality()
+
+        >>> unify(A, B)
+        Equality([{A, B}], )
+
+        >>> unify((A, B), (1, 2))
+        Equality(1={A}, 2={B})
+
+        >>> unify(A, C, Equality(free=[{A, B}]))
+        Equality([{A, B, C}], )
+
+        >>> unify(A, 1, Equality(free=[{A, B}]))
+        Equality(1={A, B})
+
+        >>> unify((A, *B), (True, False))
+        Equality(True={A}, .(False, .())={*B})
+
+        >>> unify((A, *B), (1, 2, 3))
+        Equality(1={A}, .(2, .(3, .()))={*B})
+
+        >>> unify(*B, (2, 3))
+        Equality(.(2, .(3, .()))={*B})
+
         >>> unify(True, False)
         Traceback (most recent call last):
             ...
         inference_logic.data_structures.UnificationError: values dont match: True != False
 
-        >>> A, B = Variable.factory("A", "B")
         >>> unify((A, B), (1, 2, 3))
         Traceback (most recent call last):
             ...
