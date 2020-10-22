@@ -96,6 +96,8 @@ class Equality:
         except TypeError:
             raise TypeError(f"{constant} must be hashable")
 
+        variable.many = False
+
         try:
             fixed = self.get_fixed(variable)
 
