@@ -28,7 +28,7 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
         equal to each other, and return an empty Equality object.
 
         >>> unify(1, 1)
-        Equality()
+        .
 
         >>> unify(True, False)
         Traceback (most recent call last):
@@ -41,12 +41,12 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
         equal to the other vale which could either be, a primitive:
 
         >>> unify(True, B)
-        Equality(True={B})
+        True: {B}
 
-            Or another varible
+        Or another varible
 
         >>> unify(A, B)
-        Equality([{A, B}], )
+        {A, B}
 
 
     2. Unification against know Equalities:
@@ -58,12 +58,12 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
         Variable Sets
 
         >>> unify(A, C, Equality(free=[{A, B}]))
-        Equality([{A, B, C}], )
+        {A, B, C}
 
         or constants.
 
         >>> unify(A, 1, Equality(free=[{A, B}]))
-        Equality(1={A, B})
+        1: {A, B}
 
         And we can check for consistencey between uunifications.
 
@@ -80,10 +80,10 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
         any then is applied pair-wise and recursively to all elements.
 
         >>> unify(dict(a=A, b=2), dict(a=1, b=B))
-        Equality(1={A}, 2={B})
+        1: {A}, 2: {B}
 
         >>> unify((A, B), (1, 2))
-        Equality(1={A}, 2={B})
+        1: {A}, 2: {B}
 
         In the case of dicts the unification will fail if the keys do not match:
 
@@ -103,7 +103,7 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
         using the * syntax
 
         >>> unify((A, B, *C), (1, 2, 3, 4))
-        Equality(1={A}, 2={B}, [3, 4]={C})
+        1: {A}, 2: {B}, [3, 4]: {C}
 
     .. _Unification: https://en.wikipedia.org/wiki/Unification_(computer_science)
     """
