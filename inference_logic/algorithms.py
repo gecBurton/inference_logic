@@ -24,31 +24,31 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
 
     1. Unification of values:
 
-            >>> A, B, C = Variable.factory("A", "B", "C")
+        >>> A, B, C = Variable.factory("A", "B", "C")
 
         When two primitive values are unified it will check that they are
         equal to each other, and return an empty Equality object.
 
-            >>> unify(1, 1)
-            Equality()
+        >>> unify(1, 1)
+        .
 
-            >>> unify(True, False)
-            Traceback (most recent call last):
-                ...
-            inference_logic.data_structures.UnificationError: values dont match: True != False
+        >>> unify(True, False)
+        Traceback (most recent call last):
+            ...
+        inference_logic.data_structures.UnificationError: values dont match: True != False
 
         or fails with a UnificationError if they are not.
 
         If a Variable is passed as an argument then this variable will be set
         equal to the other vale which could either be, a primitive:
 
-            >>> unify(True, B)
-            Equality(True={B})
+        >>> unify(True, B)
+        True: {B}
 
-            Or another varible
+        Or another varible
 
-            >>> unify(A, B)
-            Equality([{A, B}], )
+        >>> unify(A, B)
+        {A, B}
 
 
     2. Unification against know Equalities:
@@ -59,20 +59,20 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
         This way unified Variables can be assigned to existing
         Variable Sets
 
-            >>> unify(A, C, Equality(free=[{A, B}]))
-            Equality([{A, B, C}], )
+        >>> unify(A, C, Equality(free=[{A, B}]))
+        {A, B, C}
 
         or constants.
 
-            >>> unify(A, 1, Equality(free=[{A, B}]))
-            Equality(1={A, B})
+        >>> unify(A, 1, Equality(free=[{A, B}]))
+        1: {A, B}
 
         And we can check for consistencey between uunifications.
 
-            >>> unify(B, False, Equality(fixed={True: {A, B}}))
-            Traceback (most recent call last):
-                ...
-            inference_logic.data_structures.UnificationError: B cannot equal False because False != True
+        >>> unify(B, False, Equality(fixed={True: {A, B}}))
+        Traceback (most recent call last):
+            ...
+        inference_logic.data_structures.UnificationError: B cannot equal False because False != True
 
 
     3. Unification of Structure:
@@ -81,31 +81,31 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
         unification first checks that the data-structures have the same type,
         any then is applied pair-wise and recursively to all elements.
 
-            >>> unify(dict(a=A, b=2), dict(a=1, b=B))
-            Equality(1={A}, 2={B})
+        >>> unify(dict(a=A, b=2), dict(a=1, b=B))
+        1: {A}, 2: {B}
 
-            >>> unify((A, B), (1, 2))
-            Equality(1={A}, 2={B})
+        >>> unify((A, B), (1, 2))
+        1: {A}, 2: {B}
 
         In the case of dicts the unification will fail if the keys do not match:
 
-            >>> unify(dict(a=1, b=2), dict(a=1, c=2))
-            Traceback (most recent call last):
-                ...
-            inference_logic.data_structures.UnificationError: keys must match: ('a', 'b') != ('a', 'c')
+        >>> unify(dict(a=1, b=2), dict(a=1, c=2))
+        Traceback (most recent call last):
+            ...
+        inference_logic.data_structures.UnificationError: keys must match: ('a', 'b') != ('a', 'c')
 
         And tuple unification will fail if they have different lengths
 
-            >>> unify((A, B), (1, 2, 3))
-            Traceback (most recent call last):
-                ...
-            inference_logic.data_structures.UnificationError: list lengths must be the same
+        >>> unify((A, B), (1, 2, 3))
+        Traceback (most recent call last):
+            ...
+        inference_logic.data_structures.UnificationError: list lengths must be the same
 
         It possible to unify some Variables to the head of a tuple and another to the rest
         using the * syntax
 
-            >>> unify((A, B, *C), (1, 2, 3, 4))
-            Equality(1={A}, 2={B}, [3, 4]={*C})
+        >>> unify((A, B, *C), (1, 2, 3, 4))
+        1: {A}, 2: {B}, [3, 4]: {C}
 
     """
     left, right = construct(left), construct(right)

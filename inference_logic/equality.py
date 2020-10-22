@@ -17,11 +17,25 @@ from inference_logic.data_structures import (
 
 
 class Equality:
+    """There are two types of equality:
+
+    1. free, a Variable `X` can be equal to any number of other Variables
+    2. fixed, a hashable object `h` can be equal to any number of Variables \
+    so long as none of them are equal to any other hashable object.
+    """
+
     def __init__(
         self,
         free: Sequence[Set[Variable]] = None,
-        fixed: Dict[Union[Any, ImmutableDict], Set[Variable]] = None,
+        fixed: Dict[Any, Set[Variable]] = None,
     ) -> None:
+        """the free and fixed components of and Equality can be passed as
+        a List of Variable-Sets and a Dict of Variable-Sets respectively.
+
+        >>> A, B, C, D, E = Variable.factory("A", "B", "C", "D", "E")
+        >>> Equality(free=[{A, B}], fixed={True: {C, D}, False: {E}})
+        {A, B}, True: {C, D}, False: {E}
+        """
         self.fixed: Dict[ImmutableDict, Set[Variable]] = {}
         for constant, variable_set in (fixed or {}).items():
             self.fixed[constant] = variable_set.copy()
@@ -33,11 +47,9 @@ class Equality:
         def variable_set_repr(variable_set):
             return f'{{{", ".join(sorted(map(str, variable_set)))}}}'
 
-        fixed = ", ".join(f"{k}={variable_set_repr(v)}" for k, v in self.fixed.items())
-        free = ", ".join(variable_set_repr(var_set) for var_set in self.free)
-        if free:
-            free = f"[{free}], "
-        return f"Equality({free}{fixed})"
+        fixed = [f"{k}: {variable_set_repr(v)}" for k, v in self.fixed.items()]
+        free = list(map(variable_set_repr, self.free))
+        return ", ".join(free + fixed) or "."
 
     def __hash__(self) -> int:
         free = hash(tuple(map(Variable.hash_set, self.free)))
@@ -54,7 +66,7 @@ class Equality:
             raise TypeError(f"{other} must be an Equality")
         return hash(self) == hash(other)
 
-    def get_free(self, variable: Variable) -> Set[Variable]:
+    def _get_free(self, variable: Variable) -> Set[Variable]:
         if not isinstance(variable, Variable):
             raise TypeError(f"{variable} must be a Variable")
         for variables in self.free:
@@ -62,26 +74,28 @@ class Equality:
                 return variables
         return set()
 
-    def get_fixed(self, variable: Variable) -> Any:
+    def _get_fixed(self, variable: Variable) -> Any:
         if not isinstance(variable, Variable):
             raise TypeError(f"{variable} must be a Variable")
-        for _variable in self.get_free(variable) | {variable}:
+        for _variable in self._get_free(variable) | {variable}:
             for constant, variables in self.fixed.items():
                 if _variable in variables:
                     return constant
 
         raise KeyError
 
-    def get_deep(self, item):
+    def _get_recursive(self, item):
         if isinstance(item, Variable):
-            return self.get_deep(self.get_fixed(item))
+            return self._get_recursive(self._get_fixed(item))
         elif isinstance(item, ImmutableDict):
             return ImmutableDict(
-                {key: self.get_deep(value) for key, value in item.items()}
+                {key: self._get_recursive(value) for key, value in item.items()}
             )
         elif isinstance(item, PrologList):
             try:
-                return PrologList(self.get_deep(item.head), self.get_deep(item.tail))
+                return PrologList(
+                    self._get_recursive(item.head), self._get_recursive(item.tail)
+                )
             except RecursionError:
                 raise
         return item
@@ -96,8 +110,10 @@ class Equality:
         except TypeError:
             raise TypeError(f"{constant} must be hashable")
 
+        variable.many = False
+
         try:
-            fixed = self.get_fixed(variable)
+            fixed = self._get_fixed(variable)
 
             if constant != fixed:
                 raise UnificationError(
@@ -107,7 +123,7 @@ class Equality:
         except KeyError:
             pass
 
-        free = self.get_free(variable)
+        free = self._get_free(variable)
         out_free, out_fixed = deepcopy(self.free), deepcopy(self.fixed)
         if free:
             out_free.remove(free)
@@ -127,13 +143,13 @@ class Equality:
             raise TypeError(f"{right} must be a Variable")
 
         try:
-            left_fixed = self.get_fixed(left)
+            left_fixed = self._get_fixed(left)
             is_left_fixed = True
         except KeyError:
             is_left_fixed = False
 
         try:
-            right_fixed = self.get_fixed(right)
+            right_fixed = self._get_fixed(right)
             is_right_fixed = True
         except KeyError:
             is_right_fixed = False
@@ -143,7 +159,7 @@ class Equality:
                 f"{left} cannot equal {right} because {left_fixed} != {right_fixed}"
             )
 
-        left_free, right_free = self.get_free(left), self.get_free(right)
+        left_free, right_free = self._get_free(left), self._get_free(right)
         out_free, out_fixed = deepcopy(self.free), deepcopy(self.fixed)
 
         if left_free and right_free:
@@ -178,6 +194,8 @@ class Equality:
         return Equality(out_free, out_fixed)
 
     def add(self, left: Any, right: Any) -> Equality:
+        """An equality can be extended by adding new pairs of objects that
+        are equal to each other"""
         if isinstance(left, Variable) and isinstance(right, Variable):
             return self._add_variable(left, right)
         if isinstance(right, Variable):
@@ -205,7 +223,7 @@ class Equality:
                 }
 
             if isinstance(_term, Assign):
-                free = self.get_free(_term.variable) - {_term.variable}
+                free = self._get_free(_term.variable) - {_term.variable}
                 if free:
                     args_set = list(free)
                 else:
@@ -217,9 +235,9 @@ class Equality:
 
             if isinstance(_term, Variable):
                 try:
-                    return {self.get_fixed(_term)}
+                    return {self._get_fixed(_term)}
                 except KeyError:
-                    free = self.get_free(_term) & to_solve_for
+                    free = self._get_free(_term) & to_solve_for
                     if free:
                         return free
             return {_term}
@@ -230,20 +248,19 @@ class Equality:
         out = {}
         for item in to_solve_for:
             try:
-                fixed = self.get_fixed(item)
-                deep = self.get_deep(fixed)
+                fixed = self._get_fixed(item)
+                deep = self._get_recursive(fixed)
                 out[item] = deconstruct(deep)
             except KeyError:
                 pass
         return out
 
     def evaluate(self, assign_assert: Union[Assign, Assert]) -> Equality:
-        value = assign_assert.expression(*map(self.get_fixed, assign_assert.variables))
+        value = assign_assert.expression(*map(self._get_fixed, assign_assert.variables))
 
         if isinstance(assign_assert, Assign):
             return self._add_constant(assign_assert.variable, value)
 
-        #        if isinstance(assign_assert, Assert):
         if not value:
             raise UnificationError(f"bool({value}) != True")
         return self
