@@ -16,7 +16,9 @@ from inference_logic.equality import Equality
 
 
 def unify(left, right, equality: Optional[Equality] = None) -> Equality:
-    """Unification_ is a key idea in declarative programming.
+    """
+    Unification is a key idea in declarative programming.
+    https://en.wikipedia.org/wiki/Unification_(computer_science)
 
     This function has 3 tasks:
 
@@ -105,7 +107,6 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
         >>> unify((A, B, *C), (1, 2, 3, 4))
         1: {A}, 2: {B}, [3, 4]: {C}
 
-    .. _Unification: https://en.wikipedia.org/wiki/Unification_(computer_science)
     """
     left, right = construct(left), construct(right)
 
