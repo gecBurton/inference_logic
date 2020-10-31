@@ -4,6 +4,8 @@ from copy import deepcopy
 from itertools import product
 from typing import Any, Dict, List, Optional, Sequence, Set, Union
 
+from multipledispatch import dispatch
+
 from inference_logic.data_structures import (
     Assert,
     Assign,
@@ -86,11 +88,8 @@ class Equality:
                 raise
         return item
 
-    def _add_constant(self, variable: Variable, constant: Any) -> Equality:
-        if not isinstance(variable, Variable):
-            raise TypeError(f"{variable} must be a Variable")
-        if isinstance(constant, Variable):
-            raise TypeError(f"{constant} may not be a Variable")
+    @dispatch(Variable, object)
+    def add(self, variable: Variable, constant: Any) -> Equality:
         try:
             hash(constant)
         except TypeError:
@@ -120,11 +119,8 @@ class Equality:
             out_fixed[constant].add(variable)
         return Equality(out_free, out_fixed)
 
-    def _add_variable(self, left: Variable, right: Variable) -> Equality:
-        if not isinstance(left, Variable):
-            raise TypeError(f"{left} must be a Variable")
-        if not isinstance(right, Variable):
-            raise TypeError(f"{right} must be a Variable")
+    @dispatch(Variable, Variable)  # type: ignore
+    def add(self, left: Variable, right: Variable) -> Equality:  # noqa: F811
 
         try:
             left_fixed = self.get_fixed(left)
@@ -177,13 +173,12 @@ class Equality:
                 out_free.append({left, right})
         return Equality(out_free, out_fixed)
 
-    def add(self, left: Any, right: Any) -> Equality:
-        if isinstance(left, Variable) and isinstance(right, Variable):
-            return self._add_variable(left, right)
-        if isinstance(right, Variable):
-            return self._add_constant(right, left)
-        if isinstance(left, Variable):
-            return self._add_constant(left, right)
+    @dispatch(object, Variable)  # type: ignore
+    def add(self, left: Any, right: Any) -> Equality:  # noqa: F811
+        return self.add(right, left)
+
+    @dispatch(object, object)  # type: ignore
+    def add(self, left: Any, right: Any) -> Equality:  # noqa: F811
         if left == right:
             return self
         raise UnificationError(f"values dont match: {left} != {right}")
@@ -241,7 +236,7 @@ class Equality:
         value = assign_assert.expression(*map(self.get_fixed, assign_assert.variables))
 
         if isinstance(assign_assert, Assign):
-            return self._add_constant(assign_assert.variable, value)
+            return self.add(assign_assert.variable, value)
 
         #        if isinstance(assign_assert, Assert):
         if not value:

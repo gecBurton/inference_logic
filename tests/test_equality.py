@@ -18,11 +18,8 @@ def test__repr__():
         ("__eq__", (1,), "1 must be an Equality"),
         ("get_free", (1,), "1 must be a Variable"),
         ("get_fixed", (1,), "1 must be a Variable"),
-        ("_add_constant", (1, 2), "1 must be a Variable"),
-        ("_add_constant", (A, B), "B may not be a Variable"),
-        ("_add_constant", (A, {1, 2}), "{1, 2} must be hashable"),
-        ("_add_variable", (1, 2), "1 must be a Variable"),
-        ("_add_variable", (A, 2), "2 must be a Variable"),
+        ("add", (A, {1, 2}), "{1, 2} must be hashable"),
+        ("add", ({1, 2}, A), "{1, 2} must be hashable"),
     ],
 )
 def test_type_error(method, args, message):
