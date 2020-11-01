@@ -79,22 +79,22 @@ class Equality:
         return self.get_deep(self.get_fixed(item))
 
     @dispatch(ImmutableDict)  # type: ignore
-    def get_deep(self, item):  # noqa: F811
+    def get_deep(self, item):
         return ImmutableDict({key: self.get_deep(value) for key, value in item.items()})
 
     @dispatch(PrologList)  # type: ignore
-    def get_deep(self, item):  # noqa: F811
+    def get_deep(self, item):
         try:
             return PrologList(self.get_deep(item.head), self.get_deep(item.tail))
         except RecursionError:
             raise
 
     @dispatch(object)  # type: ignore
-    def get_deep(self, item):  # noqa: F811
+    def get_deep(self, item):
         return item
 
     @dispatch(Variable, object)  # type: ignore
-    def add(self, variable: Variable, constant: Any) -> Equality:  # noqa: F811
+    def add(self, variable: Variable, constant: Any) -> Equality:
         try:
             hash(constant)
         except TypeError:
@@ -125,7 +125,7 @@ class Equality:
         return Equality(out_free, out_fixed)
 
     @dispatch(Variable, Variable)  # type: ignore
-    def add(self, left: Variable, right: Variable) -> Equality:  # noqa: F811
+    def add(self, left: Variable, right: Variable) -> Equality:
 
         try:
             left_fixed = self.get_fixed(left)
@@ -179,17 +179,17 @@ class Equality:
         return Equality(out_free, out_fixed)
 
     @dispatch(object, Variable)  # type: ignore
-    def add(self, left: Any, right: Any) -> Equality:  # noqa: F811
+    def add(self, left: Any, right: Any) -> Equality:
         return self.add(right, left)
 
     @dispatch(object, object)  # type: ignore
-    def add(self, left: Any, right: Any) -> Equality:  # noqa: F811
+    def add(self, left: Any, right: Any) -> Equality:
         if left == right:
             return self
         raise UnificationError(f"values dont match: {left} != {right}")
 
     @dispatch(ImmutableDict, to_solve_for=set)  # type: ignore
-    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:  # noqa: F811
+    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:
         term = construct(term)
         to_solve_for = to_solve_for or set()
 
@@ -201,9 +201,7 @@ class Equality:
         }
 
     @dispatch(PrologList, to_solve_for=set)  # type: ignore
-    def inject(  # noqa: F811
-        self, term: Any, to_solve_for: Optional[Set[Variable]] = None
-    ) -> Set:  # noqa: F811
+    def inject(self, term: Any, to_solve_for: Optional[Set[Variable]] = None) -> Set:
         return {
             PrologList(x, y)
             for x, y in product(
@@ -213,7 +211,7 @@ class Equality:
         }
 
     @dispatch(Assign, to_solve_for=set)  # type: ignore
-    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:  # noqa: F811
+    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:
         free = self.get_free(term.variable) - {term.variable}
         if free:
             args_set = list(free)
@@ -224,7 +222,7 @@ class Equality:
         ]
 
     @dispatch(Variable, to_solve_for=set)  # type: ignore
-    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:  # noqa: F811
+    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:
         try:
             return {self.get_fixed(term)}
         except KeyError:
@@ -234,7 +232,7 @@ class Equality:
             return {term}
 
     @dispatch(object, to_solve_for=set)  # type: ignore
-    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:  # noqa: F811
+    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:
         return {term}
 
     def solutions(self, to_solve_for: Set[Variable]) -> Dict[Variable, Any]:
@@ -249,12 +247,12 @@ class Equality:
         return out
 
     @dispatch(Assign)  # type: ignore
-    def evaluate(self, assignment: Assign) -> Equality:  # noqa: F811
+    def evaluate(self, assignment: Assign) -> Equality:
         value = assignment.expression(*map(self.get_fixed, assignment.variables))
         return self.add(assignment.variable, value)
 
     @dispatch(Assert)  # type: ignore
-    def evaluate(self, assertion: Assert) -> Equality:  # noqa: F811
+    def evaluate(self, assertion: Assert) -> Equality:
         value = assertion.expression(*map(self.get_fixed, assertion.variables))
         if not value:
             raise UnificationError(f"bool({value}) != True")
