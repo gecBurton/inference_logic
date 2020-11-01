@@ -24,9 +24,9 @@ The goal of this project is to explore how to write a minimal set of features to
 
 The code is loosely based on Prolog, however:
 
-* The data structure is dicts/tuples/other rather than Prolog's functor/term as this id more Python-like.
+* The data structures used are dicts/tuples/primitive rather than replicating Prolog's functor & term.
 
-* We use Python's native iter-unpacking star notation to indicate that a Variable points to all elements in a list's tail.
+* Likewise Python's native star notation is used to indicate that a Variable is assigned to many elements of a list.
 
 The success of this project is measured by the number of the `99 problems`_ actually solved_ to keep the code focussed on delivering features and not bike-shedding
 
@@ -81,13 +81,13 @@ This is similar to SQL where we have:
 
 * you can query the database with a statement. The engine will then respond with a list all values for which your query is true.
 
-Here the "database" is a list of...
+Here the "database" is a list of:
 
 * Facts which are Python dicts, tuples and primitives (i.e. JSON), this is analogous to a record in table in SQL.
 
 * Rules whose first argument is true if subsequent arguments are all true, this is analogous to a View in SQL.
 
-* The database can then be queried with a statement that may contain Variables. The response will be a list of Variable-values that satisfy the query.
+* The database can then be queried with a statement. The response will be a list of values that satisfy the query.
 
 
 Credits
@@ -105,6 +105,5 @@ Thank you to kclaurelie_ for helping to solve the fundamental problem that had b
 .. _pyDatalog: https://pypi.org/project/pyDatalog/
 .. _py4fun: https://www.openbookproject.net/py4fun/prolog/prolog1.html
 .. _kclaurelie: https://github.com/kclaurelie
-.. _LINQ: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/
 .. _solved: https://github.com/gecBurton/inference_logic/tree/main/tests/ninety_nine_problems
 .. _unification: https://github.com/gecBurton/inference_logic/blob/main/inference_logic/algorithms.py

@@ -9,15 +9,15 @@ A, B, C, D = Variable.factory("A", "B", "C", "D")
 
 def test__repr__():
     equity = Equality(free=[{A}], fixed={True: {C}})
-    assert repr(equity) == "Equality([{A}], True={C})"
+    assert repr(equity) == "{A}, True: {C}"
 
 
 @pytest.mark.parametrize(
     "method, args, message",
     [
         ("__eq__", (1,), "1 must be an Equality"),
-        ("get_free", (1,), "1 must be a Variable"),
-        ("get_fixed", (1,), "1 must be a Variable"),
+        ("_get_free", (1,), "1 must be a Variable"),
+        ("_get_fixed", (1,), "1 must be a Variable"),
         ("add", (A, {1, 2}), "{1, 2} must be hashable"),
         ("add", ({1, 2}, A), "{1, 2} must be hashable"),
     ],
@@ -46,19 +46,19 @@ def test__eq__():
 @pytest.mark.parametrize("variable, result", [(A, {A, B}), (B, {A, B}), (C, set())])
 def test_get_free(variable, result):
     equity = Equality(free=[{A, B}], fixed={True: {C}})
-    assert equity.get_free(variable) == result
+    assert equity._get_free(variable) == result
 
 
 @pytest.mark.parametrize("variable, result", [(A, True), (B, True), (C, False)])
 def test_get_fixed(variable, result):
     equity = Equality(fixed={True: {A, B}, False: {C}})
-    assert equity.get_fixed(variable) == result
+    assert equity._get_fixed(variable) == result
 
 
 def test_get_fixed_fail():
     equity = Equality()
     with pytest.raises(KeyError):
-        equity.get_fixed(A)
+        equity._get_fixed(A)
 
 
 @pytest.mark.parametrize(

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from itertools import product
-from typing import Any, Dict, List, Optional, Sequence, Set, Union
+from typing import Any, Dict, List, Optional, Sequence, Set
 
 from multipledispatch import dispatch
 
@@ -19,11 +19,25 @@ from inference_logic.data_structures import (
 
 
 class Equality:
+    """There are two types of equality:
+
+    1. free, a Variable `X` can be equal to any number of other Variables
+    2. fixed, a hashable object `h` can be equal to any number of Variables \
+    so long as none of them are equal to any other hashable object.
+    """
+
     def __init__(
         self,
         free: Sequence[Set[Variable]] = None,
-        fixed: Dict[Union[Any, ImmutableDict], Set[Variable]] = None,
+        fixed: Dict[Any, Set[Variable]] = None,
     ) -> None:
+        """the free and fixed components of and Equality can be passed as
+        a List of Variable-Sets and a Dict of Variable-Sets respectively.
+
+        >>> A, B, C, D, E = Variable.factory("A", "B", "C", "D", "E")
+        >>> Equality(free=[{A, B}], fixed={True: {C, D}, False: {E}})
+        {A, B}, True: {C, D}, False: {E}
+        """
         self.fixed: Dict[ImmutableDict, Set[Variable]] = {}
         for constant, variable_set in (fixed or {}).items():
             self.fixed[constant] = variable_set.copy()
@@ -35,11 +49,9 @@ class Equality:
         def variable_set_repr(variable_set):
             return f'{{{", ".join(sorted(map(str, variable_set)))}}}'
 
-        fixed = ", ".join(f"{k}={variable_set_repr(v)}" for k, v in self.fixed.items())
-        free = ", ".join(variable_set_repr(var_set) for var_set in self.free)
-        if free:
-            free = f"[{free}], "
-        return f"Equality({free}{fixed})"
+        fixed = [f"{k}: {variable_set_repr(v)}" for k, v in self.fixed.items()]
+        free = list(map(variable_set_repr, self.free))
+        return ", ".join(free + fixed) or "."
 
     def __hash__(self) -> int:
         free = hash(tuple(map(Variable.hash_set, self.free)))
@@ -56,7 +68,7 @@ class Equality:
             raise TypeError(f"{other} must be an Equality")
         return hash(self) == hash(other)
 
-    def get_free(self, variable: Variable) -> Set[Variable]:
+    def _get_free(self, variable: Variable) -> Set[Variable]:
         if not isinstance(variable, Variable):
             raise TypeError(f"{variable} must be a Variable")
         for variables in self.free:
@@ -64,10 +76,10 @@ class Equality:
                 return variables
         return set()
 
-    def get_fixed(self, variable: Variable) -> Any:
+    def _get_fixed(self, variable: Variable) -> Any:
         if not isinstance(variable, Variable):
             raise TypeError(f"{variable} must be a Variable")
-        for _variable in self.get_free(variable) | {variable}:
+        for _variable in self._get_free(variable) | {variable}:
             for constant, variables in self.fixed.items():
                 if _variable in variables:
                     return constant
@@ -76,7 +88,7 @@ class Equality:
 
     @dispatch(Variable)
     def get_deep(self, item):
-        return self.get_deep(self.get_fixed(item))
+        return self.get_deep(self._get_fixed(item))
 
     @dispatch(ImmutableDict)  # type: ignore
     def get_deep(self, item):
@@ -100,8 +112,10 @@ class Equality:
         except TypeError:
             raise TypeError(f"{constant} must be hashable")
 
+        variable.many = False
+
         try:
-            fixed = self.get_fixed(variable)
+            fixed = self._get_fixed(variable)
 
             if constant != fixed:
                 raise UnificationError(
@@ -111,7 +125,7 @@ class Equality:
         except KeyError:
             pass
 
-        free = self.get_free(variable)
+        free = self._get_free(variable)
         out_free, out_fixed = deepcopy(self.free), deepcopy(self.fixed)
         if free:
             out_free.remove(free)
@@ -128,13 +142,13 @@ class Equality:
     def add(self, left: Variable, right: Variable) -> Equality:
 
         try:
-            left_fixed = self.get_fixed(left)
+            left_fixed = self._get_fixed(left)
             is_left_fixed = True
         except KeyError:
             is_left_fixed = False
 
         try:
-            right_fixed = self.get_fixed(right)
+            right_fixed = self._get_fixed(right)
             is_right_fixed = True
         except KeyError:
             is_right_fixed = False
@@ -144,7 +158,7 @@ class Equality:
                 f"{left} cannot equal {right} because {left_fixed} != {right_fixed}"
             )
 
-        left_free, right_free = self.get_free(left), self.get_free(right)
+        left_free, right_free = self._get_free(left), self._get_free(right)
         out_free, out_fixed = deepcopy(self.free), deepcopy(self.fixed)
 
         if left_free and right_free:
@@ -212,7 +226,7 @@ class Equality:
 
     @dispatch(Assign, to_solve_for=set)  # type: ignore
     def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:
-        free = self.get_free(term.variable) - {term.variable}
+        free = self._get_free(term.variable) - {term.variable}
         if free:
             args_set = list(free)
         else:
@@ -224,9 +238,9 @@ class Equality:
     @dispatch(Variable, to_solve_for=set)  # type: ignore
     def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:
         try:
-            return {self.get_fixed(term)}
+            return {self._get_fixed(term)}
         except KeyError:
-            free = self.get_free(term) & to_solve_for
+            free = self._get_free(term) & to_solve_for
             if free:
                 return free
             return {term}
@@ -239,7 +253,7 @@ class Equality:
         out = {}
         for item in to_solve_for:
             try:
-                fixed = self.get_fixed(item)
+                fixed = self._get_fixed(item)
                 deep = self.get_deep(fixed)
                 out[item] = deconstruct(deep)
             except KeyError:
@@ -248,12 +262,12 @@ class Equality:
 
     @dispatch(Assign)  # type: ignore
     def evaluate(self, assignment: Assign) -> Equality:
-        value = assignment.expression(*map(self.get_fixed, assignment.variables))
+        value = assignment.expression(*map(self._get_fixed, assignment.variables))
         return self.add(assignment.variable, value)
 
     @dispatch(Assert)  # type: ignore
     def evaluate(self, assertion: Assert) -> Equality:
-        value = assertion.expression(*map(self.get_fixed, assertion.variables))
+        value = assertion.expression(*map(self._get_fixed, assertion.variables))
         if not value:
             raise UnificationError(f"bool({value}) != True")
         return self
