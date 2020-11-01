@@ -1,5 +1,7 @@
 from itertools import product
-from typing import Any, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Dict, Iterator, List, Tuple
+
+from multipledispatch import dispatch
 
 from inference_logic.data_structures import (
     Assert,
@@ -15,7 +17,34 @@ from inference_logic.data_structures import (
 from inference_logic.equality import Equality
 
 
-def unify(left, right, equality: Optional[Equality] = None) -> Equality:
+@dispatch(ImmutableDict, ImmutableDict, equality=Equality)  # type: ignore
+def unify(left, right, equality: Equality) -> Equality:
+    if left.keys() != right.keys():
+        raise UnificationError(f"keys must match: {tuple(left)} != {tuple(right)}")
+    for key in left.keys():
+        equality = unify(left[key], right[key], equality=equality)
+    return equality
+
+
+@dispatch(PrologList, PrologList, equality=Equality)  # type: ignore
+def unify(left, right, equality: Equality) -> Equality:
+    equality = unify(left.head, right.head, equality=equality)
+    equality = unify(left.tail, right.tail, equality=equality)
+    return equality
+
+
+@dispatch(PrologList, PrologListNull, equality=Equality)  # type: ignore
+def unify(left, right, equality: Equality) -> Equality:
+    raise UnificationError("list lengths must be the same")
+
+
+@dispatch(PrologListNull, PrologList, equality=Equality)  # type: ignore
+def unify(left, right, equality: Equality) -> Equality:
+    raise UnificationError("list lengths must be the same")
+
+
+@dispatch(object, object, equality=Equality)  # type: ignore
+def unify(left, right, equality: Equality) -> Equality:
     """
     Unification is a key idea in declarative programming.
     https://en.wikipedia.org/wiki/Unification_(computer_science)
@@ -108,26 +137,6 @@ def unify(left, right, equality: Optional[Equality] = None) -> Equality:
         1: {A}, 2: {B}, [3, 4]: {C}
 
     """
-    left, right = construct(left), construct(right)
-
-    equality = Equality() if equality is None else equality
-
-    if isinstance(left, ImmutableDict) and isinstance(right, ImmutableDict):
-        if left.keys() != right.keys():
-            raise UnificationError(f"keys must match: {tuple(left)} != {tuple(right)}")
-        for key in left.keys():
-            equality = unify(left[key], right[key], equality)
-        return equality
-
-    if isinstance(left, PrologList) and isinstance(right, PrologList):
-        equality = unify(left.head, right.head, equality)
-        equality = unify(left.tail, right.tail, equality)
-        return equality
-
-    if isinstance(left, PrologList) and isinstance(right, PrologListNull):
-        raise UnificationError("list lengths must be the same")
-    if isinstance(left, PrologListNull) and isinstance(right, PrologList):
-        raise UnificationError("list lengths must be the same")
 
     return equality.add(left, right)
 
