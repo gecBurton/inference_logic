@@ -74,22 +74,27 @@ class Equality:
 
         raise KeyError
 
+    @dispatch(Variable)
     def get_deep(self, item):
-        if isinstance(item, Variable):
-            return self.get_deep(self.get_fixed(item))
-        elif isinstance(item, ImmutableDict):
-            return ImmutableDict(
-                {key: self.get_deep(value) for key, value in item.items()}
-            )
-        elif isinstance(item, PrologList):
-            try:
-                return PrologList(self.get_deep(item.head), self.get_deep(item.tail))
-            except RecursionError:
-                raise
+        return self.get_deep(self.get_fixed(item))
+
+    @dispatch(ImmutableDict)  # type: ignore
+    def get_deep(self, item):  # noqa: F811
+        return ImmutableDict({key: self.get_deep(value) for key, value in item.items()})
+
+    @dispatch(PrologList)  # type: ignore
+    def get_deep(self, item):  # noqa: F811
+        try:
+            return PrologList(self.get_deep(item.head), self.get_deep(item.tail))
+        except RecursionError:
+            raise
+
+    @dispatch(object)  # type: ignore
+    def get_deep(self, item):  # noqa: F811
         return item
 
-    @dispatch(Variable, object)
-    def add(self, variable: Variable, constant: Any) -> Equality:
+    @dispatch(Variable, object)  # type: ignore
+    def add(self, variable: Variable, constant: Any) -> Equality:  # noqa: F811
         try:
             hash(constant)
         except TypeError:
@@ -183,43 +188,54 @@ class Equality:
             return self
         raise UnificationError(f"values dont match: {left} != {right}")
 
-    def inject(self, term: Any, to_solve_for: Optional[Set[Variable]] = None) -> Set:
+    @dispatch(ImmutableDict, to_solve_for=set)  # type: ignore
+    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:  # noqa: F811
         term = construct(term)
         to_solve_for = to_solve_for or set()
 
-        def _inject(_term):
-            if isinstance(_term, ImmutableDict):
-                return {
-                    ImmutableDict(dict(zip(_term.keys(), v)))
-                    for v in product(*map(_inject, _term.values()))
-                }
-            if isinstance(_term, PrologList):
-                return {
-                    PrologList(x, y)
-                    for x, y in product(_inject(_term.head), _inject(_term.tail))
-                }
+        return {
+            ImmutableDict(dict(zip(term.keys(), v)))
+            for v in product(
+                *[self.inject(x, to_solve_for=to_solve_for) for x in term.values()]
+            )
+        }
 
-            if isinstance(_term, Assign):
-                free = self.get_free(_term.variable) - {_term.variable}
-                if free:
-                    args_set = list(free)
-                else:
-                    args_set = [_term.variable]
-                return [
-                    Assign(a, _term.expression, _term.frame, is_injected=True)
-                    for a in args_set
-                ]
+    @dispatch(PrologList, to_solve_for=set)  # type: ignore
+    def inject(  # noqa: F811
+        self, term: Any, to_solve_for: Optional[Set[Variable]] = None
+    ) -> Set:  # noqa: F811
+        return {
+            PrologList(x, y)
+            for x, y in product(
+                self.inject(term.head, to_solve_for=to_solve_for),
+                self.inject(term.tail, to_solve_for=to_solve_for),
+            )
+        }
 
-            if isinstance(_term, Variable):
-                try:
-                    return {self.get_fixed(_term)}
-                except KeyError:
-                    free = self.get_free(_term) & to_solve_for
-                    if free:
-                        return free
-            return {_term}
+    @dispatch(Assign, to_solve_for=set)  # type: ignore
+    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:  # noqa: F811
+        free = self.get_free(term.variable) - {term.variable}
+        if free:
+            args_set = list(free)
+        else:
+            args_set = [term.variable]
+        return [
+            Assign(a, term.expression, term.frame, is_injected=True) for a in args_set
+        ]
 
-        return _inject(term)
+    @dispatch(Variable, to_solve_for=set)  # type: ignore
+    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:  # noqa: F811
+        try:
+            return {self.get_fixed(term)}
+        except KeyError:
+            free = self.get_free(term) & to_solve_for
+            if free:
+                return free
+            return {term}
+
+    @dispatch(object, to_solve_for=set)  # type: ignore
+    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:  # noqa: F811
+        return {term}
 
     def solutions(self, to_solve_for: Set[Variable]) -> Dict[Variable, Any]:
         out = {}
@@ -232,13 +248,14 @@ class Equality:
                 pass
         return out
 
-    def evaluate(self, assign_assert: Union[Assign, Assert]) -> Equality:
-        value = assign_assert.expression(*map(self.get_fixed, assign_assert.variables))
+    @dispatch(Assign)  # type: ignore
+    def evaluate(self, assignment: Assign) -> Equality:  # noqa: F811
+        value = assignment.expression(*map(self.get_fixed, assignment.variables))
+        return self.add(assignment.variable, value)
 
-        if isinstance(assign_assert, Assign):
-            return self.add(assign_assert.variable, value)
-
-        #        if isinstance(assign_assert, Assert):
+    @dispatch(Assert)  # type: ignore
+    def evaluate(self, assertion: Assert) -> Equality:  # noqa: F811
+        value = assertion.expression(*map(self.get_fixed, assertion.variables))
         if not value:
             raise UnificationError(f"bool({value}) != True")
         return self

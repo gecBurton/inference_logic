@@ -169,4 +169,4 @@ def test_recursions_error():
     equality = Equality(fixed={a: {B}, 1: {A}})
     with pytest.raises(RecursionError) as error:
         equality.get_deep(a)
-    assert str(error.value) == "maximum recursion depth exceeded in comparison"
+    assert str(error.value).startswith("maximum recursion depth exceeded")
