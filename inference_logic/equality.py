@@ -2,13 +2,16 @@ from __future__ import annotations
 
 from copy import deepcopy
 from itertools import product
-from typing import Any, Dict, List, Optional, Sequence, Set, Union
+from typing import Any, Dict, List, Optional, Sequence, Set
+
+from multipledispatch import dispatch
 
 from inference_logic.data_structures import (
     Assert,
     Assign,
     ImmutableDict,
     PrologList,
+    PrologListNull,
     UnificationError,
     Variable,
     construct,
@@ -84,27 +87,27 @@ class Equality:
 
         raise KeyError
 
-    def _get_recursive(self, item):
-        if isinstance(item, Variable):
-            return self._get_recursive(self._get_fixed(item))
-        elif isinstance(item, ImmutableDict):
-            return ImmutableDict(
-                {key: self._get_recursive(value) for key, value in item.items()}
-            )
-        elif isinstance(item, PrologList):
-            try:
-                return PrologList(
-                    self._get_recursive(item.head), self._get_recursive(item.tail)
-                )
-            except RecursionError:
-                raise
+    @dispatch(Variable)
+    def get_deep(self, item):
+        return self.get_deep(self._get_fixed(item))
+
+    @dispatch(ImmutableDict)  # type: ignore
+    def get_deep(self, item):
+        return ImmutableDict({key: self.get_deep(value) for key, value in item.items()})
+
+    @dispatch(PrologList)  # type: ignore
+    def get_deep(self, item):
+        try:
+            return PrologList(self.get_deep(item.head), self.get_deep(item.tail))
+        except RecursionError:
+            raise
+
+    @dispatch(object)  # type: ignore
+    def get_deep(self, item):
         return item
 
-    def _add_constant(self, variable: Variable, constant: Any) -> Equality:
-        if not isinstance(variable, Variable):
-            raise TypeError(f"{variable} must be a Variable")
-        if isinstance(constant, Variable):
-            raise TypeError(f"{constant} may not be a Variable")
+    @dispatch(Variable, object)  # type: ignore
+    def add(self, variable: Variable, constant: Any) -> Equality:
         try:
             hash(constant)
         except TypeError:
@@ -136,11 +139,8 @@ class Equality:
             out_fixed[constant].add(variable)
         return Equality(out_free, out_fixed)
 
-    def _add_variable(self, left: Variable, right: Variable) -> Equality:
-        if not isinstance(left, Variable):
-            raise TypeError(f"{left} must be a Variable")
-        if not isinstance(right, Variable):
-            raise TypeError(f"{right} must be a Variable")
+    @dispatch(Variable, Variable)  # type: ignore
+    def add(self, left: Variable, right: Variable) -> Equality:
 
         try:
             left_fixed = self._get_fixed(left)
@@ -193,74 +193,201 @@ class Equality:
                 out_free.append({left, right})
         return Equality(out_free, out_fixed)
 
+    @dispatch(object, Variable)  # type: ignore
     def add(self, left: Any, right: Any) -> Equality:
-        """An equality can be extended by adding new pairs of objects that
-        are equal to each other"""
-        if isinstance(left, Variable) and isinstance(right, Variable):
-            return self._add_variable(left, right)
-        if isinstance(right, Variable):
-            return self._add_constant(right, left)
-        if isinstance(left, Variable):
-            return self._add_constant(left, right)
+        return self.add(right, left)
+
+    @dispatch(object, object)  # type: ignore
+    def add(self, left: Any, right: Any) -> Equality:
         if left == right:
             return self
         raise UnificationError(f"values dont match: {left} != {right}")
 
-    def inject(self, term: Any, to_solve_for: Optional[Set[Variable]] = None) -> Set:
+    @dispatch(ImmutableDict, to_solve_for=set)  # type: ignore
+    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:
         term = construct(term)
         to_solve_for = to_solve_for or set()
 
-        def _inject(_term):
-            if isinstance(_term, ImmutableDict):
-                return {
-                    ImmutableDict(dict(zip(_term.keys(), v)))
-                    for v in product(*map(_inject, _term.values()))
-                }
-            if isinstance(_term, PrologList):
-                return {
-                    PrologList(x, y)
-                    for x, y in product(_inject(_term.head), _inject(_term.tail))
-                }
+        return {
+            ImmutableDict(dict(zip(term.keys(), v)))
+            for v in product(
+                *[self.inject(x, to_solve_for=to_solve_for) for x in term.values()]
+            )
+        }
 
-            if isinstance(_term, Assign):
-                free = self._get_free(_term.variable) - {_term.variable}
-                if free:
-                    args_set = list(free)
-                else:
-                    args_set = [_term.variable]
-                return [
-                    Assign(a, _term.expression, _term.frame, is_injected=True)
-                    for a in args_set
-                ]
+    @dispatch(PrologList, to_solve_for=set)  # type: ignore
+    def inject(self, term: Any, to_solve_for: Optional[Set[Variable]] = None) -> Set:
+        return {
+            PrologList(x, y)
+            for x, y in product(
+                self.inject(term.head, to_solve_for=to_solve_for),
+                self.inject(term.tail, to_solve_for=to_solve_for),
+            )
+        }
 
-            if isinstance(_term, Variable):
-                try:
-                    return {self._get_fixed(_term)}
-                except KeyError:
-                    free = self._get_free(_term) & to_solve_for
-                    if free:
-                        return free
-            return {_term}
+    @dispatch(Assign, to_solve_for=set)  # type: ignore
+    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:
+        free = self._get_free(term.variable) - {term.variable}
+        if free:
+            args_set = list(free)
+        else:
+            args_set = [term.variable]
+        return [
+            Assign(a, term.expression, term.frame, is_injected=True) for a in args_set
+        ]
 
-        return _inject(term)
+    @dispatch(Variable, to_solve_for=set)  # type: ignore
+    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:
+        try:
+            return {self._get_fixed(term)}
+        except KeyError:
+            free = self._get_free(term) & to_solve_for
+            if free:
+                return free
+            return {term}
+
+    @dispatch(object, to_solve_for=set)  # type: ignore
+    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:
+        return {term}
 
     def solutions(self, to_solve_for: Set[Variable]) -> Dict[Variable, Any]:
         out = {}
         for item in to_solve_for:
             try:
                 fixed = self._get_fixed(item)
-                deep = self._get_recursive(fixed)
+                deep = self.get_deep(fixed)
                 out[item] = deconstruct(deep)
             except KeyError:
                 pass
         return out
 
-    def evaluate(self, assign_assert: Union[Assign, Assert]) -> Equality:
-        value = assign_assert.expression(*map(self._get_fixed, assign_assert.variables))
+    @dispatch(Assign)  # type: ignore
+    def evaluate(self, assignment: Assign) -> Equality:
+        value = assignment.expression(*map(self._get_fixed, assignment.variables))
+        return self.add(assignment.variable, value)
 
-        if isinstance(assign_assert, Assign):
-            return self._add_constant(assign_assert.variable, value)
-
+    @dispatch(Assert)  # type: ignore
+    def evaluate(self, assertion: Assert) -> Equality:
+        value = assertion.expression(*map(self._get_fixed, assertion.variables))
         if not value:
             raise UnificationError(f"bool({value}) != True")
         return self
+
+    @dispatch(ImmutableDict, ImmutableDict)  # type: ignore
+    def unify(self, left, right) -> Equality:
+        if left.keys() != right.keys():
+            raise UnificationError(f"keys must match: {tuple(left)} != {tuple(right)}")
+
+        equality = self
+        for key in left.keys():
+            equality = equality.unify(left[key], right[key])
+        return equality
+
+    @dispatch(PrologList, PrologList)  # type: ignore
+    def unify(self, left, right) -> Equality:
+        return self.unify(left.head, right.head).unify(left.tail, right.tail)
+
+    @dispatch(PrologList, PrologListNull)  # type: ignore
+    def unify(self, left, right) -> Equality:
+        raise UnificationError("list lengths must be the same")
+
+    @dispatch(PrologListNull, PrologList)  # type: ignore
+    def unify(self, left, right) -> Equality:
+        raise UnificationError("list lengths must be the same")
+
+    @dispatch(object, object)  # type: ignore
+    def unify(self, left, right) -> Equality:
+        """
+        Unification is a key idea in declarative programming.
+        https://en.wikipedia.org/wiki/Unification_(computer_science)
+
+        This function has 3 tasks:
+
+        1. Unification of values:
+
+            >>> A, B, C = Variable.factory("A", "B", "C")
+
+            When two primitive values are unified it will check that they are
+            equal to each other, and return an empty Equality object.
+
+            >>> Equality().unify(1, 1)
+            .
+
+            >>> unify(True, False)
+            Traceback (most recent call last):
+                ...
+            inference_logic.data_structures.UnificationError: values dont match: True != False
+
+            or fails with a UnificationError if they are not.
+
+            If a Variable is passed as an argument then this variable will be set
+            equal to the other vale which could either be, a primitive:
+
+            >>> unify(True, B)
+            True: {B}
+
+            Or another varible
+
+            >>> unify(A, B)
+            {A, B}
+
+
+        2. Unification against know Equalities:
+
+            Unification operations can be chained together by passing in
+            an optional equality argument.
+
+            This way unified Variables can be assigned to existing
+            Variable Sets
+
+            >>> unify(A, C, Equality(free=[{A, B}]))
+            {A, B, C}
+
+            or constants.
+
+            >>> unify(A, 1, Equality(free=[{A, B}]))
+            1: {A, B}
+
+            And we can check for consistencey between uunifications.
+
+            >>> unify(B, False, Equality(fixed={True: {A, B}}))
+            Traceback (most recent call last):
+                ...
+            inference_logic.data_structures.UnificationError: B cannot equal False because False != True
+
+
+        3. Unification of Structure:
+
+            When compound data structures, dicts and tuples, are unified then the
+            unification first checks that the data-structures have the same type,
+            any then is applied pair-wise and recursively to all elements.
+
+            >>> unify(dict(a=A, b=2), dict(a=1, b=B))
+            1: {A}, 2: {B}
+
+            >>> unify((A, B), (1, 2))
+            1: {A}, 2: {B}
+
+            In the case of dicts the unification will fail if the keys do not match:
+
+            >>> unify(dict(a=1, b=2), dict(a=1, c=2))
+            Traceback (most recent call last):
+                ...
+            inference_logic.data_structures.UnificationError: keys must match: ('a', 'b') != ('a', 'c')
+
+            And tuple unification will fail if they have different lengths
+
+            >>> unify((A, B), (1, 2, 3))
+            Traceback (most recent call last):
+                ...
+            inference_logic.data_structures.UnificationError: list lengths must be the same
+
+            It possible to unify some Variables to the head of a tuple and another to the rest
+            using the * syntax
+
+            >>> unify((A, B, *C), (1, 2, 3, 4))
+            1: {A}, 2: {B}, [3, 4]: {C}
+
+        """
+
+        return self.add(left, right)

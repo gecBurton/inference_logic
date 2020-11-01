@@ -18,11 +18,8 @@ def test__repr__():
         ("__eq__", (1,), "1 must be an Equality"),
         ("_get_free", (1,), "1 must be a Variable"),
         ("_get_fixed", (1,), "1 must be a Variable"),
-        ("_add_constant", (1, 2), "1 must be a Variable"),
-        ("_add_constant", (A, B), "B may not be a Variable"),
-        ("_add_constant", (A, {1, 2}), "{1, 2} must be hashable"),
-        ("_add_variable", (1, 2), "1 must be a Variable"),
-        ("_add_variable", (A, 2), "2 must be a Variable"),
+        ("add", (A, {1, 2}), "{1, 2} must be hashable"),
+        ("add", ({1, 2}, A), "{1, 2} must be hashable"),
     ],
 )
 def test_type_error(method, args, message):
@@ -164,12 +161,12 @@ def test_inject(equality, to_solve_for, initial, final):
 )
 def test_get_deep(variable, expected):
     equality = Equality(fixed={1: {A}}, free=[{B, C}])
-    assert equality._get_recursive(construct(variable)) == construct(expected)
+    assert equality.get_deep(construct(variable)) == construct(expected)
 
 
 def test_recursions_error():
     a = construct([A, B])
     equality = Equality(fixed={a: {B}, 1: {A}})
     with pytest.raises(RecursionError) as error:
-        equality._get_recursive(a)
-    assert str(error.value) == "maximum recursion depth exceeded in comparison"
+        equality.get_deep(a)
+    assert str(error.value).startswith("maximum recursion depth exceeded")

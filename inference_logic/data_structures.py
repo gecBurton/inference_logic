@@ -3,6 +3,8 @@ from __future__ import annotations
 from collections import UserDict
 from typing import Any, Dict, List, Optional, Set, Union
 
+from multipledispatch import dispatch
+
 
 def new_frame(obj, frame: int):
     if isinstance(obj, (Variable, ImmutableDict, PrologList)):
@@ -87,56 +89,6 @@ class PrologListNull:
         if not isinstance(other, PrologListNull):
             raise TypeError(f"{other} must be a PrologListNull")
         return True
-
-
-def construct(obj: Any):
-    if isinstance(obj, dict):
-        return ImmutableDict({key: construct(value) for key, value in obj.items()})
-    if isinstance(obj, (list, tuple)):
-        if not obj:
-            return PrologListNull()
-
-        head, *tail = reversed(list(map(construct, obj)))
-        out = (
-            head
-            if obj and isinstance(head, Variable) and head.many
-            else PrologList(head, PrologListNull())
-        )
-
-        for item in tail:
-            out = PrologList(item, out)
-        return out
-
-    if isinstance(
-        obj,
-        (
-            bool,
-            int,
-            float,
-            str,
-            Variable,
-            ImmutableDict,
-            PrologList,
-            Rule,
-            Assert,
-            Assign,
-            PrologListNull,
-        ),
-    ):
-        return obj
-    if obj is None:
-        return obj
-    raise TypeError(f"{obj} is not json serializable")
-
-
-def deconstruct(obj):
-    if isinstance(obj, ImmutableDict):
-        return {key: deconstruct(value) for key, value in obj.items()}
-    if isinstance(obj, PrologList):
-        if isinstance(obj.tail, PrologListNull):
-            return [deconstruct(obj.head)]
-        return [deconstruct(obj.head), *deconstruct(obj.tail)]
-    return obj
 
 
 class PrologList:
@@ -296,3 +248,68 @@ class Assert:
 
     def new_frame(self, frame: int) -> Assert:
         return Assert(self.expression, frame)
+
+
+@dispatch(ImmutableDict)
+def deconstruct(obj):
+    return {key: deconstruct(value) for key, value in obj.items()}
+
+
+@dispatch(PrologList)  # type: ignore
+def deconstruct(obj):
+    if isinstance(obj.tail, PrologListNull):
+        return [deconstruct(obj.head)]
+    return [deconstruct(obj.head), *deconstruct(obj.tail)]
+
+
+@dispatch(object)  # type: ignore
+def deconstruct(obj):
+    return obj
+
+
+@dispatch(dict)
+def construct(obj: Any):
+    return ImmutableDict({key: construct(value) for key, value in obj.items()})
+
+
+@dispatch((list, tuple))  # type: ignore
+def construct(obj: Any):
+    if not obj:
+        return PrologListNull()
+
+    head, *tail = reversed(list(map(construct, obj)))
+    out = (
+        head
+        if obj and isinstance(head, Variable) and head.many
+        else PrologList(head, PrologListNull())
+    )
+
+    for item in tail:
+        out = PrologList(item, out)
+    return out
+
+
+@dispatch(  # type: ignore
+    (
+        bool,
+        int,
+        float,
+        str,
+        Variable,
+        ImmutableDict,
+        PrologList,
+        Rule,
+        Assert,
+        Assign,
+        PrologListNull,
+    )
+)
+def construct(obj: Any):
+    return obj
+
+
+@dispatch(object)  # type: ignore
+def construct(obj: Any):
+    if obj is None:
+        return obj
+    raise TypeError(f"{obj} is not json serializable")
