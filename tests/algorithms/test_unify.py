@@ -1,7 +1,6 @@
 import pytest
 
 from inference_logic import Variable
-from inference_logic.algorithms import unify
 from inference_logic.data_structures import UnificationError, construct
 from inference_logic.equality import Equality
 
@@ -36,7 +35,7 @@ A, B, C = Variable.factory("A", "B", "C")
 )
 def test_unify_pass(left, right, initial, final):
     left, right = construct(left), construct(right)
-    assert unify(left, right, equality=initial) == final
+    assert initial.unify(left, right) == final
 
 
 @pytest.mark.parametrize(
@@ -61,5 +60,5 @@ def test_unify_pass(left, right, initial, final):
 def test_unify_fail(left, right, initial, message):
     left, right = construct(left), construct(right)
     with pytest.raises(UnificationError) as error:
-        unify(left, right, equality=initial)
+        initial.unify(left, right)
     assert str(error.value) == message

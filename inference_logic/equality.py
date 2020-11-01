@@ -11,6 +11,7 @@ from inference_logic.data_structures import (
     Assign,
     ImmutableDict,
     PrologList,
+    PrologListNull,
     UnificationError,
     Variable,
     construct,
@@ -271,3 +272,122 @@ class Equality:
         if not value:
             raise UnificationError(f"bool({value}) != True")
         return self
+
+    @dispatch(ImmutableDict, ImmutableDict)  # type: ignore
+    def unify(self, left, right) -> Equality:
+        if left.keys() != right.keys():
+            raise UnificationError(f"keys must match: {tuple(left)} != {tuple(right)}")
+
+        equality = self
+        for key in left.keys():
+            equality = equality.unify(left[key], right[key])
+        return equality
+
+    @dispatch(PrologList, PrologList)  # type: ignore
+    def unify(self, left, right) -> Equality:
+        return self.unify(left.head, right.head).unify(left.tail, right.tail)
+
+    @dispatch(PrologList, PrologListNull)  # type: ignore
+    def unify(self, left, right) -> Equality:
+        raise UnificationError("list lengths must be the same")
+
+    @dispatch(PrologListNull, PrologList)  # type: ignore
+    def unify(self, left, right) -> Equality:
+        raise UnificationError("list lengths must be the same")
+
+    @dispatch(object, object)  # type: ignore
+    def unify(self, left, right) -> Equality:
+        """
+        Unification is a key idea in declarative programming.
+        https://en.wikipedia.org/wiki/Unification_(computer_science)
+
+        This function has 3 tasks:
+
+        1. Unification of values:
+
+            >>> A, B, C = Variable.factory("A", "B", "C")
+
+            When two primitive values are unified it will check that they are
+            equal to each other, and return an empty Equality object.
+
+            >>> Equality().unify(1, 1)
+            .
+
+            >>> unify(True, False)
+            Traceback (most recent call last):
+                ...
+            inference_logic.data_structures.UnificationError: values dont match: True != False
+
+            or fails with a UnificationError if they are not.
+
+            If a Variable is passed as an argument then this variable will be set
+            equal to the other vale which could either be, a primitive:
+
+            >>> unify(True, B)
+            True: {B}
+
+            Or another varible
+
+            >>> unify(A, B)
+            {A, B}
+
+
+        2. Unification against know Equalities:
+
+            Unification operations can be chained together by passing in
+            an optional equality argument.
+
+            This way unified Variables can be assigned to existing
+            Variable Sets
+
+            >>> unify(A, C, Equality(free=[{A, B}]))
+            {A, B, C}
+
+            or constants.
+
+            >>> unify(A, 1, Equality(free=[{A, B}]))
+            1: {A, B}
+
+            And we can check for consistencey between uunifications.
+
+            >>> unify(B, False, Equality(fixed={True: {A, B}}))
+            Traceback (most recent call last):
+                ...
+            inference_logic.data_structures.UnificationError: B cannot equal False because False != True
+
+
+        3. Unification of Structure:
+
+            When compound data structures, dicts and tuples, are unified then the
+            unification first checks that the data-structures have the same type,
+            any then is applied pair-wise and recursively to all elements.
+
+            >>> unify(dict(a=A, b=2), dict(a=1, b=B))
+            1: {A}, 2: {B}
+
+            >>> unify((A, B), (1, 2))
+            1: {A}, 2: {B}
+
+            In the case of dicts the unification will fail if the keys do not match:
+
+            >>> unify(dict(a=1, b=2), dict(a=1, c=2))
+            Traceback (most recent call last):
+                ...
+            inference_logic.data_structures.UnificationError: keys must match: ('a', 'b') != ('a', 'c')
+
+            And tuple unification will fail if they have different lengths
+
+            >>> unify((A, B), (1, 2, 3))
+            Traceback (most recent call last):
+                ...
+            inference_logic.data_structures.UnificationError: list lengths must be the same
+
+            It possible to unify some Variables to the head of a tuple and another to the rest
+            using the * syntax
+
+            >>> unify((A, B, *C), (1, 2, 3, 4))
+            1: {A}, 2: {B}, [3, 4]: {C}
+
+        """
+
+        return self.add(left, right)
