@@ -6,12 +6,6 @@ from typing import Any, Dict, List, Optional, Set, Union
 from multipledispatch import dispatch
 
 
-def new_frame(obj, frame: int):
-    if isinstance(obj, (Variable, ImmutableDict, PrologList)):
-        return obj.new_frame(frame)
-    return obj
-
-
 class Variable:
     @classmethod
     def factory(cls, *names: str) -> List[Variable]:
@@ -61,15 +55,6 @@ class Variable:
             raise TypeError(f"{other} must be a Variable")
         return hash(self) == hash(other)
 
-    def new_frame(self, frame: int) -> Variable:
-        """
-        :example:
-            >>> A = Variable("A")
-            >>> A.new_frame(1)
-            A:1
-        """
-        return Variable(self.name, frame=frame, many=self.many)
-
     @staticmethod
     def hash_set(variables: Set[Variable]) -> int:
         return hash(tuple(sorted(variables, key=lambda v: v.name)))
@@ -112,9 +97,6 @@ class PrologList:
         if isinstance(self.tail, PrologListNull):
             return f"[{self.head}]"
         return f"[{self.head}, {repr(self.tail)[1:-1]}]"
-
-    def new_frame(self, frame: int) -> PrologList:
-        return PrologList(new_frame(self.head, frame), new_frame(self.tail, frame))
 
 
 class ImmutableDict(UserDict):
@@ -185,9 +167,6 @@ class ImmutableDict(UserDict):
         _get_variables(self)
         return _variables
 
-    def new_frame(self, frame: int) -> ImmutableDict:
-        return ImmutableDict({k: new_frame(v, frame) for k, v in self.items()})
-
 
 class UnificationError(ValueError):
     pass
@@ -213,11 +192,6 @@ class Rule:
         else:
             return f"{self.predicate}."
 
-    def new_frame(self, frame: int) -> Rule:
-        return Rule(
-            self.predicate.new_frame(frame), *(o.new_frame(frame) for o in self.body),
-        )
-
 
 class Assign:
     def __init__(self, variable: Variable, expression, frame=None, is_injected=False):
@@ -227,13 +201,10 @@ class Assign:
         self.variables = Variable.factory(*self.expression.__code__.co_varnames)
         if self.frame is not None:
             if not is_injected:
-                self.variable = self.variable.new_frame(self.frame)
+                self.variable = new_frame(self.variable, self.frame)
             self.variables = [
-                variable.new_frame(self.frame) for variable in self.variables
+                new_frame(variable, self.frame) for variable in self.variables
             ]
-
-    def new_frame(self, frame: int) -> Assign:
-        return Assign(self.variable, self.expression, frame)
 
 
 class Assert:
@@ -243,11 +214,8 @@ class Assert:
         self.variables = [Variable(arg) for arg in self.expression.__code__.co_varnames]
         if self.frame is not None:
             self.variables = [
-                variable.new_frame(self.frame) for variable in self.variables
+                new_frame(variable, self.frame) for variable in self.variables
             ]
-
-    def new_frame(self, frame: int) -> Assert:
-        return Assert(self.expression, frame)
 
 
 @dispatch(ImmutableDict)
@@ -313,3 +281,46 @@ def construct(obj: Any):
     if obj is None:
         return obj
     raise TypeError(f"{obj} is not json serializable")
+
+
+@dispatch(Rule, int)  # type: ignore
+def new_frame(obj, frame: int):
+    return Rule(
+        new_frame(obj.predicate, frame), *(new_frame(o, frame) for o in obj.body),
+    )
+
+
+@dispatch(Assign, int)  # type: ignore
+def new_frame(obj, frame: int):
+    return Assign(obj.variable, obj.expression, frame)
+
+
+@dispatch(Assert, int)  # type: ignore
+def new_frame(obj, frame: int):
+    return Assert(obj.expression, frame)
+
+
+@dispatch(ImmutableDict, int)  # type: ignore
+def new_frame(obj, frame: int):
+    return ImmutableDict({k: new_frame(v, frame) for k, v in obj.items()})
+
+
+@dispatch(Variable, int)  # type: ignore
+def new_frame(obj, frame: int):
+    """
+    :example:
+        >>> A = Variable("A")
+        >>> new_frame(A, 1)
+        A:1
+    """
+    return Variable(obj.name, frame=frame, many=obj.many)
+
+
+@dispatch(PrologList, int)  # type: ignore
+def new_frame(obj, frame: int):
+    return PrologList(new_frame(obj.head, frame), new_frame(obj.tail, frame))
+
+
+@dispatch(object, int)  # type: ignore
+def new_frame(obj, frame: int):
+    return obj
