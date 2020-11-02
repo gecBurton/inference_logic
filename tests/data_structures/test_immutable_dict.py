@@ -6,6 +6,7 @@ from inference_logic.data_structures import (
     PrologList,
     construct,
     deconstruct,
+    get_variables,
 )
 
 
@@ -61,7 +62,7 @@ def test_immutable():
 def test_get_variables():
     A, B, C = Variable.factory("A", "B", "C")
     im = ImmutableDict(a=A, b=(1, B), c=ImmutableDict(d=(C, False)))
-    assert im.get_variables() == {A, B, C}
+    assert get_variables(im) == {A, B, C}
 
 
 @pytest.mark.parametrize("term", [None, 1, [2, 3, 4], {"a": False}, [{"hello": None}]])

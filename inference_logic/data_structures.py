@@ -151,21 +151,22 @@ class ImmutableDict(UserDict):
             raise TypeError(f"{other} must be an ImmutableDict")
         return hash(self) == hash(other)
 
-    def get_variables(self) -> Set[Variable]:
-        _variables = set()
 
-        def _get_variables(obj):
-            if isinstance(obj, ImmutableDict):
-                for value in obj.values():
-                    _get_variables(value)
-            if isinstance(obj, PrologList):
-                _get_variables(obj.head)
-                _get_variables(obj.tail)
-            if isinstance(obj, Variable):
-                _variables.add(obj)
+def get_variables(immutable_dict: ImmutableDict) -> Set[Variable]:
+    _variables = set()
 
-        _get_variables(self)
-        return _variables
+    def _get_variables(obj):
+        if isinstance(obj, ImmutableDict):
+            for value in obj.values():
+                _get_variables(value)
+        if isinstance(obj, PrologList):
+            _get_variables(obj.head)
+            _get_variables(obj.tail)
+        if isinstance(obj, Variable):
+            _variables.add(obj)
+
+    _get_variables(immutable_dict)
+    return _variables
 
 
 class UnificationError(ValueError):
