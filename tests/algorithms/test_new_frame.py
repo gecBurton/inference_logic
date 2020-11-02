@@ -25,4 +25,4 @@ def test_new_frame_function(initial, final):
     "initial, final", [(Rule(dict(a=A), dict(b=B)), Rule(dict(a=A_1), dict(b=B_1)))],
 )
 def test_new_frame_method(initial, final):
-    assert construct(initial).new_frame(1) == construct(final)
+    assert new_frame(construct(initial), 1) == construct(final)

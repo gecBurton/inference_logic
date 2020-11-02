@@ -9,6 +9,8 @@ from inference_logic.data_structures import (
     UnificationError,
     Variable,
     construct,
+    get_variables,
+    new_frame,
 )
 from inference_logic.equality import Equality
 
@@ -18,7 +20,7 @@ def search(db: List, query: ImmutableDict) -> Iterator[Dict[Variable, Any]]:
     query = construct(query)
 
     i = 0
-    to_solve_for = query.get_variables()
+    to_solve_for = get_variables(query)
 
     stack: List[Tuple[Rule, Equality]] = [(Rule(query), Equality())]
 
@@ -37,7 +39,7 @@ def search(db: List, query: ImmutableDict) -> Iterator[Dict[Variable, Any]]:
         else:
             for rule in db:
                 i += 1
-                rule = rule.new_frame(i)
+                rule = new_frame(rule, i)
 
                 try:
                     new_known = equality.unify(goal.predicate, rule.predicate)

@@ -1,6 +1,7 @@
 import pytest
 
 from inference_logic import Variable
+from inference_logic.data_structures import new_frame
 
 
 def test__init__error():
@@ -28,4 +29,4 @@ def test__eq__():
 
 
 def test_new_frame():
-    assert Variable("A", 3).new_frame(4) == Variable("A", 4)
+    assert new_frame(Variable("A", 3), 4) == Variable("A", 4)
