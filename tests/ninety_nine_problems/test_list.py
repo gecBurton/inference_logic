@@ -157,7 +157,6 @@ def test_06():
     assert list(search(db, query)) == [{}]
 
 
-@pytest.mark.xfail()
 def test_07():
     r"""
     P07 (**): Flatten a nested list structure.
@@ -173,7 +172,22 @@ def test_07():
     my_flatten([],[]).
     my_flatten([X|Xs],Zs) :- my_flatten(X,Y), my_flatten(Xs,Ys), append(Y,Ys,Zs).
     """
-    assert False
+    Xs, Ys, Zs = Variable.factory("Xs", "Ys", "Zs")
+    db = [
+        Rule(
+            dict(my_flatten=X, list=[X]),
+            Assert(lambda X: not isinstance(X, PrologList)),
+        ),
+        dict(my_flatten=[], list=[]),
+        Rule(
+            dict(my_flatten=[X, *Xs], list=Zs),
+            dict(my_flatten=X, list=Y),
+            dict(my_flatten=Xs, list=Ys),
+            Assign(Zs, lambda Y, Ys: Y + Ys),
+        ),
+    ]
+    query = dict(my_flatten=[[1, [2, [3]]]], list=Q)
+    assert list(search(db, query)) == [{Q: [1, 2, 3]}]
 
 
 def test_08():

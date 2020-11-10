@@ -75,7 +75,7 @@ class PrologListNull:
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, PrologListNull):
-            raise TypeError(f"{other} must be a PrologListNull")
+            raise UnificationError(f"{other} must be a PrologListNull")
         return True
 
 
@@ -106,7 +106,7 @@ class PrologList:
 
     def __add__(self, other):
         if not isinstance(other, PrologList):
-            raise TypeError(f"{other} must be a PrologList")
+            raise UnificationError(f"{other} must be a PrologList")
 
         # TODO: this is hideous!
         a, b = deconstruct(self), deconstruct(other)
@@ -243,6 +243,9 @@ def deconstruct(obj):
 def deconstruct(obj):
     if isinstance(obj.tail, PrologListNull):
         return [deconstruct(obj.head)]
+    if isinstance(obj.head, PrologListNull):
+        return []
+
     return [deconstruct(obj.head), *deconstruct(obj.tail)]
 
 
