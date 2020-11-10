@@ -508,7 +508,7 @@ def test_14():
 
 def test_15():
     """
-    P15 (**): Duplicate the elements of a list agiven number of times
+    P15 (**): Duplicate the elements of a list a given number of times
 
     dupli(L1,N,L2) :- L2 is obtained from L1 by duplicating all elements
        N times.
@@ -604,9 +604,39 @@ def test_17():
     ]
 
 
-@pytest.mark.xfail
 def test_18():
-    assert False
+    r"""
+    P18 (**):  Extract a slice from a list
+
+    slice(L1,I,K,L2) :- L2 is the list of the elements of L1 between
+       index I and index K (both included).
+       (list,integer,integer,list) (?,+,+,?)
+
+    slice([X|_],1,1,[X]).
+    slice([X|Xs],1,K,[X|Ys]) :- K > 1,
+       K1 is K - 1, slice(Xs,1,K1,Ys).
+    slice([_|Xs],I,K,Ys) :- I > 1,
+       I1 is I - 1, K1 is K - 1, slice(Xs,I1,K1,Ys).
+    """
+    I1, Xs, Ys, K, I, K1 = Variable.factory("I1", "Xs", "Ys", "K", "I", "K1")
+    db = [
+        dict(slice=[X, *_W], start=1, end=1, result=[X]),
+        Rule(
+            dict(slice=[X, *Xs], start=1, end=K, result=[X, *Ys]),
+            Assert(lambda K: K > 1),
+            Assign(K1, lambda K: K - 1),
+            dict(slice=Xs, start=1, end=K1, result=Ys),
+        ),
+        Rule(
+            dict(slice=[_W, *Xs], start=I, end=K, result=Ys),
+            Assert(lambda I: I > 1),
+            Assign(I1, lambda I: I - 1),
+            Assign(K1, lambda K: K - 1),
+            dict(slice=Xs, start=I1, end=K1, result=Ys),
+        ),
+    ]
+    query = dict(slice=["a", "b", "c", "d", "e", "f"], start=2, end=4, result=Q)
+    assert list(search(db, query)) == [{Q: ["b", "c", "d"]}]
 
 
 @pytest.mark.xfail
