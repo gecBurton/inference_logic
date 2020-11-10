@@ -67,6 +67,9 @@ class PrologListNull:
     """This is an Object that signifies the end of a PrologList
     """
 
+    def __len__(self):
+        return 0
+
     def __hash__(self) -> int:
         return hash("hello!")
 
@@ -80,6 +83,9 @@ class PrologList:
     """A list in Prolog is build recursively out of the first, head, element
     and everything else, the tail.
     """
+
+    def __len__(self):
+        return 1 + len(self.tail)
 
     def __init__(self, head, tail):
         self.head = head
@@ -97,6 +103,15 @@ class PrologList:
         if isinstance(self.tail, PrologListNull):
             return f"[{self.head}]"
         return f"[{self.head}, {repr(self.tail)[1:-1]}]"
+
+    def __add__(self, other):
+        if not isinstance(other, PrologList):
+            raise TypeError(f"{other} must be a PrologList")
+
+        # TODO: this is hideous!
+        a, b = deconstruct(self), deconstruct(other)
+        c = a + b
+        return construct(c)
 
 
 class ImmutableDict(UserDict):
