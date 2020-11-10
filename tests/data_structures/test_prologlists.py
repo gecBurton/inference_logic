@@ -14,7 +14,7 @@ def test__repr__():
 
 
 def test__eq__fail():
-    with pytest.raises(TypeError) as error:
+    with pytest.raises(UnificationError) as error:
         PrologListNull() == 0
     assert str(error.value) == "0 must be a PrologListNull"
 
@@ -39,6 +39,6 @@ def test_list__add__():
 
 def test_list__add__fail():
     a = construct([1, 2])
-    with pytest.raises(TypeError) as error:
+    with pytest.raises(UnificationError) as error:
         a + 3
     assert str(error.value) == "3 must be a PrologList"
