@@ -644,9 +644,31 @@ def test_19():
     assert False
 
 
-@pytest.mark.xfail
 def test_20():
-    assert False
+    """
+    P20 (*): Remove the K'th element from a list.
+    The first element in the list is number 1.
+
+    remove_at(X,L,K,R) :- X is the K'th element of the list L; R is the
+       list that remains when the K'th element is removed from L.
+       (element,list,integer,list) (?,?,+,?)
+
+    remove_at(X,[X|Xs],1,Xs).
+    remove_at(X,[Y|Xs],K,[Y|Ys]) :- K > 1,
+       K1 is K - 1, remove_at(X,Xs,K1,Ys).
+    """
+    Xs, Ys, K1, K, R = Variable.factory("Xs", "Ys", "K1", "K", "R")
+    db = [
+        dict(item=X, list=[X, *Xs], position=1, result=Xs),
+        Rule(
+            dict(item=X, list=[Y, *Xs], position=K, result=[Y, *Ys]),
+            Assert(lambda K: K > 1),
+            Assign(K1, lambda K: K - 1),
+            dict(item=X, list=Xs, position=K1, result=Ys),
+        ),
+    ]
+    query = dict(item=Q, list=["a", "b", "c", "d"], position=2, result=R)
+    assert list(search(db, query)) == [{Q: "b", R: ["a", "c", "d"]}]
 
 
 @pytest.mark.xfail
@@ -677,6 +699,21 @@ def test_22():
     ]
     query = dict(start=2, end=5, list=Z)
     assert list(search(db, query)) == [{Z: [2, 3, 4, 5]}]
+
+
+@pytest.mark.xfail
+def test_23():
+    assert False
+
+
+@pytest.mark.xfail
+def test_24():
+    assert False
+
+
+@pytest.mark.xfail
+def test_25():
+    assert False
 
 
 def test_26():
