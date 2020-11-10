@@ -190,7 +190,9 @@ class UnificationError(ValueError):
 
 class Rule:
     def __init__(
-        self, predicate: Union[ImmutableDict, Dict], *body: Union[ImmutableDict, Dict]
+        self,
+        predicate: Union[ImmutableDict, Dict],
+        *body: Union[ImmutableDict, Dict, Assert],
     ) -> None:
 
         self.predicate = construct(predicate)

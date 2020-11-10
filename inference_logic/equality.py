@@ -226,15 +226,15 @@ class Equality:
         }
 
     @dispatch(Assign, to_solve_for=set)  # type: ignore
-    def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:
+    def inject(self, term: Any, to_solve_for: Set[Variable]) -> List:
         free = self._get_free(term.variable) - {term.variable}
         if free:
             args_set = list(free)
         else:
             args_set = [term.variable]
-        return [
+        return {
             Assign(a, term.expression, term.frame, is_injected=True) for a in args_set
-        ]
+        }
 
     @dispatch(Variable, to_solve_for=set)  # type: ignore
     def inject(self, term: Any, to_solve_for: Set[Variable]) -> Set:
