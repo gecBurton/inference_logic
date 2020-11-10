@@ -90,7 +90,7 @@ class PrologList:
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, PrologList):
-            raise UnificationError
+            raise UnificationError(f"{other} must be a PrologList")
         return hash(self) == hash(other)
 
     def __repr__(self) -> str:

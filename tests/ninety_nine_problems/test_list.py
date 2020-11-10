@@ -401,21 +401,24 @@ def test_12():
     Xs, Ys, Zs = Variable.factory("Xs", "Ys", "Zs")
     N, N1 = Variable.factory("N", "N1")
     db = [
-        dict(decode=[], list=[]),
+        dict(compressed=[], result=[]),
         Rule(
-            dict(decode=[X, *Ys], list=[X, *Zs]),
+            dict(compressed=[X, *Ys], result=[X, *Zs]),
             Assert(lambda X: not isinstance(X, PrologList)),
-            dict(decode=Ys, list=Zs),
+            dict(compressed=Ys, result=Zs),
         ),
-        Rule(dict(decode=[[1, X], *Ys], list=[X, *Zs]), dict(decode=Ys, list=Zs)),
         Rule(
-            dict(decode=[[N, X], *Ys], list=[X, *Zs]),
+            dict(compressed=[[1, X], *Ys], result=[X, *Zs]),
+            dict(compressed=Ys, result=Zs),
+        ),
+        Rule(
+            dict(compressed=[[N, X], *Ys], result=[X, *Zs]),
             Assert(lambda N: N > 1),
             Assign(N1, lambda N: N - 1),
-            dict(decode=[[N1, X], *Ys], list=Zs),
+            dict(compressed=[[N1, X], *Ys], result=Zs),
         ),
     ]
-    query = dict(decode=[1, [2, 2], [3, 3]], list=Q)
+    query = dict(compressed=[1, [2, 2], [3, 3]], result=Q)
     assert list(search(db, query)) == [{Q: [1, 2, 2, 3, 3, 3]}]
 
 
