@@ -641,7 +641,50 @@ def test_18():
 
 @pytest.mark.xfail
 def test_19():
-    assert False
+    """
+    P19 (**): Rotate a list N places to the left
+
+    rotate(L1,N,L2) :- the list L2 is obtained from the list L1 by
+       rotating the elements of L1 N places to the left.
+       Examples:
+       rotate([a,b,c,d,e,f,g,h],3,[d,e,f,g,h,a,b,c])
+       rotate([a,b,c,d,e,f,g,h],-2,[g,h,a,b,c,d,e,f])
+       (list,integer,list) (+,+,?)
+
+    :- ensure_loaded(p17).
+
+    rotate(L1,N,L2) :- N >= 0,
+       length(L1,NL1), N1 is N mod NL1, rotate_left(L1,N1,L2).
+    rotate(L1,N,L2) :- N < 0,
+       length(L1,NL1), N1 is NL1 + (N mod NL1), rotate_left(L1,N1,L2).
+
+    rotate_left(L,0,L).
+    rotate_left(L1,N,L2) :- N > 0, split(L1,N,S1,S2), append(S2,S1,L2).
+    """
+    X, Xs, Ys, Zs, N, N1, P, Q = Variable.factory(
+        "X", "Xs", "Ys", "Zs", "N", "N1", "P", "Q"
+    )
+    db_17 = [
+        dict(split=L, a=0, b=[], c=L),
+        Rule(
+            dict(split=[X, *Xs], a=N, b=[X, *Ys], c=Zs),
+            Assert(lambda N: N > 0),
+            Assign(N1, lambda N: N - 1),
+            dict(split=Xs, a=N1, b=Ys, c=Zs),
+        ),
+    ]
+
+    NL1, L1, L2 = Variable.factory()
+
+    db_19 = [
+        Rule(
+            dict(rotate=L1, a=N, b=L2),
+            Assert(lambda N: N >= 0),
+            Assert(NL1, len(L1)),
+            Assign(N1, lambda N, NL1: N % NL1),
+            dict(rotate_left=L1, a=N1, b=L2),
+        )
+    ]
 
 
 def test_20():
@@ -671,9 +714,42 @@ def test_20():
     assert list(search(db, query)) == [{Q: "b", R: ["a", "c", "d"]}]
 
 
-@pytest.mark.xfail
+@pytest.mark.problematic
 def test_21():
-    assert False
+    """
+    P21 (*): Insert an element at a given position into a list
+    The first element in the list is number 1.
+
+    insert_at(X,L,K,R) :- X is inserted into the list L such that it
+       occupies position K. The result is the list R.
+       (element,list,integer,list) (?,?,+,?)
+
+    :- ensure_loaded(p20).
+
+    insert_at(X,L,K,R) :- remove_at(X,R,K,L).
+    """
+    Xs, Ys, K1, K, R = Variable.factory("Xs", "Ys", "K1", "K", "R")
+    db_20 = [
+        dict(item=X, list=[X, *Xs], position=1, result=Xs),
+        Rule(
+            dict(item=X, list=[Y, *Xs], position=K, result=[Y, *Ys]),
+            Assert(lambda K: K > 1),
+            Assign(K1, lambda K: K - 1),
+            dict(item=X, list=Xs, position=K1, result=Ys),
+        ),
+    ]
+    db_21 = [
+        dict(item=X, result=L, position=K, list=R),
+        dict(item=X, list=R, position=K, result=L),
+    ]
+    query = dict(item="alfa", result=["a", "b", "c", "d"], position=2, list=Q)
+    assert list(search(db_20 + db_21, query)) == [
+        {},  # these should not be here!
+        {},
+        {Q: ["a", "alfa", "b", "c", "d"]},
+        {},
+        {},
+    ]
 
 
 def test_22():
