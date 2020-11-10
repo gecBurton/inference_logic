@@ -385,7 +385,6 @@ def test_11():
     assert list(search(db, query)) == [{Q: [1, [2, 2], [3, 3]]}]
 
 
-@pytest.mark.xfail
 def test_12():
     r"""
     P12 (**): Decode a run-length compressed list.
@@ -405,7 +404,7 @@ def test_12():
         dict(decode=[], list=[]),
         Rule(
             dict(decode=[X, *Ys], list=[X, *Zs]),
-            Assert(lambda X: isinstance(X, PrologList)),
+            Assert(lambda X: not isinstance(X, PrologList)),
             dict(decode=Ys, list=Zs),
         ),
         Rule(dict(decode=[[1, X], *Ys], list=[X, *Zs]), dict(decode=Ys, list=Zs)),
@@ -417,7 +416,7 @@ def test_12():
         ),
     ]
     query = dict(decode=[1, [2, 2], [3, 3]], list=Q)
-    assert list(search(db, query)) == [{Q: [1, [2, 2], [3, 3]]}]
+    assert list(search(db, query)) == [{Q: [1, 2, 2, 3, 3, 3]}]
 
 
 @pytest.mark.xfail
