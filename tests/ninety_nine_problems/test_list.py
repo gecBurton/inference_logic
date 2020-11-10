@@ -422,7 +422,6 @@ def test_12():
     assert list(search(db, query)) == [{Q: [1, 2, 2, 3, 3, 3]}]
 
 
-@pytest.mark.xfail
 def test_13():
     r"""
     P13 (**): Run-length encoding of a list (direct solution)
@@ -453,30 +452,35 @@ def test_13():
     N, T, K, K1 = Variable.factory("N", "T", "K", "K1")
 
     db = [
-        dict(encode_direct=[], list=[]),
+        dict(unencoded=[], result=[]),
         Rule(
-            dict(encode_direct=[X, *Xs], list=[Z, *Zs]),
-            dict(count=X, a=Xs, b=Ys, c=1, d=Z),
-            dict(encode_direct=Ys, list=Zs),
+            dict(unencoded=[X, *Xs], result=[Z, *Zs]),
+            dict(leading=X, origininal=Xs, remaining=Ys, count=1, term=Z),
+            dict(unencoded=Ys, result=Zs),
         ),
-        dict(count=X, a=[], b=[], c=1, d=X),
-        Rule(dict(count=X, a=[], b=[], c=N, d=[N, X]), Assert(lambda N: N > 1)),
+        dict(leading=X, origininal=[], remaining=[], count=1, term=X),
         Rule(
-            dict(count=X, a=[Y, *Ys], b=[Y, *Ys], c=1, d=X), Assert(lambda X, Y: X != Y)
+            dict(leading=X, origininal=[], remaining=[], count=N, term=[N, X]),
+            Assert(lambda N: N > 1),
         ),
         Rule(
-            dict(count=X, a=[Y, *Ys], b=[Y, *Ys], c=N, d=[N, X]),
+            dict(leading=X, origininal=[Y, *Ys], remaining=[Y, *Ys], count=1, term=X),
+            Assert(lambda X, Y: X != Y),
+        ),
+        Rule(
+            dict(
+                leading=X, origininal=[Y, *Ys], remaining=[Y, *Ys], count=N, term=[N, X]
+            ),
             Assert(lambda N: N > 1),
             Assert(lambda X, Y: X != Y),
         ),
         Rule(
-            dict(count=X, a=[X, *Xs], b=Ys, c=K, d=T),
+            dict(leading=X, origininal=[X, *Xs], remaining=Ys, count=K, term=T),
             Assign(K1, lambda K: K + 1),
-            dict(coun=X, a=Xs, b=Ys, c=K1, d=T),
+            dict(leading=X, origininal=Xs, remaining=Ys, count=K1, term=T),
         ),
     ]
-    query = dict(count=6, a=[6, 6, 6, 6, 7], b=Ys, c=2, d=6)
-    # query = dict(encode_direct=[1, 2, 2, 3, 3, 3], list=Q)
+    query = dict(unencoded=[1, 2, 2, 3, 3, 3], result=Q)
     assert list(search(db, query)) == [{Q: [1, [2, 2], [3, 3]]}]
 
 
