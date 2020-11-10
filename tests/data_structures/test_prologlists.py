@@ -29,3 +29,16 @@ def test_list__repr__():
 
 def test_list__len__():
     assert len(construct([1, [2, 3], 4])) == 3
+
+
+def test_list__add__():
+    a = construct([1, 2])
+    b = construct([3, 4])
+    assert a + b == construct([1, 2, 3, 4])
+
+
+def test_list__add__fail():
+    a = construct([1, 2])
+    with pytest.raises(TypeError) as error:
+        a + 3
+    assert str(error.value) == "3 must be a PrologList"

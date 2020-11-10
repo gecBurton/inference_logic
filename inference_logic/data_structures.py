@@ -104,6 +104,13 @@ class PrologList:
             return f"[{self.head}]"
         return f"[{self.head}, {repr(self.tail)[1:-1]}]"
 
+    def __add__(self, other):
+        if not isinstance(other, PrologList):
+            raise TypeError(f"{other} must be a PrologList")
+        a, b = deconstruct(self), deconstruct(other)
+        c = a + b
+        return construct(c)
+
 
 class ImmutableDict(UserDict):
     """https://www.python.org/dev/peps/pep-0351/
