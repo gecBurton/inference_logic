@@ -1,8 +1,13 @@
+import random
+
 import pytest
 
 from inference_logic import Rule, Variable
 from inference_logic.algorithms import search
 from inference_logic.data_structures import Assert, Assign, PrologList
+
+fixed_rand = random.Random()
+fixed_rand.seed(1000)
 
 X, Y, Z = Variable.factory("X", "Y", "Z")
 L, _W = Variable.factory("L", "W")
@@ -806,13 +811,67 @@ def test_22():
     assert list(search(db, query)) == [{Z: [2, 3, 4, 5]}]
 
 
-@pytest.mark.xfail
 def test_23():
-    assert False
+    """
+    P23 (**): Extract a given number of randomly selected elements
+       from a list.
+
+    rnd_select(L,N,R) :- the list R contains N randomly selected
+       items taken from the list L.
+       (list,integer,list) (+,+,-)
+
+    :- ensure_loaded(p20).
+
+    rnd_select(_,0,[]).
+    rnd_select(Xs,N,[X|Zs]) :- N > 0,
+        length(Xs,L),
+        I is random(L) + 1,
+        remove_at(X,Xs,I,Ys),
+        N1 is N - 1,
+        rnd_select(Ys,N1,Zs).
+    """
+
+    Xs, Ys, K1, K, R = Variable.factory("Xs", "Ys", "K1", "K", "R")
+    db_20 = [
+        dict(item=X, list=[X, *Xs], position=1, result=Xs),
+        Rule(
+            dict(item=X, list=[Y, *Xs], position=K, result=[Y, *Ys]),
+            Assert(lambda K: K > 1),
+            Assign(K1, lambda K: K - 1),
+            dict(item=X, list=Xs, position=K1, result=Ys),
+        ),
+    ]
+    N, N1, Zs, J = Variable.factory("N", "N1", "Zs", "I")
+    db_23 = [
+        dict(rnd_select=_W, a=0, b=[]),
+        Rule(
+            dict(rnd_select=Xs, a=N, b=[X, *Zs]),
+            Assert(lambda N: N > 0),
+            Assign(L, lambda Xs: len(Xs)),
+            Assign(J, lambda L: fixed_rand.randint(1, L)),
+            dict(item=X, list=Xs, position=J, result=Ys),
+            Assign(N1, lambda N: N - 1),
+            dict(rnd_select=Ys, a=N1, b=Zs),
+        ),
+    ]
+    query = dict(rnd_select=["a", "b", "c", "d", "e", "f", "g", "h"], a=3, b=Q)
+    assert list(search(db_20 + db_23, query)) == [{Q: ["g", "f", "a"]}]
 
 
 @pytest.mark.xfail
 def test_24():
+    """
+    P24 (*): Lotto: Draw N different random numbers from the set 1..M
+
+    lotto(N,M,L) :- the list L contains N randomly selected distinct
+       integer numbers from the interval 1..M
+       (integer,integer,number-list) (+,+,-)
+
+    :- ensure_loaded(p22).
+    :- ensure_loaded(p23).
+
+    lotto(N,M,L) :- range(1,M,R), rnd_select(R,N,L).
+    """
     assert False
 
 
