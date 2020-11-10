@@ -159,7 +159,7 @@ def test_06():
 
 @pytest.mark.xfail()
 def test_07():
-    """
+    r"""
     P07 (**): Flatten a nested list structure.
 
     my_flatten(L1,L2) :- the list L2 is obtained from the list L1 by
@@ -169,7 +169,7 @@ def test_07():
 
     Note: flatten(+List1, -List2) is a predefined predicate
 
-    my_flatten(X,[X]) :- \\+ is_list(X).
+    my_flatten(X,[X]) :- \+ is_list(X).
     my_flatten([],[]).
     my_flatten([X|Xs],Zs) :- my_flatten(X,Y), my_flatten(Xs,Ys), append(Y,Ys,Zs).
     """
@@ -177,7 +177,7 @@ def test_07():
 
 
 def test_08():
-    """
+    r"""
     P08 (**): Eliminate consecutive duplicates of list elements.
 
     compress(L1,L2) :- the list L2 is obtained from the list L1 by
@@ -188,7 +188,7 @@ def test_08():
     compress([],[]).
     compress([X],[X]).
     compress([X,X|Xs],Zs) :- compress([X|Xs],Zs).
-    compress([X,Y|Ys],[X|Zs]) :- X \\= Y, compress([Y|Ys],Zs).
+    compress([X,Y|Ys],[X|Zs]) :- X \= Y, compress([Y|Ys],Zs).
     """
     Xs, Ys, Zs = Variable.factory("Xs", "Ys", "Zs")
     db = [
@@ -207,7 +207,7 @@ def test_08():
 
 
 def test_09():
-    """
+    r"""
     P09 (**):  Pack consecutive duplicates of list elements into sublists.
 
     pack(L1,L2) :- the list L2 is obtained from the list L1 by packing
@@ -221,7 +221,7 @@ def test_09():
        when all leading copies of X are removed and transfered to Z
 
     transfer(X,[],[],[X]).
-    transfer(X,[Y|Ys],[Y|Ys],[X]) :- X \\= Y.
+    transfer(X,[Y|Ys],[Y|Ys],[X]) :- X \= Y.
     transfer(X,[X|Xs],Ys,[X|Zs]) :- transfer(X,Xs,Ys,Zs).
     """
 
@@ -674,16 +674,35 @@ def test_19():
         ),
     ]
 
-    NL1, L1, L2 = Variable.factory()
+    NL1, L1, L2, S1, S2 = Variable.factory("NL1", "L1", "L2", "S1", "S2")
 
     db_19 = [
         Rule(
             dict(rotate=L1, a=N, b=L2),
             Assert(lambda N: N >= 0),
-            Assert(NL1, len(L1)),
+            Assign(NL1, lambda L1: len(L1)),
             Assign(N1, lambda N, NL1: N % NL1),
             dict(rotate_left=L1, a=N1, b=L2),
-        )
+        ),
+        Rule(
+            dict(rotate=L1, a=N, b=L2),
+            Assert(lambda N: N < 0),
+            Assign(NL1, lambda L1: len(L1)),
+            Assign(N1, lambda NL1: NL1 + (N % NL1)),
+            dict(rotate_left=L1, a=N1, b=L2),
+        ),
+        dict(rotate_left=L, a=0, b=L),
+        Rule(
+            dict(rotate_left=L1, a=N, b=L2),
+            Assert(lambda N: N > 0),
+            dict(split=L1, a=N, b=S1, c=S2),
+            Assign(L2, lambda S1, S2: S2 + S1),
+        ),
+    ]
+
+    query = dict(rotate=["a", "b", "c", "d", "e", "f", "g", "h"], a=3, b=Q)
+    assert list(search(db_17 + db_19, query)) == [
+        {Q: ["d", "e", "f", "g", "h", "a", "b", "c"]}
     ]
 
 

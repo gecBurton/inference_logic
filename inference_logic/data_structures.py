@@ -67,6 +67,9 @@ class PrologListNull:
     """This is an Object that signifies the end of a PrologList
     """
 
+    def __len__(self):
+        return 0
+
     def __hash__(self) -> int:
         return hash("hello!")
 
@@ -80,6 +83,9 @@ class PrologList:
     """A list in Prolog is build recursively out of the first, head, element
     and everything else, the tail.
     """
+
+    def __len__(self):
+        return 1 + len(self.tail)
 
     def __init__(self, head, tail):
         self.head = head

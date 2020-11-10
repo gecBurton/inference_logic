@@ -25,3 +25,7 @@ def test__eq__fail():
 
 def test_list__repr__():
     assert repr(construct([1, [2, 3], 4])) == "[1, [2, 3], 4]"
+
+
+def test_list__len__():
+    assert len(construct([1, [2, 3], 4])) == 3
