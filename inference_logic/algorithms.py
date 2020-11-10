@@ -62,7 +62,7 @@ def search(db: List, query: ImmutableDict) -> Iterator[Dict[Variable, Any]]:
                     if (
                         not goal.body
                         and not rule.body
-                        # and solutions.get_variables() == to_solve_for
+                        and set(solutions) == to_solve_for
                     ):
                         yield solutions
 

@@ -748,7 +748,6 @@ def test_20():
     assert list(search(db, query)) == [{Q: "b", R: ["a", "c", "d"]}]
 
 
-@pytest.mark.problematic
 def test_21():
     """
     P21 (*): Insert an element at a given position into a list
@@ -778,11 +777,7 @@ def test_21():
     ]
     query = dict(item="alfa", result=["a", "b", "c", "d"], position=2, list=Q)
     assert list(search(db_20 + db_21, query)) == [
-        {},  # these should not be here!
-        {},
         {Q: ["a", "alfa", "b", "c", "d"]},
-        {},
-        {},
     ]
 
 
