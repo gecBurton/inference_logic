@@ -107,6 +107,8 @@ class PrologList:
     def __add__(self, other):
         if not isinstance(other, PrologList):
             raise TypeError(f"{other} must be a PrologList")
+
+        # TODO: this is hideous!
         a, b = deconstruct(self), deconstruct(other)
         c = a + b
         return construct(c)
