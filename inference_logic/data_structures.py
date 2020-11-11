@@ -78,6 +78,9 @@ class PrologListNull:
             raise UnificationError(f"{other} must be a PrologListNull")
         return True
 
+    def __iter__(self):
+        raise StopIteration
+
 
 class PrologList:
     """A list in Prolog is build recursively out of the first, head, element
