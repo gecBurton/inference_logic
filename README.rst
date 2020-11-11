@@ -6,17 +6,13 @@ Inference Logic
 .. image:: https://img.shields.io/pypi/v/inference_logic.svg
         :target: https://pypi.python.org/pypi/inference_logic
 
-.. image:: https://img.shields.io/travis/gecBurton/inference_logic.svg
-        :target: https://travis-ci.com/gecBurton/inference_logic
+.. image:: https://github.com/gecBurton/inference_logic/workflows/.github/workflows/python-package.yml/badge.svg
+        :target: https://github.com/gecBurton/inference_logic/workflows/.github/workflows/python-package.yml/badge.svg
 
 .. image:: https://readthedocs.org/projects/json-inference-logic/badge/?version=latest
         :target: https://inference-logic.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
-
-.. image:: https://pyup.io/repos/github/gecBurton/inference_logic/shield.svg
-     :target: https://pyup.io/repos/github/gecBurton/inference_logic/
-     :alt: Updates
 
 
 

@@ -1,3 +1,5 @@
+import pytest
+
 from inference_logic.algorithms import search
 from inference_logic.data_structures import Assert, Assign, Rule, Variable
 
@@ -104,3 +106,43 @@ def test_33():
     ]
     query = dict(a=15, b=4, coprime=Q)
     assert list(search(db, query)) == [{Q: True}]
+
+
+@pytest.mark.xfail
+def test_34():
+    assert False
+
+
+@pytest.mark.xfail
+def test_35():
+    assert False
+
+
+@pytest.mark.xfail
+def test_36():
+    assert False
+
+
+@pytest.mark.xfail
+def test_37():
+    assert False
+
+
+@pytest.mark.xfail
+def test_38():
+    assert False
+
+
+@pytest.mark.xfail
+def test_39():
+    assert False
+
+
+@pytest.mark.xfail
+def test_40():
+    assert False
+
+
+@pytest.mark.xfail
+def test_41():
+    assert False
