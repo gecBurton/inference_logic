@@ -858,7 +858,6 @@ def test_23():
     assert list(search(db_20 + db_23, query)) == [{Q: ["g", "f", "a"]}]
 
 
-@pytest.mark.xfail
 def test_24():
     """
     P24 (*): Lotto: Draw N different random numbers from the set 1..M
@@ -872,7 +871,49 @@ def test_24():
 
     lotto(N,M,L) :- range(1,M,R), rnd_select(R,N,L).
     """
-    assert False
+    Xs, Ys, K1, K, R = Variable.factory("Xs", "Ys", "K1", "K", "R")
+    db_20 = [
+        dict(item=X, list=[X, *Xs], position=1, result=Xs),
+        Rule(
+            dict(item=X, list=[Y, *Xs], position=K, result=[Y, *Ys]),
+            Assert(lambda K: K > 1),
+            Assign(K1, lambda K: K - 1),
+            dict(item=X, list=Xs, position=K1, result=Ys),
+        ),
+    ]
+    I, I1, K, L = Variable.factory("I", "I1", "K", "L")
+    db_22 = [
+        dict(start=I, end=I, list=[I]),
+        Rule(
+            dict(start=I, end=K, list=[I, *L]),
+            Assert(lambda I, K: I < K),
+            Assign(I1, lambda I: I + 1),
+            dict(start=I1, end=K, list=L),
+        ),
+    ]
+    N, N1, Zs, J = Variable.factory("N", "N1", "Zs", "I")
+    db_23 = [
+        dict(rnd_select=_W, a=0, b=[]),
+        Rule(
+            dict(rnd_select=Xs, a=N, b=[X, *Zs]),
+            Assert(lambda N: N > 0),
+            Assign(L, lambda Xs: len(Xs)),
+            Assign(J, lambda L: fixed_rand.randint(1, L)),
+            dict(item=X, list=Xs, position=J, result=Ys),
+            Assign(N1, lambda N: N - 1),
+            dict(rnd_select=Ys, a=N1, b=Zs),
+        ),
+    ]
+    M = Variable("M")
+    db_24 = [
+        Rule(
+            dict(number=N, total=M, result=L),
+            dict(start=1, end=M, list=R),
+            dict(rnd_select=R, a=N, b=L),
+        )
+    ]
+    query = dict(number=3, total=9, result=Q)
+    assert list(search(db_20 + db_22 + db_23 + db_24, query)) == [{Q: [7, 6, 1]}]
 
 
 @pytest.mark.xfail
