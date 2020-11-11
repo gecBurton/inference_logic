@@ -6,8 +6,11 @@ from inference_logic import Rule, Variable
 from inference_logic.algorithms import search
 from inference_logic.data_structures import Assert, Assign, PrologList
 
-fixed_rand = random.Random()
-fixed_rand.seed(1000)
+
+@pytest.fixture
+def seeded_random():
+    return random.Random(1000)
+
 
 X, Y, Z = Variable.factory("X", "Y", "Z")
 L, _W = Variable.factory("L", "W")
@@ -811,7 +814,7 @@ def test_22():
     assert list(search(db, query)) == [{Z: [2, 3, 4, 5]}]
 
 
-def test_23():
+def test_23(seeded_random):
     """
     P23 (**): Extract a given number of randomly selected elements
        from a list.
@@ -848,7 +851,7 @@ def test_23():
             dict(rnd_select=Xs, a=N, b=[X, *Zs]),
             Assert(lambda N: N > 0),
             Assign(L, lambda Xs: len(Xs)),
-            Assign(J, lambda L: fixed_rand.randint(1, L)),
+            Assign(J, lambda L: seeded_random.randint(1, L)),
             dict(item=X, list=Xs, position=J, result=Ys),
             Assign(N1, lambda N: N - 1),
             dict(rnd_select=Ys, a=N1, b=Zs),
@@ -858,7 +861,7 @@ def test_23():
     assert list(search(db_20 + db_23, query)) == [{Q: ["g", "f", "a"]}]
 
 
-def test_24():
+def test_24(seeded_random):
     """
     P24 (*): Lotto: Draw N different random numbers from the set 1..M
 
@@ -898,7 +901,7 @@ def test_24():
             dict(rnd_select=Xs, a=N, b=[X, *Zs]),
             Assert(lambda N: N > 0),
             Assign(L, lambda Xs: len(Xs)),
-            Assign(J, lambda L: fixed_rand.randint(1, L)),
+            Assign(J, lambda L: seeded_random.randint(1, L)),
             dict(item=X, list=Xs, position=J, result=Ys),
             Assign(N1, lambda N: N - 1),
             dict(rnd_select=Ys, a=N1, b=Zs),
@@ -913,10 +916,10 @@ def test_24():
         )
     ]
     query = dict(number=3, total=9, result=Q)
-    assert list(search(db_20 + db_22 + db_23 + db_24, query)) == [{Q: [7, 6, 1]}]
+    assert list(search(db_20 + db_22 + db_23 + db_24, query)) == [{Q: [7, 2, 5]}]
 
 
-def test_25():
+def test_25(seeded_random):
     """
     P25 (*):  Generate a random permutation of the elements of a list
 
@@ -945,7 +948,7 @@ def test_25():
             dict(rnd_select=Xs, a=N, b=[X, *Zs]),
             Assert(lambda N: N > 0),
             Assign(L, lambda Xs: len(Xs)),
-            Assign(J, lambda L: fixed_rand.randint(1, L)),
+            Assign(J, lambda L: seeded_random.randint(1, L)),
             dict(item=X, list=Xs, position=J, result=Ys),
             Assign(N1, lambda N: N - 1),
             dict(rnd_select=Ys, a=N1, b=Zs),
@@ -961,7 +964,7 @@ def test_25():
     ]
     query = dict(initial=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], result=Q)
     assert list(search(db_20 + db_23 + db_25, query)) == [
-        {Q: [7, 2, 8, 1, 3, 4, 6, 9, 5, 0]}
+        {Q: [6, 1, 8, 3, 0, 7, 4, 9, 5, 2]}
     ]
 
 
