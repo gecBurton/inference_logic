@@ -79,7 +79,7 @@ class PrologListNull:
         return True
 
     def __iter__(self):
-        raise StopIteration
+        yield from iter([])
 
 
 class PrologList:
@@ -115,6 +115,10 @@ class PrologList:
         a, b = deconstruct(self), deconstruct(other)
         c = a + b
         return construct(c)
+
+    def __iter__(self):
+        yield self.head
+        yield from iter(self.tail)
 
 
 class ImmutableDict(UserDict):
