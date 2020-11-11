@@ -916,9 +916,53 @@ def test_24():
     assert list(search(db_20 + db_22 + db_23 + db_24, query)) == [{Q: [7, 6, 1]}]
 
 
-@pytest.mark.xfail
 def test_25():
-    assert False
+    """
+    P25 (*):  Generate a random permutation of the elements of a list
+
+    rnd_permu(L1,L2) :- the list L2 is a random permutation of the
+       elements of the list L1.
+       (list,list) (+,-)
+
+    :- ensure_loaded(p23).
+
+    rnd_permu(L1,L2) :- length(L1,N), rnd_select(L1,N,L2).
+    """
+    Xs, Ys, K1, K, R = Variable.factory("Xs", "Ys", "K1", "K", "R")
+    db_20 = [
+        dict(item=X, list=[X, *Xs], position=1, result=Xs),
+        Rule(
+            dict(item=X, list=[Y, *Xs], position=K, result=[Y, *Ys]),
+            Assert(lambda K: K > 1),
+            Assign(K1, lambda K: K - 1),
+            dict(item=X, list=Xs, position=K1, result=Ys),
+        ),
+    ]
+    N, N1, Zs, J = Variable.factory("N", "N1", "Zs", "I")
+    db_23 = [
+        dict(rnd_select=_W, a=0, b=[]),
+        Rule(
+            dict(rnd_select=Xs, a=N, b=[X, *Zs]),
+            Assert(lambda N: N > 0),
+            Assign(L, lambda Xs: len(Xs)),
+            Assign(J, lambda L: fixed_rand.randint(1, L)),
+            dict(item=X, list=Xs, position=J, result=Ys),
+            Assign(N1, lambda N: N - 1),
+            dict(rnd_select=Ys, a=N1, b=Zs),
+        ),
+    ]
+    L1, L2 = Variable.factory("L1", "L2")
+    db_25 = [
+        Rule(
+            dict(initial=L1, result=L2),
+            Assign(N, lambda L1: len(L1)),
+            dict(rnd_select=L1, a=N, b=L2),
+        )
+    ]
+    query = dict(initial=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], result=Q)
+    assert list(search(db_20 + db_23 + db_25, query)) == [
+        {Q: [7, 2, 8, 1, 3, 4, 6, 9, 5, 0]}
+    ]
 
 
 def test_26():
