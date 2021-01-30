@@ -16,7 +16,6 @@ from inference_logic.equality import Equality
 
 
 def search(db: List, query: ImmutableDict) -> Iterator[Dict[Variable, Any]]:
-    db = [Rule(item) if not isinstance(item, Rule) else item for item in db]
     query = construct(query)
 
     i = 0
@@ -38,6 +37,8 @@ def search(db: List, query: ImmutableDict) -> Iterator[Dict[Variable, Any]]:
                 pass
         else:
             for rule in db:
+                if not isinstance(rule, Rule):
+                    rule = Rule(rule)
                 i += 1
                 rule = new_frame(rule, i)
 
@@ -54,8 +55,8 @@ def search(db: List, query: ImmutableDict) -> Iterator[Dict[Variable, Any]]:
                         ),
                     )
 
-                    for x in new_terms:
-                        stack.append((Rule(*x), new_known))
+                    for terms in new_terms:
+                        stack.append((Rule(*terms), new_known))
 
                     solutions = new_known.solutions(to_solve_for)
 
